@@ -8,7 +8,7 @@
 /**
  * Initialise socket variables and events
  */
-const socket = io("https://lit-fortress-90404.herokuapp.com/");
+const socket = io("https://guarded-citadel-75405.herokuapp.com/");
 //const socket = io("localhost:3000");
 
 socket.on("init", handleInit);
