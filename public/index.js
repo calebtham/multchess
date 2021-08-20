@@ -8,8 +8,8 @@
 /**
  * Initialise socket variables and events
  */
-//const socket = io("https://lit-fortress-90404.herokuapp.com/");
-const socket = io("localhost:3000");
+const socket = io("https://lit-fortress-90404.herokuapp.com/");
+//const socket = io("localhost:3000");
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
