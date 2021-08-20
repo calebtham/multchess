@@ -8,8 +8,8 @@
 /**
  * Initialise socket variables and events
  */
-const socket = io("https://lit-fortress-90404.herokuapp.com/");
-//const socket = io("localhost:3000");
+//const socket = io("https://lit-fortress-90404.herokuapp.com/");
+const socket = io("localhost:3000");
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
@@ -277,7 +277,7 @@ function handleClick(e) {
                     updateGraphics();
                     
                 } else {
-                    socket.emit("moveMade", board); // Move will actually be made server-side. Still make move in client side for purpose of prechecking (to reduce load on server) and graphics (e.g. clicking an invalid target square)
+                    socket.emit("moveMade", board); // Move will actually be made server-side. Still make move in client side for purpose of graphics and reducing load on server by prechecking (e.g. showing legal moves, clicking an invalid target square)
                 }
             }
     
