@@ -1,0 +1,22 @@
+{
+  "name": "chess",
+  "version": "1.0.0",
+  "description": "multiplayer chess",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/calebtham/chess.git"
+  },
+  "author": "Caleb Tham",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/calebtham/chess/issues"
+  },
+  "homepage": "https://github.com/calebtham/chess#readme",
+  "dependencies": {
+    "socket.io": "^4.1.3"
+  }
+}
