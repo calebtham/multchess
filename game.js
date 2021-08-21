@@ -2,6 +2,7 @@
  * @author Caleb Tham
  */
 class Game {
+
     board;
     static Piece = {
         none: 0,
@@ -32,6 +33,10 @@ class Game {
     static isPieceType(p, type) {
         var pieceNoColour = p & 7;
         return pieceNoColour == type;
+    }
+    
+    static isSameType(p1, p2) {
+        return (p1 & 7) == (p2 & 7);
     }
 
     /**
@@ -91,8 +96,10 @@ class Game {
             canBlackRightCastle: true,
             whiteInCheck: false,
             blackInCheck: false,
-            directionOffsets: [-8, 8, -1, 1, -9, 9, -7, 7], // north, south, west, east, north-west, south-east, north-east, south-west
-            numSquaresToEdge: [[0,7,0,7,0,7,0,0],[0,7,1,6,0,6,0,1],[0,7,2,5,0,5,0,2],[0,7,3,4,0,4,0,3],[0,7,4,3,0,3,0,4],[0,7,5,2,0,2,0,5],[0,7,6,1,0,1,0,6],[0,7,7,0,0,0,0,7],[1,6,0,7,0,6,1,0],[1,6,1,6,1,6,1,1],[1,6,2,5,1,5,1,2],[1,6,3,4,1,4,1,3],[1,6,4,3,1,3,1,4],[1,6,5,2,1,2,1,5],[1,6,6,1,1,1,1,6],[1,6,7,0,1,0,0,6],[2,5,0,7,0,5,2,0],[2,5,1,6,1,5,2,1],[2,5,2,5,2,5,2,2],[2,5,3,4,2,4,2,3],[2,5,4,3,2,3,2,4],[2,5,5,2,2,2,2,5],[2,5,6,1,2,1,1,5],[2,5,7,0,2,0,0,5],[3,4,0,7,0,4,3,0],[3,4,1,6,1,4,3,1],[3,4,2,5,2,4,3,2],[3,4,3,4,3,4,3,3],[3,4,4,3,3,3,3,4],[3,4,5,2,3,2,2,4],[3,4,6,1,3,1,1,4],[3,4,7,0,3,0,0,4],[4,3,0,7,0,3,4,0],[4,3,1,6,1,3,4,1],[4,3,2,5,2,3,4,2],[4,3,3,4,3,3,4,3],[4,3,4,3,4,3,3,3],[4,3,5,2,4,2,2,3],[4,3,6,1,4,1,1,3],[4,3,7,0,4,0,0,3],[5,2,0,7,0,2,5,0],[5,2,1,6,1,2,5,1],[5,2,2,5,2,2,5,2],[5,2,3,4,3,2,4,2],[5,2,4,3,4,2,3,2],[5,2,5,2,5,2,2,2],[5,2,6,1,5,1,1,2],[5,2,7,0,5,0,0,2],[6,1,0,7,0,1,6,0],[6,1,1,6,1,1,6,1],[6,1,2,5,2,1,5,1],[6,1,3,4,3,1,4,1],[6,1,4,3,4,1,3,1],[6,1,5,2,5,1,2,1],[6,1,6,1,6,1,1,1],[6,1,7,0,6,0,0,1],[7,0,0,7,0,0,7,0],[7,0,1,6,1,0,6,0],[7,0,2,5,2,0,5,0],[7,0,3,4,3,0,4,0],[7,0,4,3,4,0,3,0],[7,0,5,2,5,0,2,0],[7,0,6,1,6,0,1,0],[7,0,7,0,7,0,0,0]],
+            directionOffsets: [-8, 8, -1, 1, -9, 9, -7, 7], // 0=north, 1=south, 2=west, 3=east, 4=north-west, 5=south-east, 6=north-east, 7=south-west
+            numSquaresToEdge: [[0,7,0,7,0,7,0,0],[0,7,1,6,0,6,0,1],[0,7,2,5,0,5,0,2],[0,7,3,4,0,4,0,3],[0,7,4,3,0,3,0,4],[0,7,5,2,0,2,0,5],[0,7,6,1,0,1,0,6],[0,7,7,0,0,0,0,7],[1,6,0,7,0,6,1,0],[1,6,1,6,1,6,1,1],[1,6,2,5,1,5,1,2],[1,6,3,4,1,4,1,3],[1,6,4,3,1,3,1,4],[1,6,5,2,1,2,1,5],[1,6,6,1,1,1,1,6],[1,6,7,0,1,0,0,6],[2,5,0,7,0,5,2,0],[2,5,1,6,1,5,2,1],[2,5,2,5,2,5,2,2],[2,5,3,4,2,4,2,3],[2,5,4,3,2,3,2,4],[2,5,5,2,2,2,2,5],[2,5,6,1,2,1,1,5],[2,5,7,0,2,0,0,5],[3,4,0,7,0,4,3,0],[3,4,1,6,1,4,3,1],[3,4,2,5,2,4,3,2],[3,4,3,4,3,4,3,3],[3,4,4,3,3,3,3,4],[3,4,5,2,3,2,2,4],[3,4,6,1,3,1,1,4],[3,4,7,0,3,0,0,4],[4,3,0,7,0,3,4,0],[4,3,1,6,1,3,4,1],[4,3,2,5,2,3,4,2],[4,3,3,4,3,3,4,3],[4,3,4,3,4,3,3,3],[4,3,5,2,4,2,2,3],[4,3,6,1,4,1,1,3],[4,3,7,0,4,0,0,3],[5,2,0,7,0,2,5,0],[5,2,1,6,1,2,5,1],[5,2,2,5,2,2,5,2],[5,2,3,4,3,2,4,2],[5,2,4,3,4,2,3,2],[5,2,5,2,5,2,2,2],[5,2,6,1,5,1,1,2],[5,2,7,0,5,0,0,2],[6,1,0,7,0,1,6,0],[6,1,1,6,1,1,6,1],[6,1,2,5,2,1,5,1],[6,1,3,4,3,1,4,1],[6,1,4,3,4,1,3,1],[6,1,5,2,5,1,2,1],[6,1,6,1,6,1,1,1],[6,1,7,0,6,0,0,1],[7,0,0,7,0,0,7,0],[7,0,1,6,1,0,6,0],[7,0,2,5,2,0,5,0],[7,0,3,4,3,0,4,0],[7,0,4,3,4,0,3,0],[7,0,5,2,5,0,2,0],[7,0,6,1,6,0,1,0],[7,0,7,0,7,0,0,0]], // numSquaresToEdge[x][y] gives the number of squares there are from the square with the index x in the direction of y. Values of y: 0=north, 1=south, 2=west, 3=east, 4=north-west, 5=south-east, 6=north-east, 7=south-west
+            whitePiecesTaken: [],
+            blackPiecesTaken: [],
             colourToMove: 8,
             history: undefined,
             startingPlayer: 1,
@@ -188,6 +195,21 @@ class Game {
     }
 
     /**
+     * Removes a value from an array
+     * @param {array} arr An array
+     * @param {any} value The value to remove from the array
+     * @returns The array with value removed
+     */
+    static arrayRemoveItemOnce(arr, value) {
+        var index = arr.indexOf(value);
+        if (index > -1) {
+          arr.splice(index, 1);
+        }
+        return arr;
+      }
+      
+
+    /**
      * Given two numbers, returns the largest number
      * @param {number} a A number
      * @param {number} b Another number
@@ -207,9 +229,12 @@ class Game {
         return (a < b) ? a : b;
     }
 
-
-    constructor() {
-        this.board = Game.createInitBoard();
+    constructor(board = undefined) {
+        if (board) {
+            this.board = board;
+        } else {
+            this.board = Game.createInitBoard();
+        }
     }
     
     /**
@@ -619,6 +644,7 @@ class Game {
             // Undo move made if generating moves
             if (isGeneratingMoves) {
                 this.undoMove();
+                return true;
             
                 // Check game state if actually made move
             } else {
@@ -642,11 +668,11 @@ class Game {
                     if (check) {
                         this.board.checkmate = true;
                         this.board.isGameFinished = true;
-                        return true;
+                        return this.madeMove(start, target);
                     } else {
                         this.board.stalemate = true;
                         this.board.isGameFinished = true;
-                        return true;
+                        return this.madeMove(start, target);
                     }
                 }
     
@@ -663,7 +689,7 @@ class Game {
                     if (count == 3) {
                         this.board.stalemate = true;
                         this.board.isGameFinished = true;
-                        return true;
+                        return this.madeMove(start, target);
                     }
                 }
     
@@ -694,14 +720,63 @@ class Game {
                 if (!thereIsPawn && whiteTotal <= 5 && blackTotal <= 5) {
                     this.board.stalemate = true;
                     this.board.isGameFinished = true;
-                    return true;
+                    return this.madeMove(start, target);
                 }
+
+                return this.madeMove(start, target);
             }
-    
-            return true;
+            
         }
         
         return false;
+    }
+
+    /**
+     * Updates relevant variables (for when a move is made)
+     * @param {number} start The index on the board that a sliding piece is to be moved from
+     * @param {number} target The index on the board that a sliding piece is to be moved to
+     * @returns True
+     */
+    madeMove(start, target) {
+        this.board.movedFrom = start;
+        this.board.movedTo = target;
+
+        if (this.board.history) {
+            let piece = this.board.history.square[target];
+            let removePiece;
+
+            let sameColourTaken;
+            let otherColourTaken;
+
+            if (!Game.isPieceType(piece, Game.Piece.none)) {
+
+                if (Game.isPieceColour(piece, Game.Piece.white)) {
+                    sameColourTaken = this.board.whitePiecesTaken;
+                    otherColourTaken = this.board.blackPiecesTaken;
+                } else {
+                    sameColourTaken = this.board.blackPiecesTaken;
+                    otherColourTaken = this.board.whitePiecesTaken;
+                }
+
+                otherColourTaken.every(p => {
+                    if (Game.isSameType(piece, p)) {
+                        removePiece = p;
+                        return false;
+                    }
+                    return true;
+                });
+
+                if (removePiece) {
+                    Game.arrayRemoveItemOnce(otherColourTaken, removePiece);
+                } else {
+                    sameColourTaken.push(piece);
+                    sameColourTaken.sort((a,b) => b-a); // sort descending
+                }
+
+            }
+        }
+
+        return true;
     }
     
     /**

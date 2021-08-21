@@ -1,7 +1,10 @@
 /**
+ * Functions and constants used for game mechanics
  * @author Caleb Tham
  */
 
+// numSquaresToEdge[x][y] gives the number of squares there are from the square with the board index x in the direction of y
+// values of y: 0=north, 1=south, 2=west, 3=east, 4=north-west, 5=south-east, 6=north-east, 7=south-west
 const numSquaresToEdge = [[0,7,0,7,0,7,0,0],[0,7,1,6,0,6,0,1],[0,7,2,5,0,5,0,2],[0,7,3,4,0,4,0,3],[0,7,4,3,0,3,0,4],[0,7,5,2,0,2,0,5],[0,7,6,1,0,1,0,6],[0,7,7,0,0,0,0,7],[1,6,0,7,0,6,1,0],[1,6,1,6,1,6,1,1],[1,6,2,5,1,5,1,2],[1,6,3,4,1,4,1,3],[1,6,4,3,1,3,1,4],[1,6,5,2,1,2,1,5],[1,6,6,1,1,1,1,6],[1,6,7,0,1,0,0,6],[2,5,0,7,0,5,2,0],[2,5,1,6,1,5,2,1],[2,5,2,5,2,5,2,2],[2,5,3,4,2,4,2,3],[2,5,4,3,2,3,2,4],[2,5,5,2,2,2,2,5],[2,5,6,1,2,1,1,5],[2,5,7,0,2,0,0,5],[3,4,0,7,0,4,3,0],[3,4,1,6,1,4,3,1],[3,4,2,5,2,4,3,2],[3,4,3,4,3,4,3,3],[3,4,4,3,3,3,3,4],[3,4,5,2,3,2,2,4],[3,4,6,1,3,1,1,4],[3,4,7,0,3,0,0,4],[4,3,0,7,0,3,4,0],[4,3,1,6,1,3,4,1],[4,3,2,5,2,3,4,2],[4,3,3,4,3,3,4,3],[4,3,4,3,4,3,3,3],[4,3,5,2,4,2,2,3],[4,3,6,1,4,1,1,3],[4,3,7,0,4,0,0,3],[5,2,0,7,0,2,5,0],[5,2,1,6,1,2,5,1],[5,2,2,5,2,2,5,2],[5,2,3,4,3,2,4,2],[5,2,4,3,4,2,3,2],[5,2,5,2,5,2,2,2],[5,2,6,1,5,1,1,2],[5,2,7,0,5,0,0,2],[6,1,0,7,0,1,6,0],[6,1,1,6,1,1,6,1],[6,1,2,5,2,1,5,1],[6,1,3,4,3,1,4,1],[6,1,4,3,4,1,3,1],[6,1,5,2,5,1,2,1],[6,1,6,1,6,1,1,1],[6,1,7,0,6,0,0,1],[7,0,0,7,0,0,7,0],[7,0,1,6,1,0,6,0],[7,0,2,5,2,0,5,0],[7,0,3,4,3,0,4,0],[7,0,4,3,4,0,3,0],[7,0,5,2,5,0,2,0],[7,0,6,1,6,0,1,0],[7,0,7,0,7,0,0,0]];
 
 const Piece = {
@@ -116,6 +119,7 @@ function generateLegalMoves(start, isCheckingCheck = false) {
  */
 function generateKingMoves(start) {
     var moves = []
+    var key;
 
     // Standard moves
     for (let i = 0; i < 8; i++) {
@@ -189,6 +193,7 @@ function generateKnightMoves(start) {
             && y + yOffset >= 0 && y + yOffset <= 7) {
                 let target = start + convert2dTo1d(xOffset, yOffset);
                 let pieceOnTarget = board.square[target];
+                let key;
 
                 if (isPieceColour(pieceOnTarget, board.colourToMove)) {
                     continue;
@@ -223,6 +228,7 @@ function generatePawnMoves(start) {
     // Standard move
     let target = start + yOffset;
     let pieceOnTarget = board.square[target];
+    let key;
 
     if (isPieceType(pieceOnTarget, Piece.none)) {
         key = encode(start, target)
@@ -283,6 +289,7 @@ function generateSlidingMoves(start, piece) {
         for (let n = 0; n < numSquaresToEdge[start][directionIndex]; n++) {
             let target = start + board.directionOffsets[directionIndex] * (n+1);
             let pieceOnTarget = board.square[target];
+            let key;
 
             if (isPieceColour(pieceOnTarget, board.colourToMove)) {
                 break;
@@ -297,20 +304,6 @@ function generateSlidingMoves(start, piece) {
         }
     }
     return moves
-}
-
-/**
- * Checks whether a move is valid
- * @param {number} start The index on the board that a sliding piece is to be moved from
- * @param {number} target The index on the board that a sliding piece is to be moved to
- * @returns A Boolean indicating whether the move is legal
- */
- function isMoveLegal(start, target) {
-    if (generateLegalMoves(start, true)[encode(start,target)]) {
-        return true;
-    } else {
-        return false;
-    }
 }
 
 /**
@@ -601,7 +594,7 @@ function encode(start, end) {
  * @returns The start and target square indices represented by the code
  */
 function decode(code) {
-    start = Math.floor(code / 100)
+    var start = Math.floor(code / 100)
     return {"start": start,
             "target": code - start*100};
 }

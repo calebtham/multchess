@@ -9,10 +9,8 @@ const io = require("socket.io")(process.env.PORT || 3000, {
 });
 
 const { Game } = require("./game.js");
-
-const { makeid } = require("./utils.js");
-
 const { Player } = require("./player.js");
+const { makeid } = require("./utils.js");
 
 const state = {};
 const clientRooms = {};
@@ -44,7 +42,7 @@ io.on("connection", client => {
                 blacklistedRooms[roomName] = true;
     
                 state[roomName].game.endGame();
-                state[roomName][3 - client.player.number].selectBooleanFlag("disconnected");
+                state[roomName][3 - client.player.number].selectBooleanFlag("opponentDisconnected");
                 emitState(roomName);
     
                 // room destroyed automatically when all clients leave - just remove room from blacklist
@@ -136,9 +134,6 @@ io.on("connection", client => {
                 if (state[roomName].game.makeMove(move.start, move.target)) { 
                     valid = true;
     
-                    state[roomName].game.board.movedFrom = move.start;
-                    state[roomName].game.board.movedTo = move.target;
-    
                     if (state[roomName].game.board.checkmate) {
                         checkmate(roomName);
                     } else if (state[roomName].game.board.stalemate) {
@@ -166,7 +161,7 @@ io.on("connection", client => {
         var roomName = clientRooms[client.id];
 
         if (roomName) {
-            state[roomName][3 - client.player.number].selectBooleanFlag("resigned");
+            state[roomName][3 - client.player.number].selectBooleanFlag("opponentResigned");
             state[roomName][3 - client.player.number].score++;
             state[roomName][client.player.number].selectBooleanFlag("lost");
     
@@ -265,7 +260,7 @@ io.on("connection", client => {
 
         if (roomName) {
             state[roomName][client.player.number].selectBooleanFlag("decline");
-            state[roomName][3 - client.player.number].selectBooleanFlag("declinedRequest");
+            state[roomName][3 - client.player.number].selectBooleanFlag("requestDeclined");
             emitState(roomName) 
         }
         
@@ -294,7 +289,6 @@ io.on("connection", client => {
     function emitState(roomName) {
         client.emit("gameState", state[roomName], client.player.number);
         emitOpponent(roomName, "gameState", state[roomName], 3 - client.player.number);
-        //io.sockets.in(roomName).emit("gameState", state[roomName]);
     }
 
 });

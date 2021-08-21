@@ -38,8 +38,7 @@ div.spacer {
 }
 
 div.buttons {
-    padding-top: 40px;
-    padding-left: 50px;
+    padding-top: 70px;
 }
 
 button {
@@ -66,17 +65,18 @@ button:hover {
 }
 
 canvas {
+    margin: 0px;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
     image-rendering: crisp-edges;
 }
 
 button.request {
-    width: 46.1%;
+    width: 46%;
 }
 
 
-@media (max-width: 720px) {
+@media (max-width: 610px) {
     button.request {
         width: 100%;
     }

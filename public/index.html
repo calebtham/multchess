@@ -61,9 +61,11 @@
                 <div class="row">
 
                     <div class="col">
+                        <canvas id="topCanvas"></canvas>
                         <h2 class="bold" id="topPlayerLabel">Opponent</h2>
-                        <canvas id="canvas"></canvas>
+                        <canvas id="boardCanvas"></canvas>
                         <h2 class="bold" id="bottomPlayerLabel">You</h2>
+                        <canvas id="bottomCanvas"></canvas>
                     </div>
 
                     <div class="col-4 buttons">
@@ -71,6 +73,7 @@
                         <p id="opponentActivity"></p>
                         <button type="submit" class="btn btn-success request" id="acceptButton" hidden>Accept</button>
                         <button type="submit" class="btn btn-danger request" id="declineButton" hidden>Decline</button>
+
                         <button type="submit" class="btn btn-secondary" id="takebackButton">Request Takeback</button>
                         <button type="submit" class="btn btn-secondary" id="drawButton">Offer Draw</button>
                         <button type="submit" class="btn btn-secondary" id="resignButton">Resign</button>
@@ -86,18 +89,18 @@
 
         </div>
             
-        <img src="img/9.svg" id="9" width="70" height="70" alt="9.svg" hidden>
-        <img src="img/10.svg" id="10" width="70" height="70" alt="10.svg" hidden>
-        <img src="img/11.svg" id="11" width="70" height="70" alt="11.svg" hidden>
-        <img src="img/12.svg" id="12" width="70" height="70" alt="12.svg" hidden>
-        <img src="img/13.svg" id="13" width="70" height="70" alt="13.svg" hidden>
-        <img src="img/14.svg" id="14" width="70" height="70" alt="14.svg" hidden>
-        <img src="img/17.svg" id="17" width="70" height="70" alt="17.svg" hidden>
-        <img src="img/18.svg" id="18" width="70" height="70" alt="18.svg" hidden>
-        <img src="img/19.svg" id="19" width="70" height="70" alt="19.svg" hidden> 
-        <img src="img/20.svg" id="20" width="70" height="70" alt="20.svg" hidden>
-        <img src="img/21.svg" id="21" width="70" height="70" alt="21.svg" hidden>
-        <img src="img/22.svg" id="22" width="70" height="70" alt="22.svg" hidden>
+        <img src="img/9.svg" id="9" width="65" height="65" alt="9.svg" hidden>
+        <img src="img/10.svg" id="10" width="65" height="65" alt="10.svg" hidden>
+        <img src="img/11.svg" id="11" width="65" height="65" alt="11.svg" hidden>
+        <img src="img/12.svg" id="12" width="65" height="65" alt="12.svg" hidden>
+        <img src="img/13.svg" id="13" width="65" height="65" alt="13.svg" hidden>
+        <img src="img/14.svg" id="14" width="65" height="65" alt="14.svg" hidden>
+        <img src="img/17.svg" id="17" width="65" height="65" alt="17.svg" hidden>
+        <img src="img/18.svg" id="18" width="65" height="65" alt="18.svg" hidden>
+        <img src="img/19.svg" id="19" width="65" height="65" alt="19.svg" hidden> 
+        <img src="img/20.svg" id="20" width="65" height="65" alt="20.svg" hidden>
+        <img src="img/21.svg" id="21" width="65" height="65" alt="21.svg" hidden>
+        <img src="img/22.svg" id="22" width="65" height="65" alt="22.svg" hidden>
 
         <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
         <script src="util.js"></script>

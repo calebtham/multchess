@@ -1,5 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
+ * Main javascript
  * @author Caleb Tham
  */
 
@@ -8,8 +9,8 @@
 /**
  * Initialise socket variables and events
  */
-const socket = io("https://guarded-citadel-75405.herokuapp.com/");
-//const socket = io("localhost:3000");
+//const socket = io("https://guarded-citadel-75405.herokuapp.com/");
+const socket = io("localhost:3000");
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
@@ -41,8 +42,12 @@ const IMG = {
 }; // Store images of all pieces in an object
 
 let squareSize = getSquareSize();
-let canvas;
-let ctx;
+let boardCanvas;
+let boardCtx;
+let topCanvas;
+let topCtx;
+let bottomCanvas;
+let bottomCtx
 
 
 // Initial screen elements
@@ -65,8 +70,9 @@ const bottomPlayerLabel = document.getElementById("bottomPlayerLabel");
 const topPlayerLabel = document.getElementById("topPlayerLabel");
 const opponentActivityLabel = document.getElementById("opponentActivity");
 
-newGameButton.addEventListener("click", handleNewGame);
-joinGameButton.addEventListener("click", handleJoinGame);
+// Add event listeners
+newGameButton.addEventListener("click", handleNewGameButton);
+joinGameButton.addEventListener("click", handleJoinGameButton);
 /** */
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,12 +88,16 @@ let opponent;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Server event handlers
+ */
+
+/**
  * Function to update variables and document elements for when 2nd opponent has joined
  */
  function handleOpponentJoined() {
-    canvas.addEventListener("click", handleClick);
-    canvas.addEventListener("mousemove", handleHover);
-    canvas.addEventListener("mouseleave", handleMouseLeave)
+    boardCanvas.addEventListener("click", handleClick);
+    boardCanvas.addEventListener("mousemove", handleHover);
+    boardCanvas.addEventListener("mouseleave", handleMouseLeave)
     rematchButton.addEventListener("click", handleRematchButton);
     takebackButton.addEventListener("click", handleTakebackButton);
     drawButton.addEventListener("click", handleDrawButton);
@@ -113,17 +123,32 @@ function handleUnknownGame() {
 }
 
 /**
- * Function to indicate to server new game button was pressed
+ * Given a game state, updates client game state and performs actions to initalise the game
+ * Changes screen from the inital menu to the game screen
+ * Initialises the event listeners, boardCanvas, and variables for the game
+ * @param {Object} state The game state (i.e. a board object)
  */
- function handleNewGame() {
-    socket.emit("newGame");
-}
+ function handleInit(gameCode, state, number) {
+    gameCodeDisplay.innerText = gameCode;
 
-/**
- * Function to indicate to server join button was pressed
- */
-function handleJoinGame() {
-    socket.emit("joinGame", gameCodeInput.value);
+    board = state.game.board;
+    me = state[number];
+    opponent = state[3 - number]
+
+    initialScreen.style.display = "none";
+    gameScreen.style.display = "block";
+    window.addEventListener("resize", handleResize);
+
+    boardCanvas = document.getElementById("boardCanvas");
+    boardCtx = boardCanvas.getContext("2d");
+
+    topCanvas = document.getElementById("topCanvas");
+    topCtx = topCanvas.getContext("2d");
+    
+    bottomCanvas = document.getElementById("bottomCanvas");
+    bottomCtx = bottomCanvas.getContext("2d");
+
+    handleResize();
 }
 
 /**
@@ -135,7 +160,27 @@ function handleGameState(state, number) {
     me = state[number];
     opponent = state[3 - number];
     updateGraphics();
-} 
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Document event handlers
+ */
+
+/**
+ * Function to indicate to server new game button was pressed
+ */
+ function handleNewGameButton() {
+    socket.emit("newGame");
+}
+
+/**
+ * Function to indicate to server join button was pressed
+ */
+function handleJoinGameButton() {
+    socket.emit("joinGame", gameCodeInput.value);
+}
 
 /**
  * Function to carry out appropriate action when user declines a request. Indicates to server what
@@ -191,47 +236,33 @@ function handleResignButton() {
 }
 
 /**
- * Given a game state, updates client game state and performs actions to initalise the game
- * Changes screen from the inital menu to the game screen
- * Initialises the event listeners, canvas, and variables for the game
- * @param {Object} state The game state (i.e. a board object)
- */
-function handleInit(gameCode, state, number) {
-    gameCodeDisplay.innerText = gameCode;
-
-    board = state.game.board;
-    me = state[number];
-    opponent = state[3 - number]
-
-    initialScreen.style.display = "none";
-    gameScreen.style.display = "block";
-    window.addEventListener("resize", handleResize);
-
-    canvas = document.getElementById("canvas");
-    ctx = canvas.getContext("2d");
-    handleResize();
-}
-
-/**
  * Function to resize the game board graphics according to window size
  */
 function handleResize() {
+    const ratio = window.devicePixelRatio;
+
     squareSize = getSquareSize();
 
-    canvas.width = squareSize * 8
-    canvas.height = squareSize * 8
+    boardCanvas.width = squareSize * 8 * ratio;
+    boardCanvas.height = squareSize * 8 * ratio;
+    topCanvas.width = squareSize * 8 * ratio;
+    topCanvas.height = 20 * ratio;
+    bottomCanvas.width = squareSize * 8 * ratio;
+    bottomCanvas.height = 20 * ratio;
 
-    const ratio = window.devicePixelRatio;
-    const width = canvas.width;
-    const height = canvas.height;
+    const width = boardCanvas.width / ratio;
+    const height = boardCanvas.height / ratio;
 
-    canvas.width *= ratio;
-    canvas.height *= ratio;
+    boardCanvas.style.width = width + "px";
+    boardCanvas.style.height = height + "px";
+    topCanvas.style.width = width + "px";
+    topCanvas.style.height = "20px";
+    bottomCanvas.style.width = width + "px";
+    bottomCanvas.style.height = "20px";
 
-    canvas.style.width = width + "px";
-    canvas.style.height = height + "px";
-
-    ctx.scale(ratio, ratio);
+    boardCtx.scale(ratio, ratio);
+    topCtx.scale(ratio, ratio);
+    bottomCtx.scale(ratio, ratio);
 
     updateGraphics();
 }
@@ -335,6 +366,10 @@ function handleMouseLeave(e) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Graphics functions
+ */
+
+/**
  * Calculates the length each square should be depending on the window dimensions
  * @returns Length of each square
  */
@@ -342,7 +377,7 @@ function handleMouseLeave(e) {
     if (window.innerWidth > 500) {
 
         return min(
-            min(42 + Math.floor(((window.innerWidth - 500) / 350) * 28), 70), // min of 42, linearly scales up with window width, max of 70
+            min(37 + Math.floor(((window.innerWidth - 500) / 350) * 28), 65), // min of 37, linearly scales up with window width, max of 65
             Math.floor(window.innerHeight / 8) // 8th of window width
         );
 
@@ -367,12 +402,14 @@ function getMouseSquare(e) {
 function updateGraphics() {
     drawBoardColour();
     drawBoardPieces();
+    drawTakenPieces(topCtx);
+    drawTakenPieces(bottomCtx);
     updateText();
     updateButtons();
 
     if (!me.opponentJoined) {
-        ctx.fillStyle = "rgba(255,255,255,0.5)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        boardCtx.fillStyle = "rgba(255,255,255,0.5)";
+        boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
     }
 }
 
@@ -415,7 +452,7 @@ function updateButtons() {
     }
 
     // If game finished
-    if (board.isGameFinished && !me.rematchRequestRecieved && !me.disconnected) {
+    if (board.isGameFinished && !me.rematchRequestRecieved && !me.opponentDisconnected) {
         rematchButton.className = "btn btn-success";
         rematchButton.disabled = false;
         
@@ -455,13 +492,13 @@ function updateButtons() {
         drawButton.disabled = true;
         opponentActivityLabel.innerHTML = "Draw request sent";
 
-    } else if (me.disconnected) {
+    } else if (me.opponentDisconnected) {
         opponentActivityLabel.innerHTML = "Opponent disconnected";
 
-    } else if (me.declinedRequest) {
+    } else if (me.requestDeclined) {
         opponentActivityLabel.innerHTML = "Opponent declined request";
 
-    } else if (me.resigned) {
+    } else if (me.opponentResigned) {
         opponentActivityLabel.innerHTML = "Opponent resigned";
 
     } else if (me.won) {
@@ -523,13 +560,33 @@ function updateText() {
     }
 }
 
+function drawTakenPieces(ctx) {
+    var player = (ctx == topCtx) ? opponent : me;
+    const offset = 30;
+    let i = 0;
+
+    ctx.clearRect(0,0,topCanvas.width,topCanvas.height);
+
+    if (player.colour == Piece.white) {
+        board.blackPiecesTaken.forEach(piece => {
+            ctx.drawImage(IMG[piece], offset * i, 0, 20, 20);
+            i++;
+        });
+    } else {
+        board.whitePiecesTaken.forEach(piece => {
+            ctx.drawImage(IMG[piece], offset * i, 0, 20, 20);
+            i++;
+        });
+    }
+}
+
 /**
  * Draws the background for the board
  */
 function drawBoardColour() {
 
-    ctx.fillStyle = BOARD_BLACK;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    boardCtx.fillStyle = BOARD_BLACK;
+    boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
 
     var multiplier = (me.colour == Piece.white) ? 1 : -1;
     var offset = (me.colour == Piece.white) ? 0 : 7;
@@ -578,7 +635,7 @@ function drawPiece(x, y, piece) {
     x = offset + multiplier * x;
     y = offset + multiplier * y;
 
-    ctx.drawImage(IMG[piece], squareSize * x, squareSize * y, squareSize, squareSize);
+    boardCtx.drawImage(IMG[piece], squareSize * x, squareSize * y, squareSize, squareSize);
 }
 
 /**
@@ -588,8 +645,8 @@ function drawPiece(x, y, piece) {
  * @param {string} colour The colour of the square
  */
 function colourSquare(x, y, colour) {
-    ctx.fillStyle = colour;
-    ctx.fillRect(squareSize * x, squareSize * y, squareSize, squareSize);
+    boardCtx.fillStyle = colour;
+    boardCtx.fillRect(squareSize * x, squareSize * y, squareSize, squareSize);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

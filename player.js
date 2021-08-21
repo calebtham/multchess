@@ -9,9 +9,9 @@ class Player {
     rematchRequestSent;
     takebackRequestSent;
     drawRequestSent;
-    declinedRequest;
-    disconnected;
-    resigned;
+    requestDeclined;
+    opponentDisconnected;
+    opponentResigned;
     won;
     lost;
     stalemate;
@@ -27,9 +27,9 @@ class Player {
         this.rematchRequestSent = false;
         this.takebackRequestSent = false;
         this.drawRequestSent = false;
-        this.declinedRequest = false;
-        this.disconnected = false;
-        this.resigned = false;
+        this.requestDeclined = false;
+        this.opponentDisconnected = false;
+        this.opponentResigned = false;
         this.won = false;
         this.lost = false;
         this.stalemate = false;
@@ -42,9 +42,9 @@ class Player {
         this.rematchRequestSent = false;
         this.takebackRequestSent = false;
         this.drawRequestSent = false;
-        this.declinedRequest = false;
-        this.disconnected = false;
-        this.resigned = false;
+        this.requestDeclined = false;
+        this.opponentDisconnected = false;
+        this.opponentResigned = false;
         this.won = false;
         this.lost = false;
         this.stalemate = false;
@@ -68,14 +68,14 @@ class Player {
             case "drawRequestRecieved":
                 this.drawRequestRecieved = true;
                 break;
-            case "declinedRequest":
-                this.declinedRequest = true;
+            case "requestDeclined":
+                this.requestDeclined = true;
                 break;
-            case "disconnected":
-                this.disconnected = true;
+            case "opponentDisconnected":
+                this.opponentDisconnected = true;
                 break;
-            case "resigned":
-                this.resigned = true;
+            case "opponentResigned":
+                this.opponentResigned = true;
                 break;
             case "won":
                 this.won = true;
