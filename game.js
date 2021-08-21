@@ -138,7 +138,7 @@ class Game {
             }
         }
     
-        if (diffSquares.length == 4) { // Check castling
+        if (diffSquares.length == 4) { // Assume castling
             let initKingSquare;
             let initRookSquare;
             let initNoneCount = 0;
@@ -172,6 +172,22 @@ class Game {
                         target: initRookSquare
                     };
     
+            }
+
+        } else if (diffSquares.length == 3) { // Assume en passant
+            let start;
+            let target = initBoard.enPassantSquare;
+
+            for (let i = 0; i < 3; i++) {
+                if (Math.abs(target - diffSquares[i]) != 8 && Math.abs(target - diffSquares[i]) != 0) {
+                    start = diffSquares[i];
+                    break;
+                }
+            }
+
+            return {
+                start: start,
+                target: target
             }
     
         } else if (diffSquares.length == 2) {
@@ -622,7 +638,7 @@ class Game {
                 this.board.square[start] = Game.Piece.none;
     
                 // en passant capture
-                if (target == this.board.enPassantSquare) {
+                if (target == this.board.enPassantSquare && Game.isPieceType(piece, Game.Piece.pawn)) {
                     if (Game.isPieceColour(piece, Game.Piece.white)) {
                         this.board.square[this.board.enPassantSquare + 8] = Game.Piece.none;
                     } else {

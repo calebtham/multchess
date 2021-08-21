@@ -403,7 +403,7 @@ function makeMove(start, target, isGeneratingMoves = false) {
             board.square[start] = Piece.none;
 
             // en passant capture
-            if (target == board.enPassantSquare) {
+            if (target == board.enPassantSquare && isPieceType(piece, Piece.pawn)) {
                 if (isPieceColour(piece, Piece.white)) {
                     board.square[board.enPassantSquare + 8] = Piece.none;
                 } else {

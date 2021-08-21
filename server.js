@@ -124,7 +124,7 @@ io.on("connection", client => {
     function handleMoveMade(nextBoard) {
         var roomName = clientRooms[client.id];
 
-        if (roomName) {
+        if (roomName && nextBoard) {
             var initBoard = state[roomName].game.board; 
             var valid = false;
     
