@@ -3,6 +3,14 @@
  * @author Caleb Tham
  */
 
+/** 
+ * Initialise game variables
+ */
+
+ let board;
+ let me;
+ let opponent;
+
 // numSquaresToEdge[x][y] gives the number of squares there are from the square with the board index x in the direction of y
 // values of y: 0=north, 1=south, 2=west, 3=east, 4=north-west, 5=south-east, 6=north-east, 7=south-west
 const numSquaresToEdge = [[0,7,0,7,0,7,0,0],[0,7,1,6,0,6,0,1],[0,7,2,5,0,5,0,2],[0,7,3,4,0,4,0,3],[0,7,4,3,0,3,0,4],[0,7,5,2,0,2,0,5],[0,7,6,1,0,1,0,6],[0,7,7,0,0,0,0,7],[1,6,0,7,0,6,1,0],[1,6,1,6,1,6,1,1],[1,6,2,5,1,5,1,2],[1,6,3,4,1,4,1,3],[1,6,4,3,1,3,1,4],[1,6,5,2,1,2,1,5],[1,6,6,1,1,1,1,6],[1,6,7,0,1,0,0,6],[2,5,0,7,0,5,2,0],[2,5,1,6,1,5,2,1],[2,5,2,5,2,5,2,2],[2,5,3,4,2,4,2,3],[2,5,4,3,2,3,2,4],[2,5,5,2,2,2,2,5],[2,5,6,1,2,1,1,5],[2,5,7,0,2,0,0,5],[3,4,0,7,0,4,3,0],[3,4,1,6,1,4,3,1],[3,4,2,5,2,4,3,2],[3,4,3,4,3,4,3,3],[3,4,4,3,3,3,3,4],[3,4,5,2,3,2,2,4],[3,4,6,1,3,1,1,4],[3,4,7,0,3,0,0,4],[4,3,0,7,0,3,4,0],[4,3,1,6,1,3,4,1],[4,3,2,5,2,3,4,2],[4,3,3,4,3,3,4,3],[4,3,4,3,4,3,3,3],[4,3,5,2,4,2,2,3],[4,3,6,1,4,1,1,3],[4,3,7,0,4,0,0,3],[5,2,0,7,0,2,5,0],[5,2,1,6,1,2,5,1],[5,2,2,5,2,2,5,2],[5,2,3,4,3,2,4,2],[5,2,4,3,4,2,3,2],[5,2,5,2,5,2,2,2],[5,2,6,1,5,1,1,2],[5,2,7,0,5,0,0,2],[6,1,0,7,0,1,6,0],[6,1,1,6,1,1,6,1],[6,1,2,5,2,1,5,1],[6,1,3,4,3,1,4,1],[6,1,4,3,4,1,3,1],[6,1,5,2,5,1,2,1],[6,1,6,1,6,1,1,1],[6,1,7,0,6,0,0,1],[7,0,0,7,0,0,7,0],[7,0,1,6,1,0,6,0],[7,0,2,5,2,0,5,0],[7,0,3,4,3,0,4,0],[7,0,4,3,4,0,3,0],[7,0,5,2,5,0,2,0],[7,0,6,1,6,0,1,0],[7,0,7,0,7,0,0,0]];
@@ -331,24 +339,57 @@ function makeMove(start, target, isGeneratingMoves = false) {
             && isPieceColour(board.square[target], board.colourToMove)
             && (target == 0 || target == 7 || target == 56 || target == 63)) {
 
-                if (target == 0) {
+                if (target == 0) { // top left
+                    board.square[1] = Piece.king | Piece.black;
+                    board.square[2] = Piece.king | Piece.black;
+                    board.square[3] = Piece.king | Piece.black;
+                    if (isInCheck()) {
+                        undoMove();
+                        return false;
+                    }
+
                     board.square[0] = Piece.none;
                     board.square[1] = Piece.none;
                     board.square[2] = Piece.king | Piece.black;
                     board.square[3] = Piece.rook | Piece.black;
                     board.square[4] = Piece.none;
-                } else if (target == 7) {
+
+                } else if (target == 7) { // top right
+                    board.square[6] = Piece.king | Piece.black;
+                    board.square[5] = Piece.king | Piece.black;
+                    if (isInCheck()) {
+                        undoMove();
+                        return false;
+                    }
+
                     board.square[4] = Piece.none;
                     board.square[5] = Piece.rook | Piece.black;
                     board.square[6] = Piece.king | Piece.black;
                     board.square[7] = Piece.none;
-                } else if (target == 56) {
+
+                } else if (target == 56) { // bottom left
+                    board.square[57] = Piece.king | Piece.white;
+                    board.square[58] = Piece.king | Piece.white;
+                    board.square[59] = Piece.king | Piece.white;
+                    if (isInCheck()) {
+                        undoMove();
+                        return false;
+                    }
+
                     board.square[56] = Piece.none;
                     board.square[57] = Piece.none;
                     board.square[58] = Piece.king | Piece.white;
                     board.square[59] = Piece.rook | Piece.white;
                     board.square[60] = Piece.none;
-                } else {
+
+                } else { // bottom right
+                    board.square[62] = Piece.king | Piece.white;
+                    board.square[61] = Piece.king | Piece.white;
+                    if (isInCheck()) {
+                        undoMove();
+                        return false;
+                    }
+                    
                     board.square[60] = Piece.none;
                     board.square[61] = Piece.rook | Piece.white;
                     board.square[62] = Piece.king | Piece.white;

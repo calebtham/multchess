@@ -130,5 +130,9 @@ button.request {
     canvas {
         margin-left: 0px;
     }
+    canvas#topCanvas,
+    canvas#bottomCanvas {
+        margin-left: 10px;
+    }
 
 }

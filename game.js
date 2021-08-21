@@ -17,6 +17,15 @@ class Game {
         black: 16,
     }
 
+    static flipPieceColour(p) {
+        return (p & 7) | (Game.isPieceColour(p, Game.Piece.white) ? Game.Piece.black : Game.Piece.white);
+    }
+
+    static pieceValue(p) {
+        var pieceValue = [0,1000,1,3,3,5,9];
+        return pieceValue[p & 7] * (Game.isPieceColour(p, Game.Piece.white) ? 1 : -1);
+    }
+
     // i.e. is piece a bishop, rook, queen
     static isPieceSliding(p) {
         var pieceNoColour = p & 7;
@@ -37,6 +46,10 @@ class Game {
     
     static isSameType(p1, p2) {
         return (p1 & 7) == (p2 & 7);
+    }
+
+    static isSameColour(p1, p2) {
+        return (p1 & 24) == (p2 & 24);
     }
 
     /**
@@ -100,6 +113,7 @@ class Game {
             numSquaresToEdge: [[0,7,0,7,0,7,0,0],[0,7,1,6,0,6,0,1],[0,7,2,5,0,5,0,2],[0,7,3,4,0,4,0,3],[0,7,4,3,0,3,0,4],[0,7,5,2,0,2,0,5],[0,7,6,1,0,1,0,6],[0,7,7,0,0,0,0,7],[1,6,0,7,0,6,1,0],[1,6,1,6,1,6,1,1],[1,6,2,5,1,5,1,2],[1,6,3,4,1,4,1,3],[1,6,4,3,1,3,1,4],[1,6,5,2,1,2,1,5],[1,6,6,1,1,1,1,6],[1,6,7,0,1,0,0,6],[2,5,0,7,0,5,2,0],[2,5,1,6,1,5,2,1],[2,5,2,5,2,5,2,2],[2,5,3,4,2,4,2,3],[2,5,4,3,2,3,2,4],[2,5,5,2,2,2,2,5],[2,5,6,1,2,1,1,5],[2,5,7,0,2,0,0,5],[3,4,0,7,0,4,3,0],[3,4,1,6,1,4,3,1],[3,4,2,5,2,4,3,2],[3,4,3,4,3,4,3,3],[3,4,4,3,3,3,3,4],[3,4,5,2,3,2,2,4],[3,4,6,1,3,1,1,4],[3,4,7,0,3,0,0,4],[4,3,0,7,0,3,4,0],[4,3,1,6,1,3,4,1],[4,3,2,5,2,3,4,2],[4,3,3,4,3,3,4,3],[4,3,4,3,4,3,3,3],[4,3,5,2,4,2,2,3],[4,3,6,1,4,1,1,3],[4,3,7,0,4,0,0,3],[5,2,0,7,0,2,5,0],[5,2,1,6,1,2,5,1],[5,2,2,5,2,2,5,2],[5,2,3,4,3,2,4,2],[5,2,4,3,4,2,3,2],[5,2,5,2,5,2,2,2],[5,2,6,1,5,1,1,2],[5,2,7,0,5,0,0,2],[6,1,0,7,0,1,6,0],[6,1,1,6,1,1,6,1],[6,1,2,5,2,1,5,1],[6,1,3,4,3,1,4,1],[6,1,4,3,4,1,3,1],[6,1,5,2,5,1,2,1],[6,1,6,1,6,1,1,1],[6,1,7,0,6,0,0,1],[7,0,0,7,0,0,7,0],[7,0,1,6,1,0,6,0],[7,0,2,5,2,0,5,0],[7,0,3,4,3,0,4,0],[7,0,4,3,4,0,3,0],[7,0,5,2,5,0,2,0],[7,0,6,1,6,0,1,0],[7,0,7,0,7,0,0,0]], // numSquaresToEdge[x][y] gives the number of squares there are from the square with the index x in the direction of y. Values of y: 0=north, 1=south, 2=west, 3=east, 4=north-west, 5=south-east, 6=north-east, 7=south-west
             whitePiecesTaken: [],
             blackPiecesTaken: [],
+            whiteAdvantage: 0,
             colourToMove: 8,
             history: undefined,
             startingPlayer: 1,
@@ -542,29 +556,64 @@ class Game {
                 && Game.isPieceColour(this.board.square[target], this.board.colourToMove)
                 && (target == 0 || target == 7 || target == 56 || target == 63)) {
     
-                    if (target == 0) {
+                    if (target == 0) { // top left
+                        this.board.square[1] = Game.Piece.king | Game.Piece.black;
+                        this.board.square[2] = Game.Piece.king | Game.Piece.black;
+                        this.board.square[3] = Game.Piece.king | Game.Piece.black;
+                        if (this.isInCheck()) {
+                            this.undoMove();
+                            return false;
+                        }
+
                         this.board.square[0] = Game.Piece.none;
                         this.board.square[1] = Game.Piece.none;
                         this.board.square[2] = Game.Piece.king | Game.Piece.black;
                         this.board.square[3] = Game.Piece.rook | Game.Piece.black;
                         this.board.square[4] = Game.Piece.none;
-                    } else if (target == 7) {
+
+                    } else if (target == 7) { // top right
+                        this.board.square[6] = Game.Piece.king | Game.Piece.black;
+                        this.board.square[5] = Game.Piece.king | Game.Piece.black;
+                        if (this.isInCheck()) {
+                            this.undoMove();
+                            return false;
+                        }
+
                         this.board.square[4] = Game.Piece.none;
                         this.board.square[5] = Game.Piece.rook | Game.Piece.black;
                         this.board.square[6] = Game.Piece.king | Game.Piece.black;
                         this.board.square[7] = Game.Piece.none;
-                    } else if (target == 56) {
+
+                    } else if (target == 56) { // bottom left
+                        this.board.square[57] = Game.Piece.king | Game.Piece.white;
+                        this.board.square[58] = Game.Piece.king | Game.Piece.white;
+                        this.board.square[59] = Game.Piece.king | Game.Piece.white;
+                        if (this.isInCheck()) {
+                            this.undoMove();
+                            return false;
+                        }
+
                         this.board.square[56] = Game.Piece.none;
                         this.board.square[57] = Game.Piece.none;
                         this.board.square[58] = Game.Piece.king | Game.Piece.white;
                         this.board.square[59] = Game.Piece.rook | Game.Piece.white;
                         this.board.square[60] = Game.Piece.none;
-                    } else {
+
+                    } else { // bottom right
+                        this.board.square[62] = Game.Piece.king | Game.Piece.white;
+                        this.board.square[61] = Game.Piece.king | Game.Piece.white;
+                        if (this.isInCheck()) {
+                            this.undoMove();
+                            return false;
+                        }
+                        
                         this.board.square[60] = Game.Piece.none;
                         this.board.square[61] = Game.Piece.rook | Game.Piece.white;
                         this.board.square[62] = Game.Piece.king | Game.Piece.white;
                         this.board.square[63] = Game.Piece.none;
                     }
+
+                    
                 
             // not castling
             } else {
@@ -741,42 +790,56 @@ class Game {
         this.board.movedFrom = start;
         this.board.movedTo = target;
 
-        if (this.board.history) {
-            let piece = this.board.history.square[target];
-            let removePiece;
+        if (this.board.history && !Game.isSameColour(this.board.history.square[start], this.board.history.square[target])) { // check not same colour for castling
+            let piece;
 
-            let sameColourTaken;
-            let otherColourTaken;
-
+            // Captured
+            piece = this.board.history.square[target];
             if (!Game.isPieceType(piece, Game.Piece.none)) {
+                this.captured(piece)
 
-                if (Game.isPieceColour(piece, Game.Piece.white)) {
-                    sameColourTaken = this.board.whitePiecesTaken;
-                    otherColourTaken = this.board.blackPiecesTaken;
-                } else {
-                    sameColourTaken = this.board.blackPiecesTaken;
-                    otherColourTaken = this.board.whitePiecesTaken;
-                }
+            }
 
-                otherColourTaken.every(p => {
-                    if (Game.isSameType(piece, p)) {
-                        removePiece = p;
-                        return false;
-                    }
-                    return true;
-                });
-
-                if (removePiece) {
-                    Game.arrayRemoveItemOnce(otherColourTaken, removePiece);
-                } else {
-                    sameColourTaken.push(piece);
-                    sameColourTaken.sort((a,b) => b-a); // sort descending
-                }
-
+            // Promotion
+            piece = this.board.square[target];
+            if (Game.isPieceType(piece, Game.Piece.queen)
+                && Game.isPieceType(this.board.history.square[start], Game.Piece.pawn)) {
+                    this.captured(Game.flipPieceColour(piece));
             }
         }
 
         return true;
+    }
+
+    captured(piece) {
+        let sameColourTaken;
+        let otherColourTaken;
+
+        if (Game.isPieceColour(piece, Game.Piece.white)) {
+            sameColourTaken = this.board.whitePiecesTaken;
+            otherColourTaken = this.board.blackPiecesTaken;
+        } else {
+            sameColourTaken = this.board.blackPiecesTaken; 
+            otherColourTaken = this.board.whitePiecesTaken;
+        }
+
+        let removePiece;
+        otherColourTaken.every(p => {
+            if (Game.isSameType(piece, p)) {
+                removePiece = p;
+                return false;
+            }
+            return true;
+        });
+
+        if (removePiece) {
+            Game.arrayRemoveItemOnce(otherColourTaken, removePiece);
+        } else {
+            sameColourTaken.push(piece);
+            sameColourTaken.sort((a,b) => b-a); // sort descending
+        }
+
+        this.board.whiteAdvantage -= Game.pieceValue(piece);
     }
     
     /**
