@@ -806,22 +806,25 @@ class Game {
         this.board.movedFrom = start;
         this.board.movedTo = target;
 
-        if (this.board.history && !Game.isSameColour(this.board.history.square[start], this.board.history.square[target])) { // check not same colour for castling
-            let piece;
+        if (this.board.history 
+            && (!Game.isSameColour(this.board.history.square[start], this.board.history.square[target])
+                || this.board.history.enPassantSquare == target)) { // check not same colour for castling, and check for en passant capture
+                
+                let piece;
 
-            // Captured
-            piece = this.board.history.square[target];
-            if (!Game.isPieceType(piece, Game.Piece.none)) {
-                this.captured(piece)
+                // Captured
+                piece = this.board.history.square[target] || (Game.Piece.pawn | (this.board.colourToMove));
+                if (!Game.isPieceType(piece, Game.Piece.none)) {
+                    this.captured(piece);
 
-            }
+                }
 
-            // Promotion
-            piece = this.board.square[target];
-            if (Game.isPieceType(piece, Game.Piece.queen)
-                && Game.isPieceType(this.board.history.square[start], Game.Piece.pawn)) {
-                    this.captured(Game.flipPieceColour(piece));
-            }
+                // Promotion
+                piece = this.board.square[target];
+                if (Game.isPieceType(piece, Game.Piece.queen)
+                    && Game.isPieceType(this.board.history.square[start], Game.Piece.pawn)) {
+                        this.captured(Game.flipPieceColour(piece));
+                }
         }
 
         return true;
