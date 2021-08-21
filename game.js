@@ -808,12 +808,12 @@ class Game {
 
         if (this.board.history 
             && (!Game.isSameColour(this.board.history.square[start], this.board.history.square[target])
-                || this.board.history.enPassantSquare == target)) { // check not same colour for castling, and check for en passant capture
+                || this.board.history.enPassantSquare == target)) { // check not same colour to rule out castling, and check for en passant capture
                 
                 let piece;
 
                 // Captured
-                piece = this.board.history.square[target] || (Game.Piece.pawn | (this.board.colourToMove));
+                piece = (this.board.history.enPassantSquare == target) ? (Game.Piece.pawn | (this.board.colourToMove)) : this.board.history.square[target];
                 if (!Game.isPieceType(piece, Game.Piece.none)) {
                     this.captured(piece);
 
