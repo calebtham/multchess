@@ -36,8 +36,7 @@ function getMouseSquare(e) {
  * Draws the board and updates the text and buttons
  */
 function updateGraphics() {
-    drawBoardColour();
-    drawBoardPieces();
+    drawBoard();
     drawTakenPieces(topCtx);
     drawTakenPieces(bottomCtx);
     updateText();
@@ -47,6 +46,11 @@ function updateGraphics() {
         boardCtx.fillStyle = "rgba(255,255,255,0.5)";
         boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
     }
+}
+
+function drawBoard() {
+    drawBoardColour();
+    drawBoardPieces();
 }
 
 /**

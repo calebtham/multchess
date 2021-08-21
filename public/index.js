@@ -182,49 +182,59 @@ function handleClick(e) {
         board.invalid = -1;
     
         // Dropping a piece
-        if (board.inHand ^ Piece.none) { 
+        if (board.inHand ^ Piece.none && 
+            (!isPieceColour(board.square[boardIndex], board.colourToMove)
+                || board.isLegalMove[boardIndex])) { 
     
             var start = board.movedFrom
 
-            if (start == boardIndex) {
+            var madeMove = makeMove(start, boardIndex, false);
+
+            if (!madeMove) {
+                board.invalid = start;
                 board.isLegalMove = new Array(64).fill(false);
                 board.hiddenSquare = -1;
                 board.inHand = Piece.none;
-                board.movedFrom = -1;
-                updateGraphics();
-
+                board.movedTo = boardIndex;
+                drawBoard();
+                
             } else {
-                var madeMove = makeMove(start, boardIndex, false);
-
-                if (!madeMove) {
-                    board.invalid = start;
-                    board.isLegalMove = new Array(64).fill(false);
-                    board.hiddenSquare = -1;
-                    board.inHand = Piece.none;
-                    board.movedTo = boardIndex;
-                    updateGraphics();
-                    
-                } else {
-                    socket.emit("moveMade", board); // Move will actually be made server-side. Still make move in client side for purpose of graphics and reducing load on server by prechecking (e.g. showing legal moves, clicking an invalid target square)
-                }
+                board.isLegalMove = new Array(64).fill(false);
+                board.hiddenSquare = -1;
+                board.inHand = Piece.none;
+                board.movedTo = boardIndex;
+                socket.emit("moveMade", board); // Move will actually be made server-side. Still make move in client side for purpose of graphics and reducing load on server by prechecking (e.g. showing legal moves, clicking an invalid target square)
             }
+
     
         // Picking up a piece of correct colour and is player's turn
-        } else if (board.square[boardIndex] ^ Piece.none 
-                && isPieceColour(board.square[boardIndex],board.colourToMove)
+        } else if (isPieceColour(board.square[boardIndex],board.colourToMove)
                 && board.colourToMove == me.colour) {
-    
-            generateLegalMoves(boardIndex, true).forEach(move => {
-                board.isLegalMove[decode(move).target] = true;
-            });
-    
-            board.inHand = board.square[boardIndex];
-            board.movedTo = -1
-            board.movedFrom = boardIndex
-    
-            updateGraphics();
-    
-            board.hiddenSquare = boardIndex;
+
+                    if (board.inHand ^ Piece.none && board.movedFrom == boardIndex) {
+                        board.isLegalMove = new Array(64).fill(false);
+                        board.hiddenSquare = -1;
+                        board.inHand = Piece.none;
+                        board.movedFrom = -1;
+                        drawBoard();
+
+                    } else {
+                        board.isLegalMove = new Array(64).fill(false);
+
+                        generateLegalMoves(boardIndex, true).forEach(move => {
+                            board.isLegalMove[decode(move).target] = true;
+                        });
+                
+                        board.inHand = board.square[boardIndex];
+                        board.movedTo = -1
+                        board.movedFrom = boardIndex
+                        board.hiddenSquare = -1;
+                
+                        drawBoard();
+
+                        board.hiddenSquare = boardIndex;                        
+                    }
+            
     
         } 
     }
@@ -239,11 +249,19 @@ function handleHover(e) {
     var mouse = getMouseSquare(e);
     var multiplier = (me.colour == Piece.white) ? 1 : -1;
     var offset = (me.colour == Piece.white) ? 0 : 7;
+    var boardIndex = convert2dTo1d(offset + mouse.x * multiplier, offset + mouse.y * multiplier);
 
-    updateGraphics();
+    drawBoard();
 
     if (board.inHand ^ Piece.none) {
-        drawPiece(offset + mouse.x * multiplier, offset + mouse.y * multiplier, board.inHand);
+        if (isPieceColour(board.square[boardIndex], me.colour) && !board.isLegalMove[boardIndex]) {
+            let square = convert1dTo2d(board.hiddenSquare);
+            drawPiece(square.x, square.y, board.inHand);
+            colourSquare(mouse.x, mouse.y, "rgba(255,255,255,0.3)");
+        } else {
+            drawPiece(offset + mouse.x * multiplier, offset + mouse.y * multiplier, board.inHand);
+        }
+        
     } else {
         colourSquare(mouse.x, mouse.y, "rgba(255,255,255,0.3)");
     }
@@ -257,5 +275,5 @@ function handleMouseLeave(e) {
     board.isLegalMove = new Array(64).fill(false);
     board.hiddenSquare = -1;
     board.inHand = Piece.none;    
-    updateGraphics();
+    drawBoard();
 }
