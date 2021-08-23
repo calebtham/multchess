@@ -15,9 +15,15 @@ class Player {
     won;
     lost;
     stalemate;
+    opponentTimedOut;
+    timedOut;
+    timeLeft;
+    timeLastMoved;
 
-    constructor(number) {
+    constructor(number, timer) {
         this.number = number;
+        this.timeLeft = timer * 60;
+        this.timeLastMoved = undefined;
         this.colour = undefined;
         this.score = 0;
         this.opponentJoined = false;
@@ -33,6 +39,8 @@ class Player {
         this.won = false;
         this.lost = false;
         this.stalemate = false;
+        this.opponentTimedOut = false;
+        this.timedOut = false;
     }
 
     selectBooleanFlag(flag) {
@@ -48,6 +56,8 @@ class Player {
         this.won = false;
         this.lost = false;
         this.stalemate = false;
+        this.opponentTimedOut = false;
+        this.timedOut = false;
     
         switch (flag) {
             case "rematchRequestSent":
@@ -85,6 +95,12 @@ class Player {
                 break;
             case "stalemate":
                 this.stalemate = true;
+                break;
+            case "opponentTimedOut":
+                this.opponentTimedOut = true;
+                break;
+            case "timedOut":
+                this.timedOut = true;
                 break;
         }
     }

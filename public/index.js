@@ -33,13 +33,32 @@ let topCtx;
 let bottomCanvas;
 let bottomCtx
 
-
 // Initial screen elements
 const initialScreen = document.getElementById("initialScreen");
 const gameCodeInput = document.getElementById("gameCodeInput");
 const newGameButton = document.getElementById("newGameButton");
 const joinGameButton = document.getElementById("joinGameButton");
 const errorLabel = document.getElementById("error");
+
+// Create screen elements
+const createScreen = document.getElementById("createScreen");
+const startButton = document.getElementById("startButton");
+const backButton = document.getElementById("backButton");
+const oneMinButton = document.getElementById("oneMinButton");
+const threeMinButton = document.getElementById("threeMinButton");
+const fiveMinButton = document.getElementById("fiveMinButton");
+const tenMinButton = document.getElementById("tenMinButton");
+const fifteenMinButton = document.getElementById("fifteenMinButton");
+const thirtyMinButton = document.getElementById("thirtyMinButton");
+const sixtyMinButton = document.getElementById("sixtyMinButton");
+const infiniteButton = document.getElementById("infiniteButton");
+const noneButton = document.getElementById("noneButton");
+const oneSecButton = document.getElementById("oneSecButton");
+const threeSecButton = document.getElementById("threeSecButton");
+const fiveSecButton = document.getElementById("fiveSecButton");
+const whiteButton = document.getElementById("whiteButton");
+const randomButton = document.getElementById("randomButton");
+const blackButton = document.getElementById("blackButton");
  
 // Game screen elements
 const gameScreen = document.getElementById("gameScreen");
@@ -51,13 +70,42 @@ const rematchButton = document.getElementById("rematchButton");
 const acceptButton = document.getElementById("acceptButton");
 const declineButton = document.getElementById("declineButton");
 const bottomPlayerLabel = document.getElementById("bottomPlayerLabel");
+const bottomTimerLabel = document.getElementById("bottomTimerLabel");
 const topPlayerLabel = document.getElementById("topPlayerLabel");
+const topTimerLabel = document.getElementById("topTimerLabel");
 const opponentActivityLabel = document.getElementById("opponentActivity");
 
 // Add event listeners
 newGameButton.addEventListener("click", handleNewGameButton);
 joinGameButton.addEventListener("click", handleJoinGameButton);
-/** */
+
+startButton.addEventListener("click", handleStartButton);
+backButton.addEventListener("click", handleBackButton);
+
+oneMinButton.addEventListener("click", handleTimerButton);
+threeMinButton.addEventListener("click", handleTimerButton);
+fiveMinButton.addEventListener("click", handleTimerButton);
+tenMinButton.addEventListener("click", handleTimerButton);
+fifteenMinButton.addEventListener("click", handleTimerButton);
+thirtyMinButton.addEventListener("click", handleTimerButton);
+sixtyMinButton.addEventListener("click", handleTimerButton);
+infiniteButton.addEventListener("click", handleTimerButton);
+
+noneButton.addEventListener("click", handleIncrementButton);
+oneSecButton.addEventListener("click", handleIncrementButton);
+threeSecButton.addEventListener("click", handleIncrementButton);
+fiveSecButton.addEventListener("click", handleIncrementButton);
+
+whiteButton.addEventListener("click", handleColourButton);
+randomButton.addEventListener("click", handleColourButton);
+blackButton.addEventListener("click", handleColourButton);
+
+/**
+ * Game setup variables
+ */
+var timer = 5; 
+var increment = 0;
+var colour;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -65,11 +113,123 @@ joinGameButton.addEventListener("click", handleJoinGameButton);
  * Document event handlers
  */
 
+function handleColourButton(e) {
+    var button = e.path[0];
+
+    whiteButton.className = "btn btn-secondary";
+    randomButton.className = "btn btn-secondary";
+    blackButton.className = "btn btn-secondary";
+
+    switch (button) {
+        case whiteButton:
+            colour = Piece.white;
+            break;
+        case document.getElementById("white"):
+            colour = Piece.white;
+            button = whiteButton
+            break;
+        case randomButton:
+            colour = undefined;
+            break;
+        case blackButton:
+            colour = Piece.black;
+            break;
+        case document.getElementById("black"):
+            colour = Piece.black;
+            button = blackButton
+            break;
+    }
+
+    button.className = "btn btn-primary";
+
+}
+
+function handleIncrementButton(e) {
+    var button = e.path[0];
+
+    noneButton.className = "btn btn-secondary";
+    oneSecButton.className = "btn btn-secondary";
+    threeSecButton.className = "btn btn-secondary";
+    fiveSecButton.className = "btn btn-secondary";
+
+    button.className = "btn btn-primary";
+
+    switch (button) {
+        case noneButton:
+            increment = 0;
+            break;
+        case oneSecButton:
+            increment = 1;
+            break;
+        case threeSecButton:
+            increment = 3;
+            break;
+        case fiveSecButton:
+            increment = 5;
+            break;
+    }
+
+}
+
+function handleTimerButton(e) {
+    var button = e.path[0];
+
+    oneMinButton.className = "btn btn-secondary";
+    threeMinButton.className = "btn btn-secondary";
+    fiveMinButton.className = "btn btn-secondary";
+    tenMinButton.className = "btn btn-secondary";
+    fifteenMinButton.className = "btn btn-secondary";
+    thirtyMinButton.className = "btn btn-secondary";
+    sixtyMinButton.className = "btn btn-secondary";
+    infiniteButton.className = "btn btn-secondary";
+
+    button.className = "btn btn-primary";
+    
+    switch (button) {
+        case oneMinButton:
+            timer = 1;
+            break;
+        case threeMinButton:
+            timer = 3;
+            break;
+        case fiveMinButton:
+            timer = 5;
+            break;
+        case tenMinButton:
+            timer = 10;
+            break;
+        case fifteenMinButton:
+            timer = 15;
+            break;
+        case thirtyMinButton:
+            timer = 30;
+            break;
+        case sixtyMinButton:
+            timer = 60;
+            break;
+        case infiniteButton:
+            timer = Infinity;
+            break;
+    }
+}
+
+function handleBackButton() {
+    createScreen.style.display = "none";
+    initialScreen.style.display = "block";
+}
+
+function handleNewGameButton() {
+    initialScreen.style.display = "none";
+    createScreen.style.display = "block";
+}
+
 /**
  * Function to indicate to server new game button was pressed
  */
- function handleNewGameButton() {
-    socket.emit("newGame");
+ function handleStartButton() {
+    createScreen.style.display = "none";
+    gameScreen.style.display = "block";
+    socket.emit("newGame", timer, increment, colour);
 }
 
 /**
@@ -277,3 +437,6 @@ function handleMouseLeave(e) {
     board.inHand = Piece.none;    
     drawBoard();
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+

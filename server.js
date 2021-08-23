@@ -29,6 +29,7 @@ io.on("connection", client => {
     client.on("takebackAccept", handleTakebackAccept);
     client.on("decline", handleDecline);
     client.on("resign", handleResign);
+    client.on("timeout", handleTimeout);
     client.on("disconnect", handleDisconnect);
     
     function handleDisconnect() {
@@ -53,21 +54,21 @@ io.on("connection", client => {
 
     }
 
-    function handleNewGame() {
+    function handleNewGame(timer = Infinity, increment = 0, colour = undefined) {
         let roomName;
         while (!roomName || io.sockets.adapter.rooms.get(roomName)) {
             roomName = makeid(5);
         }
 
-        initRoomState(roomName);
+        initRoomState(roomName, timer, increment, colour);
         initClient(roomName, 1);
     }
 
-    function initRoomState(roomName) {
+    function initRoomState(roomName, timer, increment, colour) {
         state[roomName] = {}
-        state[roomName].game = new Game();
-        state[roomName][1] = new Player(1);
-        state[roomName][2] = new Player(2);
+        state[roomName].game = new Game(undefined, timer, increment, colour);
+        state[roomName][1] = new Player(1, timer);
+        state[roomName][2] = new Player(2, timer);
     }
 
     function initClient(roomName, playerNumber) {
@@ -117,6 +118,8 @@ io.on("connection", client => {
         state[roomName][1].opponentJoined = true;
         state[roomName][2].opponentJoined = true;
 
+        state[roomName].game.startTime = Date.now();
+
         emitAll(roomName, "opponentJoined"); 
         emitState(roomName); 
     }
@@ -133,8 +136,19 @@ io.on("connection", client => {
             if (!initBoard.isGameFinished && move) {
                 if (state[roomName].game.makeMove(move.start, move.target)) { 
                     valid = true;
-    
-                    if (state[roomName].game.board.checkmate) {
+
+                    client.player.timeLastMoved = Date.now(); // Update so can check next move time difference
+
+                    let timeLastMoved = state[roomName][3 - client.player.number].timeLastMoved;
+                    timeLastMoved = ((timeLastMoved) ? timeLastMoved : state[roomName].game.startTime);
+                    client.player.timeLeft -= (Date.now() - timeLastMoved) / 1000;
+
+                    if (client.player.timeLeft <= 0) {
+                        state[roomName].game.undoMove();
+                        client.player.timeLeft = 0;
+                        handleTimeout();
+
+                    } else if (state[roomName].game.board.checkmate) {
                         checkmate(roomName);
                     } else if (state[roomName].game.board.stalemate) {
                         draw(roomName);
@@ -161,12 +175,37 @@ io.on("connection", client => {
         var roomName = clientRooms[client.id];
 
         if (roomName) {
-            state[roomName][3 - client.player.number].selectBooleanFlag("opponentResigned");
             state[roomName][3 - client.player.number].score++;
+            state[roomName][3 - client.player.number].selectBooleanFlag("opponentResigned");
             state[roomName][client.player.number].selectBooleanFlag("lost");
     
             state[roomName].game.endGame();
             emitState(roomName); 
+        }
+        
+    }
+
+    function handleTimeout() {
+        var roomName = clientRooms[client.id];
+
+        if (roomName) {
+
+            let timeLastMoved = state[roomName][3 - client.player.number].timeLastMoved;
+            timeLastMoved = ((timeLastMoved) ? timeLastMoved : state[roomName].game.startTime);
+            client.player.timeLeft -= (Date.now() - timeLastMoved) / 1000;
+
+            if (client.player.timeLeft <= 0) {
+                client.player.timeLeft = 0;
+
+                state[roomName][3 - client.player.number].score++;
+                state[roomName][3 - client.player.number].selectBooleanFlag("opponentTimedOut");
+                state[roomName][client.player.number].selectBooleanFlag("timedOut");
+        
+                state[roomName].game.endGame();
+            }
+
+            emitState(roomName); 
+
         }
         
     }
@@ -187,8 +226,7 @@ io.on("connection", client => {
 
         if (roomName && state[roomName][3 - client.player.number].rematchRequestSent) { // Check opponent actually requested this
             var startingPlayer = (state[roomName].game.board.startingPlayer == 1) ? 2 : 1; //switch starting player
-            state[roomName].game = new Game();
-            state[roomName].game.board.startingPlayer = startingPlayer;
+            var prevGame = state[roomName].game
 
             var temp = state[roomName][1].colour;
             state[roomName][1].colour = state[roomName][2].colour;
@@ -197,7 +235,19 @@ io.on("connection", client => {
             state[roomName][1].selectBooleanFlag("none");
             state[roomName][2].selectBooleanFlag("none");
 
+            state[roomName][1].timeLeft = prevGame.timer * 60;
+            state[roomName][2].timeLeft = prevGame.timer * 60;
+
+
+            state[roomName][1].timeLastMoved = undefined;
+            state[roomName][2].timeLastMoved = undefined;
+
+            state[roomName].game = new Game(undefined, prevGame.timer, prevGame.increment, undefined);
+            state[roomName].game.startingPlayer = startingPlayer;
+            state[roomName].game.startTime = Date.now();
+
             emitState(roomName);
+            emitAll(roomName, "opponentJoined")
         }
         
     }

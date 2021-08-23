@@ -39,6 +39,7 @@ function updateGraphics() {
     drawBoard();
     drawTakenPieces(topCtx);
     drawTakenPieces(bottomCtx);
+    updateTimerText();
     updateText();
     updateButtons();
 
@@ -139,7 +140,13 @@ function updateButtons() {
         opponentActivityLabel.innerHTML = "Opponent declined request";
 
     } else if (me.opponentResigned) {
-        opponentActivityLabel.innerHTML = "Opponent resigned";
+        opponentActivityLabel.innerHTML = "Opponent resigned. You won!";
+        
+    } else if (me.opponentTimedOut) {
+        opponentActivityLabel.innerHTML = "Opponent timed out. You won!";
+
+    } else if (me.timedOut) {
+        opponentActivityLabel.innerHTML = "You timed out. You lost!";
 
     } else if (me.won) {
         opponentActivityLabel.innerHTML = "You won!";
@@ -176,13 +183,10 @@ function showAcceptDecline() {
  * Indicates whose turn it is
  */
 function updateText() {
-
-    //infoLabel.innerText = colourToMoveCaps() + " to move.";
-
-    bottomPlayerLabel.innerText = "You: " + me.score;
+    bottomPlayerLabel.innerText = " You: " + me.score;
 
     if (me.opponentJoined) {
-        topPlayerLabel.innerText = "Opponent: " + opponent.score;
+        topPlayerLabel.innerText = " Opponent: " + opponent.score;
 
         if (board.isGameFinished) {
             topPlayerLabel.classList.remove("glow");
@@ -197,6 +201,29 @@ function updateText() {
 
     } else { 
         topPlayerLabel.innerText = "Waiting for opponent to join..."
+    }
+}
+
+function updateTimerText() {
+    var minutes;
+    var seconds;
+
+    minutes = Math.floor(me.timeLeft / 60);
+    seconds = me.timeLeft - (minutes * 60);
+    let fraction = (me.timeLeft < 60) ? 2 : 0;
+    minutes = minutes.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: 0, useGrouping:false});
+    seconds = seconds.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: fraction, minimumFractionDigits: fraction, useGrouping:false});
+
+    bottomTimerLabel.innerText = minutes + ":" + seconds;
+
+    if (me.opponentJoined) {
+        minutes = Math.floor(opponent.timeLeft / 60);
+        seconds = opponent.timeLeft - (minutes * 60);
+        let fraction = (opponent.timeLeft < 60) ? 2 : 0;
+        minutes = minutes.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: 0, useGrouping:false});
+        seconds = seconds.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: fraction, minimumFractionDigits: fraction, useGrouping:false});
+
+        topTimerLabel.innerText = minutes + ":" + seconds;
     }
 }
 

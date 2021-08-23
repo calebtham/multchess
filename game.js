@@ -3,6 +3,9 @@
  */
 class Game {
 
+    startTime;
+    increment;
+    timer;
     board;
     static Piece = {
         none: 0,
@@ -15,6 +18,23 @@ class Game {
     
         white: 8,
         black: 16,
+    }
+
+    constructor(board = undefined, timer = Infinity, increment = 0, colour = undefined) {
+        if (board) {
+            this.board = board;
+        } else {
+            this.board = Game.createInitBoard();
+        }
+
+        if (colour) {
+            this.board.startingPlayer = (colour == Game.Piece.white) ? 1 : 2;
+        } else {
+            this.board.startingPlayer = Math.floor(Math.random() * 2) + 1;
+        }
+
+        this.increment = increment;
+        this.timer = timer;
     }
 
     static flipPieceColour(p) {
@@ -257,14 +277,6 @@ class Game {
      */
     static min(a,b) {
         return (a < b) ? a : b;
-    }
-
-    constructor(board = undefined) {
-        if (board) {
-            this.board = board;
-        } else {
-            this.board = Game.createInitBoard();
-        }
     }
     
     /**

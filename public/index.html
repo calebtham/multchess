@@ -24,7 +24,7 @@
 
                     <div class="col-8">
     
-                        <img src="img/17.svg" width="80" height="80" alt="17.svg">
+                        <img class="logo" src="img/17.svg" width="80" height="80" alt="17.svg">
                         <h1 class="bold">MULTIPLAYER CHESS</h1>
 
                         <div class="join">
@@ -34,19 +34,91 @@
                             <p id="error"></p>
                             <button type="submit" class="btn btn-success" id="joinGameButton"><p>Join Existing Game</p></button>
                         </div>
-                        
     
                     </div>
     
                     <div class="col-2"></div>
                 </div>
-                
 
             </div>
 
         </div>
 
-            
+        <div id="createScreen">
+
+            <div class="container">
+
+                <div class="row">
+
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn btn-danger" id="backButton">Back</button>
+                            </div>
+                        </div>
+                        
+
+                        <div class="spacer"></div>
+                        <div class="spacer"></div>
+
+                        <h2 class="bold">TIMER</h2>
+                        <div class="btn-group" role="group" aria-label="timerOptions">
+                            <button type="button" class="btn btn-secondary" id="oneMinButton">1 min</button>
+                            <button type="button" class="btn btn-secondary" id="threeMinButton">3 min</button>
+                            <button type="button" class="btn btn-primary" id="fiveMinButton">5 min</button>
+                            <button type="button" class="btn btn-secondary" id="tenMinButton">10 min</button>
+                            <button type="button" class="btn btn-secondary" id="fifteenMinButton">15 min</button>
+                            <button type="button" class="btn btn-secondary" id="thirtyMinButton">30 min</button>
+                            <button type="button" class="btn btn-secondary" id="sixtyMinButton">60 min</button>
+                            <button type="button" class="btn btn-secondary" id="infiniteButton">&infin;</button>
+                        </div>
+                        
+                        <div class="spacer"></div>
+                        <div class="spacer"></div>
+
+                        <h2 class="bold">INCREMENT</h2>
+                        <div class="btn-group" role="group" aria-label="incrementOptions">
+                            <button type="button" class="btn btn-primary" id="noneButton">None</button>
+                            <button type="button" class="btn btn-secondary" id="oneSecButton">1 sec</button>
+                            <button type="button" class="btn btn-secondary" id="threeSecButton">3 sec</button>
+                            <button type="button" class="btn btn-secondary" id="fiveSecButton">5 sec</button>
+                        </div>
+
+                        <div class="spacer"></div>
+                        <div class="spacer"></div>
+
+                        <h2 class="bold">START AS</h2>
+                        <div class="btn-group" role="group" aria-label="colourOptions">
+                            <button type="button" class="btn btn-secondary" id="whiteButton">
+                                <img src="img/9.svg" width="80" height="80" alt="9.svg" id="white">
+                            </button>
+                            <button type="button" class="btn btn-primary" id="randomButton">
+                                Random
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="blackButton">
+                                <img src="img/17.svg" width="80" height="80" alt="17.svg" id="black">
+                            </button>
+                        </div>
+
+                        <div class="spacer"></div>
+                        <div class="spacer"></div>
+    
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <button type="submit" class="btn btn-success" id="startButton"><p>Start</p></button>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+
+                    </div>
+    
+                </div>
+
+            </div>
+
+        </div>
+
 
         <div id="gameScreen">
 
@@ -62,9 +134,19 @@
 
                     <div class="col">
                         <canvas id="topCanvas"></canvas>
-                        <h2 class="bold" id="topPlayerLabel">Opponent</h2>
+
+                        <div class="row">
+                            <h2 class="timer" id="topTimerLabel"></h2>
+                            <h2 class="bold" id="topPlayerLabel">Opponent</h2>
+                        </div>
+
                         <canvas id="boardCanvas"></canvas>
-                        <h2 class="bold" id="bottomPlayerLabel">You</h2>
+
+                        <div class="row">
+                            <h2 class="timer" id="bottomTimerLabel"></h2>
+                            <h2 class="bold" id="bottomPlayerLabel">You</h2>
+                        </div>
+
                         <canvas id="bottomCanvas"></canvas>
                     </div>
 

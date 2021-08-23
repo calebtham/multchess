@@ -3,6 +3,13 @@
     text-align: center;
     padding-top: 10vh;
 }
+
+#createScreen {
+    display: none;
+    text-align: center;
+    padding-top: 2vh;
+}
+
 #gameScreen {
     display: none;
 }
@@ -46,7 +53,39 @@ button {
     box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
     width: 100%;
     transition: all 0.2s;
+    border-width: 20px;
 }
+
+button#backButton {
+    margin-left: 8px;
+    float: left;
+    width: 60px;
+}
+
+div.btn-group {
+    margin: 4px;
+    padding: 4px;
+}
+div.btn-group button.btn-secondary {
+    background-color: rgb(180, 180, 255);
+    border-color: rgb(180, 180, 255);
+    z-index: 999;
+}
+div.btn-group button.btn-secondary:hover {
+    background-color: rgb(144, 144, 255);
+    border-color: rgb(144, 144, 255);
+    z-index: 0;
+}
+div.btn-group button.btn-primary {
+    background-color: rgb(72, 72, 255);
+    border-color: transparent;
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.35);
+    z-index: 1;
+}
+div.btn-group button.btn-primary:hover {
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.58);
+}
+
 
 input[type="text"] {
     padding: 4px;
@@ -70,9 +109,27 @@ canvas {
     image-rendering: -webkit-crisp-edges;
     image-rendering: crisp-edges;
 }
+canvas#boardCanvas {
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+}
 
 button.request {
     width: 46%;
+}
+
+.timer {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 4px 10px;
+    padding-top: 6px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
+    margin-right: 15px;
+    margin-left: 15px;
+    background-color: #b58863;
+    color: rgba(255,255,255,0.8);
 }
 
 
@@ -91,7 +148,7 @@ button.request {
         margin: 0px;
         padding: 0px;
     }
-    img {
+    img.logo {
         width: 150px;
         height: 150px;
     }
@@ -103,8 +160,7 @@ button.request {
         font-size: 30pt;
     }
     h2 {
-        margin: 10px;
-        font-size: 16pt;
+        margin-left: 10px;
     }
     p {
         margin: 10px;

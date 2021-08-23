@@ -10,8 +10,8 @@
  * @author Caleb Tham
  */
 
-const socket = io("https://guarded-citadel-75405.herokuapp.com/");
-//const socket = io("localhost:3000");
+//const socket = io("https://guarded-citadel-75405.herokuapp.com/");
+const socket = io("localhost:3000");
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
@@ -19,6 +19,8 @@ socket.on("opponentJoined", handleOpponentJoined);
 socket.on("unknownGame", handleUnknownGame);
 socket.on("tooManyPlayers", handleTooManyPlayers);
 /** */
+
+let timerInterval;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,6 +41,29 @@ socket.on("tooManyPlayers", handleTooManyPlayers);
     resignButton.addEventListener("click", handleResignButton);
     acceptButton.addEventListener("click", handleAcceptButton);
     declineButton.addEventListener("click", handleDeclineButton);
+    
+    clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimer, 37);
+}
+
+function updateTimer() {
+    if (board.colourToMove == me.colour) {
+        me.timeLeft -= 0.037;
+        if (me.timeLeft <= -0.037) { // Extend into negatives to give client error leeway. (actual timing done on server anyway)
+            me.timeLeft = 0;
+            clearInterval(timerInterval);
+            socket.emit("timeout")
+        } else if (me.timeLeft < 0) { // For graphics
+            me.timeLeft = 0;
+        }
+    } else {
+        opponent.timeLeft -= 0.037;
+        if (opponent.timeLeft <= 0) {
+            opponent.timeLeft = 0;
+            clearInterval(timerInterval);
+        }
+    }
+    updateTimerText();
 }
 
 /**
@@ -94,5 +119,8 @@ function handleGameState(state, number) {
     board = state.game.board;
     me = state[number];
     opponent = state[3 - number];
+    if (board.isGameFinished){
+        clearInterval(timerInterval);
+    }
     updateGraphics();
 }
