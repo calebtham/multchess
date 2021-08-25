@@ -397,6 +397,7 @@ function handleClick(e) {
                 board.hiddenSquare = -1;
                 board.inHand = Piece.none;
                 board.movedTo = boardIndex;
+                board.movedFrom = start;
                 drawBoard();
                 
             } else {
