@@ -122,7 +122,7 @@ var colour;
  */
 
 function handleColourButton(e) {
-    var button = e.path[0];
+    var button = e.srcElement;
 
     whiteButton.className = "btn btn-secondary";
     randomButton.className = "btn btn-secondary";
@@ -153,7 +153,7 @@ function handleColourButton(e) {
 }
 
 function handleIncrementButton(e) {
-    var button = e.path[0];
+    var button = e.srcElement;
 
     noneButton.className = "btn btn-secondary";
     oneSecButton.className = "btn btn-secondary";
@@ -196,8 +196,7 @@ function handleIncrementButton(e) {
 }
 
 function handleTimerButton(e) {
-    alert("hello")
-    var button = e.path[0];
+    var button = e.srcElement;
 
     oneMinButton.className = "btn btn-secondary";
     threeMinButton.className = "btn btn-secondary";
