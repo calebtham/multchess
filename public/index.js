@@ -38,6 +38,7 @@ const initialScreen = document.getElementById("initialScreen");
 const gameCodeInput = document.getElementById("gameCodeInput");
 const newGameButton = document.getElementById("newGameButton");
 const joinGameButton = document.getElementById("joinGameButton");
+const quickMatchButton = document.getElementById("quickMatchButton");
 const errorLabel = document.getElementById("error");
 
 // Create screen elements
@@ -80,6 +81,7 @@ const topTimerLabel = document.getElementById("topTimerLabel");
 const opponentActivityLabel = document.getElementById("opponentActivity");
 
 // Add event listeners
+quickMatchButton.addEventListener("click", handleQuickMatchButton)
 newGameButton.addEventListener("click", handleNewGameButton);
 joinGameButton.addEventListener("click", handleJoinGameButton);
 
@@ -257,6 +259,12 @@ function handleTimerButton(e) {
 function handleBackButton() {
     createScreen.style.display = "none";
     initialScreen.style.display = "block";
+}
+
+function handleQuickMatchButton() {
+    initialScreen.style.display = "none";
+    gameScreen.style.display = "block";
+    socket.emit("quickMatch");
 }
 
 function handleNewGameButton() {

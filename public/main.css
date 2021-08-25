@@ -27,6 +27,11 @@ p {
     margin: 2px;    
 }
 
+span.discrete {
+    font-size: 10pt;
+    color: rgba(255,255,255,0.85);
+}
+
 .bold {
     font-weight: bold;
 }
@@ -54,6 +59,10 @@ button {
     width: 100%;
     transition: all 0.2s;
     border-width: 20px;
+}
+
+button.fat {
+    padding: 10px;
 }
 
 button#backButton {

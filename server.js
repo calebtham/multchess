@@ -15,9 +15,11 @@ const { makeid } = require("./utils.js");
 const state = {};
 const clientRooms = {};
 const blacklistedRooms = {};
+let quickMatchRoom;
 
 io.on("connection", client => {
     
+    client.on("quickMatch", handleQuickMatch);
     client.on("newGame", handleNewGame);
     client.on("joinGame", handleJoinGame);
     client.on("moveMade", handleMoveMade);
@@ -49,9 +51,22 @@ io.on("connection", client => {
                 // room destroyed automatically when all clients leave - just remove room from blacklist
             } else {
                 blacklistedRooms[roomName] = undefined;
+                if (quickMatchRoom == roomName) {
+                    quickMatchRoom = undefined;
+                }
             }
         }
 
+    }
+
+    function handleQuickMatch() {
+        if (quickMatchRoom) {
+            handleJoinGame(quickMatchRoom);
+            quickMatchRoom = undefined;
+
+        } else {
+            quickMatchRoom = handleNewGame(5);
+        }
     }
 
     function handleNewGame(timer = Infinity, increment = 0, colour = undefined) {
@@ -62,6 +77,7 @@ io.on("connection", client => {
 
         initRoomState(roomName, timer, increment, colour);
         initClient(roomName, 1);
+        return roomName;
     }
 
     function initRoomState(roomName, timer, increment, colour) {

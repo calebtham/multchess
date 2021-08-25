@@ -92,7 +92,7 @@ function handleUnknownGame() {
  * @param {Object} state The game state (i.e. a board object)
  */
  function handleInit(gameCode, state, number) {
-    gameCodeDisplay.innerText = gameCode;
+    gameCodeDisplay.innerText = "Your game code is: " + gameCode;
 
     board = state.game.board;
     me = state[number];

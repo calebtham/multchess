@@ -14,7 +14,6 @@
 
     <body>
 
-        
         <div id="initialScreen">
 
             <div class="container">
@@ -28,11 +27,16 @@
                         <h1 class="bold">MULTIPLAYER CHESS</h1>
 
                         <div class="join">
-                            <button type="button" class="btn btn-success" id="newGameButton"><p>Create New Game</p></button>
+                            <button type="button" class="btn btn-success fat" id="quickMatchButton">
+                                Quick Match
+                                <br>
+                                <span class="discrete">Random opponent, 5 minute timer, no increment</span>
+                            </button>
+                            <button type="button" class="btn btn-success fat" id="newGameButton">Create New Game</button>
                             <p>OR</p>
                             <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
-                            <p id="error"></p>
-                            <button type="button" class="btn btn-success" id="joinGameButton"><p>Join Existing Game</p></button>
+                            <div id="error"></div>
+                            <button type="button" class="btn btn-success fat" id="joinGameButton">Join Existing Game</button>
                         </div>
     
                     </div>
@@ -41,6 +45,10 @@
                 </div>
 
             </div>
+
+            <footer class="page-footer font-small blue">
+                <div class="footer-copyright text-center py-3">By Caleb Tham</div>
+            </footer>
 
         </div>
 
@@ -110,7 +118,7 @@
                         <div class="row">
                             <div class="col-2"></div>
                             <div class="col-8">
-                                <button type="button" class="btn btn-success" id="startButton"><p>Start</p></button>
+                                <button type="button" class="btn btn-success fat" id="startButton">Start</button>
                             </div>
                             <div class="col-2"></div>
                         </div>
@@ -130,7 +138,7 @@
 
                 <p><a href="./">LEAVE</a></p>
                 <h1 class="bold">CHESS</h1>
-                <p>Your game code is: <span id="gameCodeDisplay"></span></p>
+                <p id="gameCodeDisplay"></p>
 
                 
 
