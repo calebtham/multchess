@@ -397,7 +397,6 @@ function handleClick(e) {
                 board.hiddenSquare = -1;
                 board.inHand = Piece.none;
                 board.movedTo = boardIndex;
-                board.movedFrom = start;
                 drawBoard();
                 
             } else {
@@ -405,6 +404,7 @@ function handleClick(e) {
                 board.hiddenSquare = -1;
                 board.inHand = Piece.none;
                 board.movedTo = boardIndex;
+                board.movedFrom = start;
                 drawBoard();
                 socket.emit("moveMade", board); // Move will actually be made server-side. Still make move in client side for purpose of graphics and reducing load on server by prechecking (e.g. showing legal moves, clicking an invalid target square)
             }
