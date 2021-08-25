@@ -449,24 +449,26 @@ function handleClick(e) {
  * @param {MouseEvent} e Mouse event 
  */
 function handleHover(e) {
-    var mouse = getMouseSquare(e);
-    var multiplier = (me.colour == Piece.white) ? 1 : -1;
-    var offset = (me.colour == Piece.white) ? 0 : 7;
-    var boardIndex = convert2dTo1d(offset + mouse.x * multiplier, offset + mouse.y * multiplier);
-
-    drawBoard();
-
-    if (board.inHand ^ Piece.none) {
-        if (isPieceColour(board.square[boardIndex], me.colour) && !board.isLegalMove[boardIndex]) {
-            let square = convert1dTo2d(board.hiddenSquare);
-            drawPiece(square.x, square.y, board.inHand);
-            colourSquare(mouse.x, mouse.y, "rgba(255,255,255,0.3)");
+    if (!isTouchDevice()) {
+        var mouse = getMouseSquare(e);
+        var multiplier = (me.colour == Piece.white) ? 1 : -1;
+        var offset = (me.colour == Piece.white) ? 0 : 7;
+        var boardIndex = convert2dTo1d(offset + mouse.x * multiplier, offset + mouse.y * multiplier);
+    
+        drawBoard();
+    
+        if (board.inHand ^ Piece.none) {
+            if (isPieceColour(board.square[boardIndex], me.colour) && !board.isLegalMove[boardIndex]) {
+                let square = convert1dTo2d(board.hiddenSquare);
+                drawPiece(square.x, square.y, board.inHand);
+                colourSquare(mouse.x, mouse.y, "rgba(255,255,255,0.3)");
+            } else {
+                drawPiece(offset + mouse.x * multiplier, offset + mouse.y * multiplier, board.inHand);
+            }
+            
         } else {
-            drawPiece(offset + mouse.x * multiplier, offset + mouse.y * multiplier, board.inHand);
+            colourSquare(mouse.x, mouse.y, "rgba(255,255,255,0.3)");
         }
-        
-    } else if (window.innerWidth > 500) {
-        colourSquare(mouse.x, mouse.y, "rgba(255,255,255,0.3)");
     }
 }
 

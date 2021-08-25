@@ -37,3 +37,10 @@ function max(a, b) {
 function min(a,b) {
     return (a < b) ? a : b;
 }
+
+function isTouchDevice() {
+    return (('ontouchstart' in window) ||
+       (navigator.maxTouchPoints > 0) ||
+       (navigator.msMaxTouchPoints > 0));
+  }
+  
