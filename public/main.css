@@ -174,7 +174,9 @@ h2.timer {
         padding: 10px;
     }
     div.timer button[type="button"] {
-        font-size: 8pt;
+        font-size: 14pt;
+        padding-left: 2px;
+        padding-right: 2px;
     }
     input[type="text"] {
         font-size: 16pt;
