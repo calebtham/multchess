@@ -22,7 +22,7 @@ class Player {
 
     constructor(number, timer) {
         this.number = number;
-        this.timeLeft = timer * 60;
+        this.timeLeft = (timer ? timer : Infinity) * 60;
         this.timeLastMoved = undefined;
         this.colour = undefined;
         this.score = 0;

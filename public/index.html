@@ -28,11 +28,11 @@
                         <h1 class="bold">MULTIPLAYER CHESS</h1>
 
                         <div class="join">
-                            <button type="submit" class="btn btn-success" id="newGameButton"><p>Create New Game</p></button>
+                            <button type="button" class="btn btn-success" id="newGameButton"><p>Create New Game</p></button>
                             <p>OR</p>
                             <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
                             <p id="error"></p>
-                            <button type="submit" class="btn btn-success" id="joinGameButton"><p>Join Existing Game</p></button>
+                            <button type="button" class="btn btn-success" id="joinGameButton"><p>Join Existing Game</p></button>
                         </div>
     
                     </div>
@@ -62,7 +62,7 @@
                         <div class="spacer"></div>
 
                         <h2 class="bold">TIMER</h2>
-                        <div class="btn-group" role="group" aria-label="timerOptions">
+                        <div class="btn-group timer" role="group" aria-label="timerOptions">
                             <button type="button" class="btn btn-secondary" id="oneMinButton">1 min</button>
                             <button type="button" class="btn btn-secondary" id="threeMinButton">3 min</button>
                             <button type="button" class="btn btn-primary" id="fiveMinButton">5 min</button>
@@ -77,11 +77,15 @@
                         <div class="spacer"></div>
 
                         <h2 class="bold">INCREMENT</h2>
-                        <div class="btn-group" role="group" aria-label="incrementOptions">
+                        <div class="btn-group timer" role="group" aria-label="incrementOptions">
                             <button type="button" class="btn btn-primary" id="noneButton">None</button>
                             <button type="button" class="btn btn-secondary" id="oneSecButton">1 sec</button>
                             <button type="button" class="btn btn-secondary" id="threeSecButton">3 sec</button>
                             <button type="button" class="btn btn-secondary" id="fiveSecButton">5 sec</button>
+                            <button type="button" class="btn btn-secondary" id="tenSecButton">10 sec</button>
+                            <button type="button" class="btn btn-secondary" id="fifteenSecButton">15 sec</button>
+                            <button type="button" class="btn btn-secondary" id="thirtySecButton">30 sec</button>
+                            <button type="button" class="btn btn-secondary" id="sixtySecButton">60 sec</button>
                         </div>
 
                         <div class="spacer"></div>
@@ -106,7 +110,7 @@
                         <div class="row">
                             <div class="col-2"></div>
                             <div class="col-8">
-                                <button type="submit" class="btn btn-success" id="startButton"><p>Start</p></button>
+                                <button type="button" class="btn btn-success" id="startButton"><p>Start</p></button>
                             </div>
                             <div class="col-2"></div>
                         </div>
@@ -153,13 +157,13 @@
                     <div class="col-4 buttons">
                         
                         <p id="opponentActivity"></p>
-                        <button type="submit" class="btn btn-success request" id="acceptButton" hidden>Accept</button>
-                        <button type="submit" class="btn btn-danger request" id="declineButton" hidden>Decline</button>
+                        <button type="button" class="btn btn-success request" id="acceptButton" hidden>Accept</button>
+                        <button type="button" class="btn btn-danger request" id="declineButton" hidden>Decline</button>
 
-                        <button type="submit" class="btn btn-secondary" id="takebackButton">Request Takeback</button>
-                        <button type="submit" class="btn btn-secondary" id="drawButton">Offer Draw</button>
-                        <button type="submit" class="btn btn-secondary" id="resignButton">Resign</button>
-                        <button type="submit" class="btn btn-secondary" id="rematchButton">Rematch</button>
+                        <button type="button" class="btn btn-secondary" id="takebackButton">Request Takeback</button>
+                        <button type="button" class="btn btn-secondary" id="drawButton">Offer Draw</button>
+                        <button type="button" class="btn btn-secondary" id="resignButton">Resign</button>
+                        <button type="button" class="btn btn-secondary" id="rematchButton">Rematch</button>
                         
                     </div>
                     

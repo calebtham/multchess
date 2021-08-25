@@ -56,6 +56,10 @@ const noneButton = document.getElementById("noneButton");
 const oneSecButton = document.getElementById("oneSecButton");
 const threeSecButton = document.getElementById("threeSecButton");
 const fiveSecButton = document.getElementById("fiveSecButton");
+const tenSecButton = document.getElementById("tenSecButton");
+const fifteenSecButton = document.getElementById("fifteenSecButton");
+const thirtySecButton = document.getElementById("thirtySecButton");
+const sixtySecButton = document.getElementById("sixtySecButton");
 const whiteButton = document.getElementById("whiteButton");
 const randomButton = document.getElementById("randomButton");
 const blackButton = document.getElementById("blackButton");
@@ -95,6 +99,10 @@ noneButton.addEventListener("click", handleIncrementButton);
 oneSecButton.addEventListener("click", handleIncrementButton);
 threeSecButton.addEventListener("click", handleIncrementButton);
 fiveSecButton.addEventListener("click", handleIncrementButton);
+tenSecButton.addEventListener("click", handleIncrementButton);
+fifteenSecButton.addEventListener("click", handleIncrementButton);
+thirtySecButton.addEventListener("click", handleIncrementButton);
+sixtySecButton.addEventListener("click", handleIncrementButton);
 
 whiteButton.addEventListener("click", handleColourButton);
 randomButton.addEventListener("click", handleColourButton);
@@ -151,6 +159,10 @@ function handleIncrementButton(e) {
     oneSecButton.className = "btn btn-secondary";
     threeSecButton.className = "btn btn-secondary";
     fiveSecButton.className = "btn btn-secondary";
+    tenSecButton.className = "btn btn-secondary";
+    fifteenSecButton.className = "btn btn-secondary";
+    thirtySecButton.className = "btn btn-secondary";
+    sixtySecButton.className = "btn btn-secondary";
 
     button.className = "btn btn-primary";
 
@@ -166,6 +178,18 @@ function handleIncrementButton(e) {
             break;
         case fiveSecButton:
             increment = 5;
+            break;
+        case tenSecButton:
+            increment = 10;
+            break;
+        case fifteenSecButton:
+            increment = 15;
+            break;
+        case thirtySecButton:
+            increment = 30;
+            break;
+        case sixtySecButton:
+            increment = 60;
             break;
     }
 
@@ -209,8 +233,25 @@ function handleTimerButton(e) {
             break;
         case infiniteButton:
             timer = Infinity;
-            break;
+            noneButton.disabled = true;
+            oneSecButton.disabled = true;
+            threeSecButton.disabled = true;
+            fiveSecButton.disabled = true;
+            tenSecButton.disabled = true;
+            fifteenSecButton.disabled = true;
+            thirtySecButton.disabled = true;
+            sixtySecButton.disabled = true;
+            return;
     }
+
+    noneButton.disabled = false;
+    oneSecButton.disabled = false;
+    threeSecButton.disabled = false;
+    fiveSecButton.disabled = false;
+    tenSecButton.disabled = false;
+    fifteenSecButton.disabled = false;
+    thirtySecButton.disabled = false;
+    sixtySecButton.disabled = false;
 }
 
 function handleBackButton() {
@@ -363,6 +404,7 @@ function handleClick(e) {
                 board.hiddenSquare = -1;
                 board.inHand = Piece.none;
                 board.movedTo = boardIndex;
+                drawBoard();
                 socket.emit("moveMade", board); // Move will actually be made server-side. Still make move in client side for purpose of graphics and reducing load on server by prechecking (e.g. showing legal moves, clicking an invalid target square)
             }
 

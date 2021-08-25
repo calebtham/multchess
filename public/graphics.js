@@ -202,29 +202,49 @@ function updateText() {
     } else { 
         topPlayerLabel.innerText = "Waiting for opponent to join..."
     }
+
+    if (board.colourToMove == me.colour) {
+        topTimerLabel.style.color = "rgba(255,255,255,0.5)";
+        bottomTimerLabel.style.color = "rgba(255,255,255,0.9)";
+    } else {
+        topTimerLabel.style.color = "rgba(255,255,255,0.9)";
+        bottomTimerLabel.style.color = "rgba(255,255,255,0.5)";
+    }
 }
 
 function updateTimerText() {
-    var minutes;
-    var seconds;
-
-    minutes = Math.floor(me.timeLeft / 60);
-    seconds = me.timeLeft - (minutes * 60);
-    let fraction = (me.timeLeft < 60) ? 2 : 0;
-    minutes = minutes.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: 0, useGrouping:false});
-    seconds = seconds.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: fraction, minimumFractionDigits: fraction, useGrouping:false});
-
-    bottomTimerLabel.innerText = minutes + ":" + seconds;
-
-    if (me.opponentJoined) {
-        minutes = Math.floor(opponent.timeLeft / 60);
-        seconds = opponent.timeLeft - (minutes * 60);
-        let fraction = (opponent.timeLeft < 60) ? 2 : 0;
+    if (me.timeLeft != null) {
+        var minutes;
+        var seconds;
+    
+        minutes = Math.floor(me.timeLeft / 60);
+        seconds = me.timeLeft - (minutes * 60);
+        let fraction = (me.timeLeft < 60) ? 2 : 0;
         minutes = minutes.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: 0, useGrouping:false});
         seconds = seconds.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: fraction, minimumFractionDigits: fraction, useGrouping:false});
+        if (seconds == "60") {
+            seconds = "59";
+        }
+    
+        bottomTimerLabel.innerText = minutes + ":" + seconds;
+    
+        if (me.opponentJoined) {
+            minutes = Math.floor(opponent.timeLeft / 60);
+            seconds = opponent.timeLeft - (minutes * 60);
+            let fraction = (opponent.timeLeft < 60) ? 2 : 0;
+            minutes = minutes.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: 0, useGrouping:false});
+            seconds = seconds.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: fraction, minimumFractionDigits: fraction, useGrouping:false});
+            if (seconds == "60") {
+                seconds = "59";
+            }
 
-        topTimerLabel.innerText = minutes + ":" + seconds;
+            topTimerLabel.innerText = minutes + ":" + seconds;
+        }
+    } else {
+        topTimerLabel.innerHTML = "&infin;"
+        bottomTimerLabel.innerHTML = "&infin;";
     }
+    
 }
 
 function drawTakenPieces(ctx) {

@@ -59,7 +59,7 @@ button {
 button#backButton {
     margin-left: 8px;
     float: left;
-    width: 60px;
+    width: auto;
 }
 
 div.btn-group {
@@ -118,9 +118,9 @@ button.request {
     width: 46%;
 }
 
-.timer {
+h2.timer {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 24px;
+    font-size: 18pt;
     font-weight: bold;
     padding: 4px 10px;
     padding-top: 6px;
@@ -159,16 +159,22 @@ button.request {
     #gameScreen h1 {
         font-size: 30pt;
     }
-    h2 {
-        margin-left: 10px;
-    }
     p {
         margin: 10px;
         font-size: 16pt;
     }
-    button[type="submit"] {
+    h2 {
+        margin-left: 10px;
+    }
+    h2.timer {
+        margin-right: 0px;
+    }
+    button[type="button"] {
         font-size: 16pt;
         padding: 10px;
+    }
+    div.timer button[type="button"] {
+        font-size: 8pt;
     }
     input[type="text"] {
         font-size: 16pt;

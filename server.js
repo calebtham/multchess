@@ -139,20 +139,25 @@ io.on("connection", client => {
 
                     client.player.timeLastMoved = Date.now(); // Update so can check next move time difference
 
-                    let timeLastMoved = state[roomName][3 - client.player.number].timeLastMoved;
-                    timeLastMoved = ((timeLastMoved) ? timeLastMoved : state[roomName].game.startTime);
-                    client.player.timeLeft -= (Date.now() - timeLastMoved) / 1000;
+                    updatePlayerTimer(roomName, client.player.number);
 
                     if (client.player.timeLeft <= 0) {
                         state[roomName].game.undoMove();
-                        client.player.timeLeft = 0;
                         handleTimeout();
+                        return valid;
 
                     } else if (state[roomName].game.board.checkmate) {
                         checkmate(roomName);
+                        return valid;
                     } else if (state[roomName].game.board.stalemate) {
                         draw(roomName);
+                        return valid;
                     }
+
+                    if (state[roomName].timer != Infinity) {
+                        client.player.timeLeft += state[roomName].game.increment;
+                    }
+                    
                 } 
             }
     
@@ -190,24 +195,23 @@ io.on("connection", client => {
 
         if (roomName) {
 
-            let timeLastMoved = state[roomName][3 - client.player.number].timeLastMoved;
-            timeLastMoved = ((timeLastMoved) ? timeLastMoved : state[roomName].game.startTime);
-            client.player.timeLeft -= (Date.now() - timeLastMoved) / 1000;
+            if (state[roomName].game.timer != Infinity) {
+                updatePlayerTimer(roomName, client.player.number)
 
-            if (client.player.timeLeft <= 0) {
-                client.player.timeLeft = 0;
-
-                state[roomName][3 - client.player.number].score++;
-                state[roomName][3 - client.player.number].selectBooleanFlag("opponentTimedOut");
-                state[roomName][client.player.number].selectBooleanFlag("timedOut");
-        
-                state[roomName].game.endGame();
+                if (client.player.timeLeft <= 0) {
+                    client.player.timeLeft = 0;
+    
+                    state[roomName][3 - client.player.number].score++;
+                    state[roomName][3 - client.player.number].selectBooleanFlag("opponentTimedOut");
+                    state[roomName][client.player.number].selectBooleanFlag("timedOut");
+            
+                    state[roomName].game.endGame();
+                }
+    
+                emitState(roomName); 
             }
 
-            emitState(roomName); 
-
         }
-        
     }
 
     function handleRematchRequest() {
@@ -235,8 +239,8 @@ io.on("connection", client => {
             state[roomName][1].selectBooleanFlag("none");
             state[roomName][2].selectBooleanFlag("none");
 
-            state[roomName][1].timeLeft = prevGame.timer * 60;
-            state[roomName][2].timeLeft = prevGame.timer * 60;
+            state[roomName][1].timeLeft = (prevGame.timer ? prevGame.timer : Infinity) * 60;
+            state[roomName][2].timeLeft = (prevGame.timer ? prevGame.timer : Infinity) * 60;
 
 
             state[roomName][1].timeLastMoved = undefined;
@@ -316,6 +320,19 @@ io.on("connection", client => {
         
     }
 
+    function updatePlayerTimer(roomName, number) {
+        if (state[roomName].game.timer != Infinity) {
+            let timeLastMoved = (state[roomName][3 - number].timeLastMoved) ? state[roomName][3 - number].timeLastMoved : Date.now();
+            state[roomName][number].timeLeft -= (Date.now() - timeLastMoved) / 1000;
+    
+            if (state[roomName][number].timeLeft < 0) {
+                state[roomName][number].timeLeft = 0
+            }
+    
+            state[roomName][3 - number].timeLastMoved = Date.now()
+        }   
+    }
+
     function forEachClientIn(roomName, func) {
         for (const clientId of io.sockets.adapter.rooms.get(roomName)) {
             const clientSocket = io.sockets.sockets.get(clientId);
@@ -337,8 +354,19 @@ io.on("connection", client => {
     }
     
     function emitState(roomName) {
+        if (!client.player.rematchRequestSent 
+            && !(state[roomName].game.board.isGameFinished 
+                && (client.player.rematchRequestSent 
+                    || client.player.rematchRequestSent 
+                    || client.player.requestDeclined 
+                    || state[roomName][3-client.player.number].requestDeclined))) { // game end timer bug
+            updatePlayerTimer(roomName, (client.player.colour == state[roomName].game.board.colourToMove) ? client.player.number : 3 - client.player.number);
+        } 
+
         client.emit("gameState", state[roomName], client.player.number);
         emitOpponent(roomName, "gameState", state[roomName], 3 - client.player.number);
     }
+
+    
 
 });

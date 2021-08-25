@@ -42,8 +42,11 @@ let timerInterval;
     acceptButton.addEventListener("click", handleAcceptButton);
     declineButton.addEventListener("click", handleDeclineButton);
     
-    clearInterval(timerInterval);
-    timerInterval = setInterval(updateTimer, 37);
+    if (me.timeLeft != null) {
+        clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 37);
+    }
+    
 }
 
 function updateTimer() {
