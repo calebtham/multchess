@@ -196,6 +196,7 @@ function handleIncrementButton(e) {
 }
 
 function handleTimerButton(e) {
+    alert("hello")
     var button = e.path[0];
 
     oneMinButton.className = "btn btn-secondary";
