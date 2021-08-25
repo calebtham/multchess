@@ -465,7 +465,7 @@ function handleHover(e) {
             drawPiece(offset + mouse.x * multiplier, offset + mouse.y * multiplier, board.inHand);
         }
         
-    } else {
+    } else if (window.innerWidth > 500) {
         colourSquare(mouse.x, mouse.y, "rgba(255,255,255,0.3)");
     }
 }
