@@ -291,7 +291,7 @@ function drawBoardColour() {
     var offset = (me.colour == Piece.white) ? 0 : 7;
 
     // Fill board dark brown
-    boardCtx.fillStyle = BOARD_BLACK;
+    boardCtx.fillStyle = BOARD_DARK;
     boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
 
     for (let i = 0; i < 8; i++ ) {
