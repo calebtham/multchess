@@ -8,8 +8,8 @@
 /**
  * Initialise document variables and events
  */
-const BOARD_WHITE = "#f0d9b5";
-const BOARD_BLACK = "#b58863";
+const BOARD_LIGHT = "#f0d9b5";
+const BOARD_DARK = "#b58863";
 
 // Store images of all pieces in an object. Image name corresponds to their respective piece number
 const IMG = { 

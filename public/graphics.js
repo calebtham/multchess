@@ -299,7 +299,7 @@ function drawBoardColour() {
 
             // Alternate board squares light brown
             if ((i + j) % 2 == 0) { 
-                colourSquare(offset + multiplier * i, offset + multiplier * j,BOARD_WHITE);
+                colourSquare(offset + multiplier * i, offset + multiplier * j,BOARD_LIGHT);
             }
 
             // Highlight legal moves green
