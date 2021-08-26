@@ -1,3 +1,9 @@
+body {
+    background-color: #f5ecdf;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 20px;
+}
+
 #initialScreen {
     display: block;
     text-align: center;
@@ -17,17 +23,26 @@
     max-width: 800px;
 }
 
-body {
-    background-color: #f5ecdf;
-    font-family: Arial, Helvetica, sans-serif;
-    padding: 20px;
-}
-
 p {
-    margin: 2px;    
+    margin-top: 2px;    
+    margin-bottom: 2px;    
 }
 
-span.discrete {
+h2.timer {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18pt;
+    font-weight: bold;
+    padding: 4px 10px;
+    padding-top: 6px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
+    margin-right: 15px;
+    margin-left: 15px;
+    background-color: #b58863;
+    color: rgba(255,255,255,0.8);
+}
+
+.discrete {
     font-size: 10pt;
     color: rgba(255,255,255,0.85);
 }
@@ -49,20 +64,38 @@ div.spacer {
     height: 10px;
 }
 
-div.buttons {
-    padding-top: 70px;
+div.gameButtons {
+    padding-top: 67px;
 }
 
+input,
 button {
-    margin: 4px 2px 4px 2px;
+    padding: 4px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    border: none;
+    border-radius: 4px;
     box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
     width: 100%;
     transition: all 0.2s;
-    border-width: 20px;
+}
+
+input:hover,
+button:hover {
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.4);
+    transition: all 0.2s;
+}
+
+input[type="text"].error {
+    background-color: rgb(255,200,200);
 }
 
 button.fat {
     padding: 10px;
+}
+
+button.request {
+    width: 46%;
 }
 
 button#backButton {
@@ -71,10 +104,6 @@ button#backButton {
     width: auto;
 }
 
-div.btn-group {
-    margin: 4px;
-    padding: 4px;
-}
 div.btn-group button.btn-secondary {
     background-color: rgb(180, 180, 255);
     border-color: rgb(180, 180, 255);
@@ -95,23 +124,6 @@ div.btn-group button.btn-primary:hover {
     box-shadow: 0px 2px 4px rgba(0,0,0,0.58);
 }
 
-
-input[type="text"] {
-    padding: 4px;
-    margin: 4px 2px 4px 2px;
-    border: none;
-    border-radius: 4px;
-    box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
-    width: 100%;
-    transition: all 0.2s;
-}
-
-input:hover,
-button:hover {
-    box-shadow: 0px 2px 4px rgba(0,0,0,0.4);
-    transition: all 0.2s;
-}
-
 canvas {
     margin: 0px;
     image-rendering: -moz-crisp-edges;
@@ -123,22 +135,10 @@ canvas#boardCanvas {
     box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
 }
 
-button.request {
-    width: 46%;
-}
-
-h2.timer {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 18pt;
-    font-weight: bold;
-    padding: 4px 10px;
-    padding-top: 6px;
-    border-radius: 5px;
-    box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
-    margin-right: 15px;
-    margin-left: 15px;
-    background-color: #b58863;
-    color: rgba(255,255,255,0.8);
+footer {
+    position: fixed;
+    bottom: 0px;
+    padding: 10px;
 }
 
 
@@ -149,60 +149,55 @@ h2.timer {
 }
 
 @media (max-width: 500px) {
-    body {
-        margin: 0px;
-        padding: 0px;
-    }
+    body,
     div.container {
         margin: 0px;
         padding: 0px;
     }
+
+    #initialScreen {
+        padding-top: 5vh;
+    }
+
     img.logo {
         width: 150px;
         height: 150px;
     }
+
     h1 {
-        margin: 10px;
-        font-size: 20pt;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
-    #gameScreen h1 {
-        font-size: 30pt;
-    }
+
     p {
-        margin: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px;
         font-size: 16pt;
     }
-    h2 {
-        margin-left: 10px;
-    }
-    h2.timer {
-        margin-right: 0px;
-    }
-    button[type="button"] {
+
+    button[type="button"],
+    input[type="text"] {
         font-size: 16pt;
         padding: 10px;
     }
+
     div.timer button[type="button"] {
         font-size: 14pt;
         padding-left: 2px;
         padding-right: 2px;
     }
-    input[type="text"] {
-        font-size: 16pt;
-        padding: 10px;
-    }
-    div.buttons {
+
+    div.gameButtons {
         all: initial;
         font-family: Arial, Helvetica, sans-serif;
         width: 95%;
         margin-left: 16px;
     }
+
     button.request {
         width: 35%;
     }
-    canvas {
-        margin-left: 0px;
-    }
+
     canvas#topCanvas,
     canvas#bottomCanvas {
         margin-left: 10px;

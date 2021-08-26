@@ -38,6 +38,32 @@ function min(a,b) {
     return (a < b) ? a : b;
 }
 
+/**
+ * Convert seconds to minutes:seconds (mm:ss)
+ * @param {number} seconds
+ * @returns Formatted time string
+ */
+ function formatTimeFromSeconds(seconds) {
+    let mm;
+    let ss;
+    let fraction = (seconds < 60) ? 2 : 0;
+
+    mm = Math.floor(seconds / 60);
+    ss = seconds - (mm * 60);
+    
+    mm = mm.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: 0, useGrouping:false});
+    ss = ss.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: fraction, minimumFractionDigits: fraction, useGrouping:false});
+    if (ss == "60") {
+        ss = "59";
+    }
+    
+    return mm + ":" + ss;
+}
+
+/**
+ * Return whether the device is touchscreen
+ * @returns True iff the device is touchscreen
+ */
 function isTouchDevice() {
     return (('ontouchstart' in window) ||
        (navigator.maxTouchPoints > 0) ||

@@ -21,6 +21,7 @@ socket.on("tooManyPlayers", handleTooManyPlayers);
 /** */
 
 let timerInterval;
+let frequency = 37; // frequency of interval in ms
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -29,9 +30,12 @@ let timerInterval;
  */
 
 /**
- * Function to update variables and document elements for when 2nd opponent has joined
+ * Update variables and document elements and start timer for when 2nd opponent has joined
  */
  function handleOpponentJoined() {
+
+    // Add event listeners so player can make move / make game requests
+    document.addEventListener("visibilitychange", handleVisibilityChange)
     boardCanvas.addEventListener("click", handleClick);
     boardCanvas.addEventListener("mousemove", handleHover);
     boardCanvas.addEventListener("mouseleave", handleMouseLeave)
@@ -42,46 +46,50 @@ let timerInterval;
     acceptButton.addEventListener("click", handleAcceptButton);
     declineButton.addEventListener("click", handleDeclineButton);
     
-    if (me.timeLeft != null) {
+    if (me.timeLeft != null) { // If there is a timer, start it on client-side
         clearInterval(timerInterval);
-        timerInterval = setInterval(updateTimer, 37);
+        timerInterval = setInterval(updateTimer, frequency);
     }
     
 }
 
+/**
+ * Updates the timer on client side
+ */
 function updateTimer() {
     if (board.colourToMove == me.colour) {
-        me.timeLeft -= 0.037;
-        if (me.timeLeft <= -0.037) { // Extend into negatives to give client error leeway. (actual timing done on server anyway)
-            me.timeLeft = 0;
-            clearInterval(timerInterval);
-            socket.emit("timeout")
-        } else if (me.timeLeft < 0) { // For graphics
-            me.timeLeft = 0;
-        }
+        updatePlayerTimer(me)
     } else {
-        opponent.timeLeft -= 0.037;
-        if (opponent.timeLeft <= 0) {
-            opponent.timeLeft = 0;
-            clearInterval(timerInterval);
-        }
+        updatePlayerTimer(opponent)
     }
     updateTimerText();
 }
 
+function updatePlayerTimer(player) {
+    player.timeLeft -= frequency / 1000;
+    if (player.timeLeft <= -frequency / 1000) { // Extend into negatives to give client error leeway. (actual timing done on server anyway)
+        player.timeLeft = 0;
+        clearInterval(timerInterval);
+        socket.emit("timeout")
+
+    } else if (player.timeLeft < 0) { // For graphics
+        player.timeLeft = 0;
+    }
+}
+
 /**
- * Function to display to user that the game corresponding to gamecode is full
+ * Display to user that the game corresponding to gamecode is full
  */
 function handleTooManyPlayers() {
-    gameCodeInput.style.backgroundColor = "rgba(255,200,200)";
+    gameCodeInput.className = "error";
     errorLabel.innerText = "Game already in progress"
 }
 
 /**
- * Function to display to user that the game corresponding to gamecode does not exist
+ * Display to user that the game corresponding to gamecode does not exist
  */
 function handleUnknownGame() {
-    gameCodeInput.style.backgroundColor = "rgba(255,200,200)";
+    gameCodeInput.className = "error";
     errorLabel.innerText = "Game not found"
 }
 
@@ -92,16 +100,15 @@ function handleUnknownGame() {
  * @param {Object} state The game state (i.e. a board object)
  */
  function handleInit(gameCode, state, number) {
+    // Display game code
     gameCodeDisplay.innerText = "Your game code is: " + gameCode;
 
+    // Update game state
     board = state.game.board;
     me = state[number];
     opponent = state[3 - number]
 
-    initialScreen.style.display = "none";
-    gameScreen.style.display = "block";
-    window.addEventListener("resize", handleResize);
-
+    // Initialise canvas
     boardCanvas = document.getElementById("boardCanvas");
     boardCtx = boardCanvas.getContext("2d");
 
@@ -111,6 +118,8 @@ function handleUnknownGame() {
     bottomCanvas = document.getElementById("bottomCanvas");
     bottomCtx = bottomCanvas.getContext("2d");
 
+    // Add abiltiy to resize canvas
+    window.addEventListener("resize", handleResize);
     handleResize();
 }
 
@@ -122,8 +131,10 @@ function handleGameState(state, number) {
     board = state.game.board;
     me = state[number];
     opponent = state[3 - number];
-    if (board.isGameFinished){
+
+    if (board.isGameFinished) { // If game end, stop timer
         clearInterval(timerInterval);
     }
+
     updateGraphics();
 }

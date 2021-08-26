@@ -11,7 +11,6 @@
  */
  function getSquareSize() {
     if (window.innerWidth > 500) {
-
         return min(
             min(37 + Math.floor(((window.innerWidth - 500) / 350) * 28), 65), // min of 37, linearly scales up with window width, max of 65
             Math.floor(window.innerHeight / 8) // 8th of window width
@@ -28,8 +27,10 @@
  * @returns The board x and y coordinate
  */
 function getMouseSquare(e) {
-    return {"x": min(Math.floor(e.offsetX / squareSize),7), 
-            "y": min(Math.floor(e.offsetY / squareSize),7)}
+    return {
+        "x": min(Math.floor(e.offsetX / squareSize),7), 
+        "y": min(Math.floor(e.offsetY / squareSize),7)
+    }
 }
 
 /**
@@ -49,14 +50,17 @@ function updateGraphics() {
     }
 }
 
+/**
+ * Draws the board
+ */
 function drawBoard() {
     drawBoardColour();
     drawBoardPieces();
 }
 
 /**
- * Depending on the opponent activity booleans, updates which buttons are shown/are active
- * and indicates to user the opponent's activity
+ * Depending on the player object me, updates which buttons are shown/are active and what the label
+ * says
  */
 function updateButtons() {
 
@@ -68,6 +72,7 @@ function updateButtons() {
         drawButton.disabled = true;
         resignButton.disabled = true;
         
+    // If game in progress
     } else {
         drawButton.className = "btn btn-primary";
         resignButton.className = "btn btn-danger";
@@ -87,6 +92,7 @@ function updateButtons() {
         takebackButton.className = "btn btn-primary";
         takebackButton.disabled = false;
 
+    // If player cannot takeback
     } else {
         takebackButton.className = "btn btn-secondary";
         takebackButton.disabled = true;
@@ -96,7 +102,8 @@ function updateButtons() {
     if (board.isGameFinished && !me.rematchRequestRecieved && !me.opponentDisconnected) {
         rematchButton.className = "btn btn-success";
         rematchButton.disabled = false;
-        
+
+    // If game not finished
     } else {
         rematchButton.className = "btn btn-secondary";
         rematchButton.disabled = true;
@@ -163,6 +170,9 @@ function updateButtons() {
     }
 }
 
+/**
+ * Makes the accept and decline button visible
+ */
 function showAcceptDecline() {
     takebackButton.disabled = true;
     drawButton.disabled = true;
@@ -183,11 +193,14 @@ function showAcceptDecline() {
  * Indicates whose turn it is
  */
 function updateText() {
+
+    // Update the bottom and top labels
     bottomPlayerLabel.innerText = " You: " + me.score;
 
     if (me.opponentJoined) {
         topPlayerLabel.innerText = " Opponent: " + opponent.score;
 
+        // Indicate which player turn it is with glow on text
         if (board.isGameFinished) {
             topPlayerLabel.classList.remove("glow");
             bottomPlayerLabel.classList.remove("glow");
@@ -200,9 +213,10 @@ function updateText() {
         }
 
     } else { 
-        topPlayerLabel.innerText = "Waiting for opponent to join..."
+        topPlayerLabel.innerHTML = "&nbsp;Waiting for opponent..."
     }
 
+    // Highlight the active timer
     if (board.colourToMove == me.colour) {
         topTimerLabel.style.color = "rgba(255,255,255,0.5)";
         bottomTimerLabel.style.color = "rgba(255,255,255,0.9)";
@@ -212,34 +226,18 @@ function updateText() {
     }
 }
 
+/**
+ * Updates the timers of both players according to their player object variable
+ */
 function updateTimerText() {
     if (me.timeLeft != null) {
-        var minutes;
-        var seconds;
-    
-        minutes = Math.floor(me.timeLeft / 60);
-        seconds = me.timeLeft - (minutes * 60);
-        let fraction = (me.timeLeft < 60) ? 2 : 0;
-        minutes = minutes.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: 0, useGrouping:false});
-        seconds = seconds.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: fraction, minimumFractionDigits: fraction, useGrouping:false});
-        if (seconds == "60") {
-            seconds = "59";
-        }
-    
-        bottomTimerLabel.innerText = minutes + ":" + seconds;
+
+        bottomTimerLabel.innerHTML = formatTimeFromSeconds(me.timeLeft);
     
         if (me.opponentJoined) {
-            minutes = Math.floor(opponent.timeLeft / 60);
-            seconds = opponent.timeLeft - (minutes * 60);
-            let fraction = (opponent.timeLeft < 60) ? 2 : 0;
-            minutes = minutes.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: 0, useGrouping:false});
-            seconds = seconds.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: fraction, minimumFractionDigits: fraction, useGrouping:false});
-            if (seconds == "60") {
-                seconds = "59";
-            }
-
-            topTimerLabel.innerText = minutes + ":" + seconds;
+            topTimerLabel.innerHTML = formatTimeFromSeconds(opponent.timeLeft);
         }
+
     } else {
         topTimerLabel.innerHTML = "&infin;"
         bottomTimerLabel.innerHTML = "&infin;";
@@ -247,6 +245,11 @@ function updateTimerText() {
     
 }
 
+/**
+ * Draws the pieces that a player has taken and the material advantage of winning player
+ * Depending on the context given, shows either white pieces taken or black pieces taken
+ * @param {CanvasRenderingContext2D} ctx Either top or bottom canvas context
+ */
 function drawTakenPieces(ctx) {
     var player = (ctx == topCtx) ? opponent : me;
     const offset = 20;
@@ -255,20 +258,23 @@ function drawTakenPieces(ctx) {
     ctx.clearRect(0,0,topCanvas.width,topCanvas.height);
     ctx.font = "16px sans-serif";
 
+    // If drawing pieces white has taken
     if (player.colour == Piece.white) {
         board.blackPiecesTaken.forEach(piece => {
             ctx.drawImage(IMG[piece], offset * i, 0, 20, 20);
             i++;
         });
-        if (board.whiteAdvantage > 0) {
+        if (board.whiteAdvantage > 0) { // If white has advantage
             ctx.fillText(" + " + board.whiteAdvantage, offset * i, 17);
         }
+
+    // If drawing pieces black has taken
     } else {
         board.whitePiecesTaken.forEach(piece => {
             ctx.drawImage(IMG[piece], offset * i, 0, 20, 20);
             i++;
         });
-        if (board.whiteAdvantage < 0) {
+        if (board.whiteAdvantage < 0) { // If black has advantage
             ctx.fillText(" + " + -1 * board.whiteAdvantage, offset * i, 17);
         }
     }
@@ -280,23 +286,33 @@ function drawTakenPieces(ctx) {
  */
 function drawBoardColour() {
 
-    boardCtx.fillStyle = BOARD_BLACK;
-    boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
-
+    // Multiplier and offset used to flip board for black
     var multiplier = (me.colour == Piece.white) ? 1 : -1;
     var offset = (me.colour == Piece.white) ? 0 : 7;
 
+    // Fill board dark brown
+    boardCtx.fillStyle = BOARD_BLACK;
+    boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+
     for (let i = 0; i < 8; i++ ) {
         for (let j = 0; j < 8; j++) {
-            if ((i + j) % 2 == 0) {
+
+            // Alternate board squares light brown
+            if ((i + j) % 2 == 0) { 
                 colourSquare(offset + multiplier * i, offset + multiplier * j,BOARD_WHITE);
             }
-            if (board.isLegalMove[convert2dTo1d(i,j)]) {
+
+            // Highlight legal moves green
+            if (board.isLegalMove[convert2dTo1d(i,j)]) { 
                 colourSquare(offset + multiplier * i, offset + multiplier * j,"rgb(0, 255,0,0.2)");
             }
+
+            // Highlight squares that a piece has just moved to / from
             if (board.movedFrom == convert2dTo1d(i,j) || board.movedTo == convert2dTo1d(i,j)) {
                 colourSquare(offset + multiplier * i, offset + multiplier * j,"rgb(255,255,0,0.2)");
             }
+
+            // Highlight square red if just made invalid move from there
             if (board.invalid == convert2dTo1d(i,j)) {
                 colourSquare(offset + multiplier * i, offset + multiplier * j,"rgb(255,0,0,0.5)");
             }
@@ -326,6 +342,7 @@ function drawBoardPieces() {
 function drawPiece(x, y, piece) {
     if (piece == 0) return;
 
+    // Multiplier and offset used to flip board for black
     var multiplier = (me.colour == Piece.white) ? 1 : -1;
     var offset = (me.colour == Piece.white) ? 0 : 7;
 

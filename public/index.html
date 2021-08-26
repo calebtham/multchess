@@ -4,7 +4,6 @@
     <head>
         
         <meta charset="UTF-8">
-        <meta content="width=device-width" name="viewport" />
         <title>Chess</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" href="main.css">
@@ -15,16 +14,16 @@
     <body>
 
         <div id="initialScreen">
-
             <div class="container">
 
                 <div class="row">
+
                     <div class="col-2"></div>
 
                     <div class="col-8">
     
                         <img class="logo" src="img/17.svg" width="80" height="80" alt="17.svg">
-                        <h1 class="bold">MULTIPLAYER CHESS</h1>
+                        <h1 class="bold">MULTCHESS</h1>
 
                         <div class="join">
                             <button type="button" class="btn btn-success fat" id="quickMatchButton">
@@ -42,20 +41,19 @@
                     </div>
     
                     <div class="col-2"></div>
+
                 </div>
 
             </div>
 
-            <footer class="page-footer font-small blue">
-                <div class="footer-copyright text-center py-3">By Caleb Tham</div>
+            <footer class="page-footer">
+                By Caleb Tham
             </footer>
 
         </div>
 
         <div id="createScreen">
-
             <div class="container">
-
                 <div class="row">
 
                     <div class="col">
@@ -64,7 +62,6 @@
                                 <button type="button" class="btn btn-danger" id="backButton">Back</button>
                             </div>
                         </div>
-                        
 
                         <div class="spacer"></div>
                         <div class="spacer"></div>
@@ -124,27 +121,23 @@
                         </div>
 
                     </div>
-    
+
                 </div>
-
             </div>
-
         </div>
 
 
         <div id="gameScreen">
-
             <div class="container">
 
                 <p><a href="./">LEAVE</a></p>
                 <h1 class="bold">CHESS</h1>
                 <p id="gameCodeDisplay"></p>
 
-                
-
                 <div class="row">
-
+                    
                     <div class="col">
+
                         <canvas id="topCanvas"></canvas>
 
                         <div class="row">
@@ -160,9 +153,10 @@
                         </div>
 
                         <canvas id="bottomCanvas"></canvas>
+
                     </div>
 
-                    <div class="col-4 buttons">
+                    <div class="col-4 gameButtons">
                         
                         <p id="opponentActivity"></p>
                         <button type="button" class="btn btn-success request" id="acceptButton" hidden>Accept</button>
@@ -176,11 +170,8 @@
                     </div>
                     
                 </div>
-                    
-                
 
             </div>
-
         </div>
             
         <img src="img/9.svg" id="9" width="65" height="65" alt="9.svg" hidden>

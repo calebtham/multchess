@@ -15,6 +15,8 @@
 // values of y: 0=north, 1=south, 2=west, 3=east, 4=north-west, 5=south-east, 6=north-east, 7=south-west
 const numSquaresToEdge = [[0,7,0,7,0,7,0,0],[0,7,1,6,0,6,0,1],[0,7,2,5,0,5,0,2],[0,7,3,4,0,4,0,3],[0,7,4,3,0,3,0,4],[0,7,5,2,0,2,0,5],[0,7,6,1,0,1,0,6],[0,7,7,0,0,0,0,7],[1,6,0,7,0,6,1,0],[1,6,1,6,1,6,1,1],[1,6,2,5,1,5,1,2],[1,6,3,4,1,4,1,3],[1,6,4,3,1,3,1,4],[1,6,5,2,1,2,1,5],[1,6,6,1,1,1,1,6],[1,6,7,0,1,0,0,6],[2,5,0,7,0,5,2,0],[2,5,1,6,1,5,2,1],[2,5,2,5,2,5,2,2],[2,5,3,4,2,4,2,3],[2,5,4,3,2,3,2,4],[2,5,5,2,2,2,2,5],[2,5,6,1,2,1,1,5],[2,5,7,0,2,0,0,5],[3,4,0,7,0,4,3,0],[3,4,1,6,1,4,3,1],[3,4,2,5,2,4,3,2],[3,4,3,4,3,4,3,3],[3,4,4,3,3,3,3,4],[3,4,5,2,3,2,2,4],[3,4,6,1,3,1,1,4],[3,4,7,0,3,0,0,4],[4,3,0,7,0,3,4,0],[4,3,1,6,1,3,4,1],[4,3,2,5,2,3,4,2],[4,3,3,4,3,3,4,3],[4,3,4,3,4,3,3,3],[4,3,5,2,4,2,2,3],[4,3,6,1,4,1,1,3],[4,3,7,0,4,0,0,3],[5,2,0,7,0,2,5,0],[5,2,1,6,1,2,5,1],[5,2,2,5,2,2,5,2],[5,2,3,4,3,2,4,2],[5,2,4,3,4,2,3,2],[5,2,5,2,5,2,2,2],[5,2,6,1,5,1,1,2],[5,2,7,0,5,0,0,2],[6,1,0,7,0,1,6,0],[6,1,1,6,1,1,6,1],[6,1,2,5,2,1,5,1],[6,1,3,4,3,1,4,1],[6,1,4,3,4,1,3,1],[6,1,5,2,5,1,2,1],[6,1,6,1,6,1,1,1],[6,1,7,0,6,0,0,1],[7,0,0,7,0,0,7,0],[7,0,1,6,1,0,6,0],[7,0,2,5,2,0,5,0],[7,0,3,4,3,0,4,0],[7,0,4,3,4,0,3,0],[7,0,5,2,5,0,2,0],[7,0,6,1,6,0,1,0],[7,0,7,0,7,0,0,0]];
 
+// In binary, the 2 most significant digits indicate colour, and the 3 least significant digits
+// indicate type
 const Piece = {
     none: 0,
     king: 1,
@@ -28,29 +30,37 @@ const Piece = {
     black: 16,
 }
 
-// i.e. is piece a bishop, rook, queen
+/**
+ * @param {number} p The piece
+ * @returns True iff the piece is a bishop, rook or queen
+ */
 function isPieceSliding(p) {
-    var pieceNoColour = p & 7;
+    var pieceNoColour = p & 7; // Remove colour of piece with bitwise and
     return pieceNoColour == 4
         || pieceNoColour == 5
         || pieceNoColour == 6;
 } 
 
+/**
+ * @param {number} p The piece
+ * @param {number} col The colour
+ * @returns True iff the piece is the colour given
+ */
 function isPieceColour(p, col) {
-    var pieceNoType = p & 24;
+    var pieceNoType = p & 24; // Remove type of piece with bitwise AND
     return pieceNoType == col;
 }
 
 function isPieceType(p, type) {
-    var pieceNoColour = p & 7;
+    var pieceNoColour = p & 7; // Remove type of piece with bitwise AND
     return pieceNoColour == type;
 }
 
 /**
- * Switches the colour that is to make a move next
+ * Toggles the colour to move on the board
  */
 function switchColour() {
-    board.colourToMove ^= 24; 
+    board.colourToMove ^= 24; // Flip 2 left-most digits with bitwise XOR
 }
 
 /**
@@ -75,40 +85,45 @@ function generateAllLegalMoves(isCheckingCheck = false) {
  * @param {number} start The index on the board that a piece is to be moved from
  * @param {boolean} isCheckingCheck Boolean indicating whether the function should make checks for 
  * check
- * @returns  An associative array of the moves
+ * @returns An associative array of the moves
  */
 function generateLegalMoves(start, isCheckingCheck = false) {
     var moves = []
     var piece = board.square[start];
     if (isPieceColour(piece, board.colourToMove)) {
 
+        // Generate piece moves then add them to associative array
         if (isPieceSliding(piece)) {
-            generateSlidingMoves(start, piece, isCheckingCheck).forEach(code => {
+            generateSlidingMoves(start, piece).forEach(code => {
                 var move = decode(code);
+                // If checking check, only add move if it does not move into check
                 if (!isCheckingCheck || makeMove(move.start, move.target, true)) {
                     moves[code] = code;
                 }
             });
 
         } else if (isPieceType(piece, Piece.king)) {
-            generateKingMoves(start, isCheckingCheck).forEach(code => {
+            generateKingMoves(start).forEach(code => {
                 var move = decode(code);
+                // If checking check, only add move if it does not move into check
                 if (!isCheckingCheck || makeMove(move.start, move.target, true)) {
                     moves[code] = code;
                 }
             });
         
         } else if (isPieceType(piece, Piece.knight)) {
-            generateKnightMoves(start, isCheckingCheck).forEach(code => {
+            generateKnightMoves(start).forEach(code => {
                 var move = decode(code);
+                // If checking check, only add move if it does not move into check
                 if (!isCheckingCheck || makeMove(move.start, move.target, true)) {
                     moves[code] = code;
                 }
             });
         
         } else if (isPieceType(piece, Piece.pawn)) {
-            generatePawnMoves(start, isCheckingCheck).forEach(code => {
+            generatePawnMoves(start).forEach(code => {
                 var move = decode(code);
+                // If checking check, only add move if it does not move into check
                 if (!isCheckingCheck || makeMove(move.start, move.target, true)) {
                     moves[code] = code;
                 }
@@ -129,32 +144,31 @@ function generateKingMoves(start) {
     var moves = []
     var key;
 
-    // Standard moves
+    // Standard move (to surrounding squares)
     for (let i = 0; i < 8; i++) {
 
-        if (numSquaresToEdge[start][i] >= 1) {
+        if (numSquaresToEdge[start][i] >= 1) { // Check move in boundaries of board
             let target = start + board.directionOffsets[i];
             let pieceOnTarget = board.square[target];
     
-            if (isPieceColour(pieceOnTarget, board.colourToMove)) {
-                continue;
-            }
-    
-            key = encode(start, target)
-            moves[key] = key;
+            if (!isPieceColour(pieceOnTarget, board.colourToMove)) { 
+                key = encode(start, target)
+                moves[key] = key;
+            }   
         }
-        
     }
 
     // Castling
     let pieceOnStart = board.square[start];
     if (!board.whiteInCheck) {
+        // White left castle
         if (board.canWhiteLeftCastle && isPieceColour(pieceOnStart, Piece.white)) {
             if (board.square[57] == Piece.none && board.square[58] == Piece.none && board.square[59] == Piece.none) {
                 key = encode(start, 56)
                 moves[key] = key;
             }
         }
+        // White right castle
         if (board.canWhiteRightCastle && isPieceColour(pieceOnStart, Piece.white)) {
             if (board.square[62] == Piece.none && board.square[61] == Piece.none) {
                 key = encode(start, 63)
@@ -164,12 +178,14 @@ function generateKingMoves(start) {
     }
     
     if (!board.blackInCheck) {
+        // Black left castle
         if (board.canBlackLeftCastle && isPieceColour(pieceOnStart, Piece.black)) {
             if (board.square[1] == Piece.none && board.square[2] == Piece.none && board.square[3] == Piece.none) {
                 key = encode(start, 0)
                 moves[key] = key;
             }
         }
+        // Black right castle
         if (board.canBlackRightCastle && isPieceColour(pieceOnStart, Piece.black)) {
             if (board.square[5] == Piece.none && board.square[6] == Piece.none) {
                 key = encode(start, 7)
@@ -189,7 +205,7 @@ function generateKingMoves(start) {
  */
 function generateKnightMoves(start) {
     var moves = [];
-    var offsets = [[2,1], [1,2], [-2,1], [1,-2], [2,-1], [-1,2], [-2,-1], [-1,-2]];
+    var offsets = [[2,1], [1,2], [-2,1], [1,-2], [2,-1], [-1,2], [-2,-1], [-1,-2]]; // [i,k], where i is difference in x index, j is difference in y index
     
     for (let i = 0; i < 8; i++) {
         var xOffset = offsets[i][0];
@@ -198,17 +214,16 @@ function generateKnightMoves(start) {
         var y = convert1dTo2d(start).y;
 
         if (x + xOffset >= 0 && x + xOffset <= 7
-            && y + yOffset >= 0 && y + yOffset <= 7) {
+            && y + yOffset >= 0 && y + yOffset <= 7) { // Check move in boundaries of board
                 let target = start + convert2dTo1d(xOffset, yOffset);
                 let pieceOnTarget = board.square[target];
                 let key;
 
-                if (isPieceColour(pieceOnTarget, board.colourToMove)) {
-                    continue;
+                if (!isPieceColour(pieceOnTarget, board.colourToMove)) {
+                    key = encode(start, target)
+                    moves[key] = key;
                 }
 
-                key = encode(start, target)
-                moves[key] = key;
             }
     }
 
@@ -233,7 +248,7 @@ function generatePawnMoves(start) {
         initRank = 1;
     }
 
-    // Standard move
+    // Standard move (one forward)
     let target = start + yOffset;
     let pieceOnTarget = board.square[target];
     let key;
@@ -249,10 +264,11 @@ function generatePawnMoves(start) {
 
     if (numSquaresToEdge[start][2] >= 1 
         && ((!isPieceType(pieceOnTarget, Piece.none) 
-        && !isPieceColour(pieceOnTarget, board.colourToMove)) 
-        || board.enPassantSquare == target)) {
-            key = encode(start, target)
-            moves[key] = key;
+                && !isPieceColour(pieceOnTarget, board.colourToMove)) 
+            || board.enPassantSquare == target)) {
+            
+                key = encode(start, target)
+                moves[key] = key;
     }
 
     // East capture (including en passant)
@@ -261,10 +277,11 @@ function generatePawnMoves(start) {
 
     if (numSquaresToEdge[start][3] >= 1 
         && ((!isPieceType(pieceOnTarget, Piece.none) 
-        && !isPieceColour(pieceOnTarget, board.colourToMove))
-        || board.enPassantSquare == target)) {
-            key = encode(start, target)
-            moves[key] = key;
+                && !isPieceColour(pieceOnTarget, board.colourToMove))
+            || board.enPassantSquare == target)) {
+            
+                key = encode(start, target)
+                moves[key] = key;
     }
 
     // Double move
@@ -290,8 +307,8 @@ function generatePawnMoves(start) {
  */
 function generateSlidingMoves(start, piece) {
     var moves = []
-    var startDirIndex = (isPieceType(piece, Piece.bishop)) ? 4 : 0;
-    var endDirIndex = (isPieceType(piece, Piece.rook)) ? 4 : 8;
+    var startDirIndex = (isPieceType(piece, Piece.bishop)) ? 4 : 0; // Bishop can only move in last 4 directions in board.directionOffsets
+    var endDirIndex = (isPieceType(piece, Piece.rook)) ? 4 : 8;     // Rook can only move in first 4 directions in board.directionOffsets
 
     for (let directionIndex = startDirIndex; directionIndex < endDirIndex; directionIndex++) {
         for (let n = 0; n < numSquaresToEdge[start][directionIndex]; n++) {
@@ -299,14 +316,16 @@ function generateSlidingMoves(start, piece) {
             let pieceOnTarget = board.square[target];
             let key;
 
-            if (isPieceColour(pieceOnTarget, board.colourToMove)) {
+            // If own piece blocking
+            if (isPieceColour(pieceOnTarget, board.colourToMove)) { 
                 break;
             }
 
             key = encode(start, target)
             moves[key] = key;
 
-            if (!isPieceType(pieceOnTarget, Piece.none) && !isPieceColour(pieceOnTarget, board.colourToMove)) {
+            // If opponent piece blocking
+            if (!isPieceType(pieceOnTarget, Piece.none) && !isPieceColour(pieceOnTarget, board.colourToMove)) { 
                 break;
             }
         }
@@ -321,7 +340,7 @@ function generateSlidingMoves(start, piece) {
  * @param {number} target The index on the board that a sliding piece is to be moved to
  * @param {boolean} isGeneratingMoves Boolean indicating whether the function is being used to
  * generate moves (false indicates that the function is being used to actually make the move)
- * @returns A Boolean indicating whether the move was valid
+ * @returns True iff the move was valid
  */
 function makeMove(start, target, isGeneratingMoves = false) {
 
@@ -339,7 +358,9 @@ function makeMove(start, target, isGeneratingMoves = false) {
             && isPieceColour(board.square[target], board.colourToMove)
             && (target == 0 || target == 7 || target == 56 || target == 63)) {
 
-                if (target == 0) { // top left
+                if (target == 0) { // black left castle
+
+                    // check if squares inbetween king and castle are under attack
                     board.square[1] = Piece.king | Piece.black;
                     board.square[2] = Piece.king | Piece.black;
                     board.square[3] = Piece.king | Piece.black;
@@ -348,13 +369,16 @@ function makeMove(start, target, isGeneratingMoves = false) {
                         return false;
                     }
 
+                    // perform castle
                     board.square[0] = Piece.none;
                     board.square[1] = Piece.none;
                     board.square[2] = Piece.king | Piece.black;
                     board.square[3] = Piece.rook | Piece.black;
                     board.square[4] = Piece.none;
 
-                } else if (target == 7) { // top right
+                } else if (target == 7) { // black right castle
+
+                    // check if squares inbetween king and castle are under attack
                     board.square[6] = Piece.king | Piece.black;
                     board.square[5] = Piece.king | Piece.black;
                     if (isInCheck()) {
@@ -362,12 +386,15 @@ function makeMove(start, target, isGeneratingMoves = false) {
                         return false;
                     }
 
+                    // perform castle
                     board.square[4] = Piece.none;
                     board.square[5] = Piece.rook | Piece.black;
                     board.square[6] = Piece.king | Piece.black;
                     board.square[7] = Piece.none;
 
-                } else if (target == 56) { // bottom left
+                } else if (target == 56) { // white left castle
+
+                    // check if squares inbetween king and castle are under attack
                     board.square[57] = Piece.king | Piece.white;
                     board.square[58] = Piece.king | Piece.white;
                     board.square[59] = Piece.king | Piece.white;
@@ -376,13 +403,16 @@ function makeMove(start, target, isGeneratingMoves = false) {
                         return false;
                     }
 
+                    // perform castle
                     board.square[56] = Piece.none;
                     board.square[57] = Piece.none;
                     board.square[58] = Piece.king | Piece.white;
                     board.square[59] = Piece.rook | Piece.white;
                     board.square[60] = Piece.none;
 
-                } else { // bottom right
+                } else { // white right castle
+
+                    // check if squares inbetween king and castle are under attack
                     board.square[62] = Piece.king | Piece.white;
                     board.square[61] = Piece.king | Piece.white;
                     if (isInCheck()) {
@@ -390,6 +420,7 @@ function makeMove(start, target, isGeneratingMoves = false) {
                         return false;
                     }
                     
+                    // perform castle
                     board.square[60] = Piece.none;
                     board.square[61] = Piece.rook | Piece.white;
                     board.square[62] = Piece.king | Piece.white;
@@ -459,7 +490,7 @@ function makeMove(start, target, isGeneratingMoves = false) {
             board.canWhiteRightCastle = false;
         }
 
-        // DEALING WITH CHECK
+        // DEALING WITH CHECKS
 
         // Initialise check boolean
         board.whiteInCheck = false;
@@ -475,7 +506,7 @@ function makeMove(start, target, isGeneratingMoves = false) {
         if (isGeneratingMoves) {
             undoMove();
         
-            // Check game state if actually made move
+        // CHECK END OF GAME
         } else {
 
             var validMoves = hasValidMoves();
@@ -486,24 +517,22 @@ function makeMove(start, target, isGeneratingMoves = false) {
 
             if (check && board.colourToMove == Piece.white) {
                 board.whiteInCheck = true;
-            }
-
-            else if (check) {
+            } else if (check) {
                 board.blackInCheck = true;
             }
 
             // next player has no valid moves
             if (!validMoves) {
-                if (check) {
+                if (check) { // checkmate
                     board.isGameFinished = true;
                     return true;
-                } else {
+                } else { // stalemate
                     board.isGameFinished = true;
                     return true;
                 }
             }
 
-            // threefold reptition
+            // stalemate: threefold reptition
             var count = 1;
             var temp = board;
             while (temp.history) {
@@ -519,7 +548,7 @@ function makeMove(start, target, isGeneratingMoves = false) {
                 }
             }
 
-            // insufficient material (both sides have either of: lone king, king and knight, king and bishop)
+            // stalemate: insufficient material (both sides have either of: lone king, king and knight, king and bishop)
             var whiteTotal = 0;
             var blackTotal = 0;
             var thereIsPawn = false;
@@ -557,7 +586,7 @@ function makeMove(start, target, isGeneratingMoves = false) {
 
 /**
  * Returns whether the current player has valid moves to make
- * @returns A Boolean indicating whether there are valid moves
+ * @returns True iff there are valid moves
  */
 function hasValidMoves() {
 
@@ -576,13 +605,14 @@ function hasValidMoves() {
 
 /**
  * Returns whether the current player is in check
- * @returns A Boolean indicating whether the player is in check
+ * @returns True iff the player is in check
  */
 function isInCheck() {
 
     switchColour();
     var inCheck = false;
 
+    // Loop over all legal moves and checks if the opponent can move to the king's position
     for (let i = 0; i < 64; i++) {
 
         generateLegalMoves(i, false).every(move => {
@@ -610,6 +640,7 @@ function isInCheck() {
 function undoMove() {
     if (board.history) {
         board = board.history;
+
         board.hiddenSquare = -1;
         board.inHand = Piece.none;
         board.isLegalMove = new Array(64).fill(false);
@@ -636,8 +667,10 @@ function encode(start, end) {
  */
 function decode(code) {
     var start = Math.floor(code / 100)
-    return {"start": start,
-            "target": code - start*100};
+    return {
+        "start": start,
+        "target": code - start*100
+    };
 }
 
 /**
@@ -646,8 +679,10 @@ function decode(code) {
  * @returns The x and y coordinate
  */
 function convert1dTo2d(i) {
-    return {"x": i % 8,
-            "y": Math.floor(i / 8)}
+    return {
+        "x": i % 8,
+        "y": Math.floor(i / 8)
+    }
 }
 
 /**
