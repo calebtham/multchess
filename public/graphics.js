@@ -251,7 +251,7 @@ function updateTimerText() {
  * @param {CanvasRenderingContext2D} ctx Either top or bottom canvas context
  */
 function drawTakenPieces(ctx) {
-    var player = (ctx == topCtx) ? opponent : me;
+    let player = (ctx == topCtx) ? opponent : me;
     const offset = 20;
     let i = 0;
 
@@ -287,8 +287,8 @@ function drawTakenPieces(ctx) {
 function drawBoardColour() {
 
     // Multiplier and offset used to flip board for black
-    var multiplier = (me.colour == Game.Piece.white) ? 1 : -1;
-    var offset = (me.colour == Game.Piece.white) ? 0 : 7;
+    let multiplier = (me.colour == Game.Piece.white) ? 1 : -1;
+    let offset = (me.colour == Game.Piece.white) ? 0 : 7;
 
     // Fill board dark brown
     boardCtx.fillStyle = BOARD_DARK;
@@ -343,8 +343,8 @@ function drawPiece(x, y, piece) {
     if (piece == 0) return;
 
     // Multiplier and offset used to flip board for black
-    var multiplier = (me.colour == Game.Piece.white) ? 1 : -1;
-    var offset = (me.colour == Game.Piece.white) ? 0 : 7;
+    let multiplier = (me.colour == Game.Piece.white) ? 1 : -1;
+    let offset = (me.colour == Game.Piece.white) ? 0 : 7;
 
     x = offset + multiplier * x;
     y = offset + multiplier * y;

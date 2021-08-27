@@ -44,8 +44,8 @@
      * @param {number} p The piece
      * @returns The piece with the colour flipped
      */
-    static flipPieceColour(p) {
-        return (p & 7) | (Game.isPieceColour(p, Game.Piece.white) ? Game.Piece.black : Game.Piece.white); // Remove colour of piece with bitwise AND then add colour with bitwise OR
+     static flipPieceColour(p) {
+        return (p & 7) | (Game.isPieceColour(p, Game.Piece.white) ? Game.Piece.black : Game.Piece.white);
     }
 
     /**
@@ -53,7 +53,7 @@
      * @returns The standard valuation of the piece
      */
     static pieceValue(p) {
-        var pieceValue = [0,1000,1,3,3,5,9];
+        let pieceValue = [0,1000,1,3,3,5,9];
         return pieceValue[p & 7] * (Game.isPieceColour(p, Game.Piece.white) ? 1 : -1);
     }
 
@@ -62,7 +62,7 @@
      * @returns True iff the piece is a bishop, rook or queen
      */
     static isPieceSliding(p) {
-        var pieceNoColour = p & 7; // Remove colour of piece with bitwise AND
+        let pieceNoColour = p & 7; // Remove colour of piece with bitwise AND
         return pieceNoColour == 4
             || pieceNoColour == 5
             || pieceNoColour == 6;
@@ -74,7 +74,7 @@
      * @returns True iff the piece is the colour given
      */
     static isPieceColour(p, col) {
-        var pieceNoType = p & 24; // Remove type of piece with bitwise AND
+        let pieceNoType = p & 24; // Remove type of piece with bitwise AND
         return pieceNoType == col;
     }
     
@@ -84,7 +84,7 @@
      * @returns True iff the piece is the type given
      */
     static isPieceType(p, type) {
-        var pieceNoColour = p & 7; // Remove colour of piece with bitwise AND
+        let pieceNoColour = p & 7; // Remove colour of piece with bitwise AND
         return pieceNoColour == type;
     }
     
@@ -189,7 +189,7 @@
      * @returns An object containing start and target if found, else false
      */
     static getStartAndTarget(initBoard, nextBoard) {
-        var diffSquares = []
+        let diffSquares = []
     
         // Get number of differences between the initial board and the next board
         for (let i = 0; i < 64; i++) {
@@ -275,56 +275,6 @@
         return false;
     
     }
-
-    /**
-     * Given two numeric arrays, returns whether the arrays contain the equal data at equal indices
-     * @param {array} a An array
-     * @param {array} b Another array
-     * @returns True iff the two arrays have the equal data at all indices
-     */
-    static arrayEqual(a, b) {
-        for (let i = 0; i < a.length; i++) {
-            if (a[i] != b[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Removes a value from an array
-     * @param {array} arr An array
-     * @param {any} value The value to remove from the array
-     * @returns The array with value removed
-     */
-    static arrayRemoveItemOnce(arr, value) {
-        var index = arr.indexOf(value);
-        if (index > -1) {
-          arr.splice(index, 1);
-        }
-        return arr;
-      }
-      
-
-    /**
-     * Given two numbers, returns the largest number
-     * @param {number} a A number
-     * @param {number} b Another number
-     * @returns The largest number
-     */
-    static max(a, b) {
-        return (a > b) ? a : b;
-    }
-
-    /**
-     * Given two numbers, returns the smallest number
-     * @param {number} a A number
-     * @param {number} b Another number
-     * @returns The smallest number
-     */
-    static min(a,b) {
-        return (a < b) ? a : b;
-    }
     
     /**
      * Toggles the colour to move on the board
@@ -340,7 +290,7 @@
      * @returns An associative array of the moves
      */
     generateAllLegalMoves(isCheckingCheck = false) {
-        var moves = []
+        let moves = []
         for (let i = 0; i < 64; i++) {
             this.generateLegalMoves(i, isCheckingCheck).forEach(move => {
                 moves[move] = move;
@@ -358,14 +308,14 @@
      * @returns  An associative array of the moves
      */
     generateLegalMoves(start, isCheckingCheck = false) {
-        var moves = []
-        var piece = this.board.square[start];
+        let moves = []
+        let piece = this.board.square[start];
         if (Game.isPieceColour(piece, this.board.colourToMove)) {
     
             // Generate piece moves then add them to associative array
             if (Game.isPieceSliding(piece)) {
                 this.generateSlidingMoves(start, piece).forEach(code => {
-                    var move = Game.decode(code);
+                    let move = Game.decode(code);
                     // If checking check, only add move if it does not move into check
                     if (!isCheckingCheck || this.makeMove(move.start, move.target, true)) {
                         moves[code] = code;
@@ -374,7 +324,7 @@
     
             } else if (Game.isPieceType(piece, Game.Piece.king)) {
                 this.generateKingMoves(start).forEach(code => {
-                    var move = Game.decode(code);
+                    let move = Game.decode(code);
                     // If checking check, only add move if it does not move into check
                     if (!isCheckingCheck || this.makeMove(move.start, move.target, true)) {
                         moves[code] = code;
@@ -383,7 +333,7 @@
             
             } else if (Game.isPieceType(piece, Game.Piece.knight)) {
                 this.generateKnightMoves(start).forEach(code => {
-                    var move = Game.decode(code);
+                    let move = Game.decode(code);
                     // If checking check, only add move if it does not move into check
                     if (!isCheckingCheck || this.makeMove(move.start, move.target, true)) {
                         moves[code] = code;
@@ -392,7 +342,7 @@
             
             } else if (Game.isPieceType(piece, Game.Piece.pawn)) {
                 this.generatePawnMoves(start).forEach(code => {
-                    var move = Game.decode(code);
+                    let move = Game.decode(code);
                     // If checking check, only add move if it does not move into check
                     if (!isCheckingCheck || this.makeMove(move.start, move.target, true)) {
                         moves[code] = code;
@@ -411,8 +361,8 @@
      * @returns  An associative array of the moves
      */
     generateKingMoves(start) {
-        var moves = [];
-        var key;
+        let moves = [];
+        let key;
     
         // Standard move (to surrounding squares)
         for (let i = 0; i < 8; i++) {
@@ -474,15 +424,15 @@
      * @returns  An associative array of the moves
      */
     generateKnightMoves(start) {
-        var moves = [];
-        var offsets = [[2,1], [1,2], [-2,1], [1,-2], [2,-1], [-1,2], [-2,-1], [-1,-2]];
+        let moves = [];
+        let offsets = [[2,1], [1,2], [-2,1], [1,-2], [2,-1], [-1,2], [-2,-1], [-1,-2]];
         // [i,k], where i is difference in x index, j is difference in y index from start to target
         
         for (let i = 0; i < 8; i++) {
-            var xOffset = offsets[i][0];
-            var yOffset = offsets[i][1];
-            var x = Game.convert1dTo2d(start).x;
-            var y = Game.convert1dTo2d(start).y;
+            let xOffset = offsets[i][0];
+            let yOffset = offsets[i][1];
+            let x = Game.convert1dTo2d(start).x;
+            let y = Game.convert1dTo2d(start).y;
     
             if (x + xOffset >= 0 && x + xOffset <= 7
                 && y + yOffset >= 0 && y + yOffset <= 7) { // Check move in boundaries of board
@@ -506,8 +456,8 @@
      * @returns  An associative array of the moves
      */
     generatePawnMoves(start) {
-        var moves = [];
-        var yOffset, initRank;
+        let moves = [];
+        let yOffset, initRank;
     
         if (this.board.colourToMove == Game.Piece.white) {
             yOffset = -8;
@@ -573,9 +523,9 @@
      * @returns  An associative array of the moves
      */
     generateSlidingMoves(start, piece) {
-        var moves = []
-        var startDirIndex = (Game.isPieceType(piece, Game.Piece.bishop)) ? 4 : 0; // Bishop can only move in last 4 directions in board.directionOffsets
-        var endDirIndex = (Game.isPieceType(piece, Game.Piece.rook)) ? 4 : 8;     // Rook can only move in first 4 directions in board.directionOffsets
+        let moves = []
+        let startDirIndex = (Game.isPieceType(piece, Game.Piece.bishop)) ? 4 : 0; // Bishop can only move in last 4 directions in board.directionOffsets
+        let endDirIndex = (Game.isPieceType(piece, Game.Piece.rook)) ? 4 : 8;     // Rook can only move in first 4 directions in board.directionOffsets
     
         for (let directionIndex = startDirIndex; directionIndex < endDirIndex; directionIndex++) {
             for (let n = 0; n < this.board.numSquaresToEdge[start][directionIndex]; n++) {
@@ -631,7 +581,7 @@
             this.board.history = JSON.parse(JSON.stringify(this.board));
     
             // MAKE MOVE
-            var piece = this.board.square[start]
+            let piece = this.board.square[start]
     
             // Castling
             if (Game.isPieceType(this.board.square[target], Game.Piece.rook)
@@ -792,11 +742,11 @@
             // CHECK END OF GAME STATES
             } else {
     
-                var validMoves = this.hasValidMoves();
+                let validMoves = this.hasValidMoves();
     
                 this.switchColour();
     
-                var check = this.isInCheck();
+                let check = this.isInCheck();
     
                 if (check && this.board.colourToMove == Game.Piece.white) {
                     this.board.whiteInCheck = true;
@@ -818,12 +768,12 @@
                 }
     
                 // Stalemate: threefold reptition
-                var count = 1;
-                var temp = this.board;
+                let count = 1;
+                let temp = this.board;
                 while (temp.history) {
                     temp = temp.history;
     
-                    if (Game.arrayEqual(this.board.square, temp.square)) {
+                    if (arrayEqual(this.board.square, temp.square)) {
                         count++;
                     }
     
@@ -835,9 +785,9 @@
                 }
     
                 // Stalemate: insufficient material (both sides have either of: lone king, king and knight, king and bishop)
-                var whiteTotal = 0;
-                var blackTotal = 0;
-                var thereIsPawn = false;
+                let whiteTotal = 0;
+                let blackTotal = 0;
+                let thereIsPawn = false;
                 for (let i=0; i<64; i++) {
                     if (!Game.isPieceType(this.board.square[i], Game.Piece.pawn)) {
                         if (Game.isPieceColour(this.board.square[i], Game.Piece.white)) {
@@ -934,7 +884,7 @@
 
         // If equivalent piece taken by other colour, remove the equivalent piece
         if (removePiece) {
-            Game.arrayRemoveItemOnce(otherColourTaken, removePiece);
+            arrayRemoveItemOnce(otherColourTaken, removePiece);
 
         // Otherwise add the taken piece
         } else {
@@ -972,13 +922,13 @@
     isInCheck() {
     
         this.switchColour();
-        var inCheck = false;
+        let inCheck = false;
     
         // Loop over all legal moves and checks if the opponent can move to the king's position
         for (let i = 0; i < 64; i++) {
     
             this.generateLegalMoves(i, false).every(move => {
-                var target = Game.decode(move).target;
+                let target = Game.decode(move).target;
                 if (Game.isPieceType(this.board.square[target], Game.Piece.king)) {
                     inCheck = true;
                     return false;

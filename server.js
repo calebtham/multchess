@@ -10,8 +10,10 @@ const io = require("socket.io")(process.env.PORT || 3000, {
 
 const { Game } = require("./game.js");
 const { Player } = require("./player.js");
-const { makeid } = require("./utils.js");
+const { makeid } = require("./util.js");
 
+
+// Initialise server variables
 const state = {};
 const clientRooms = {};
 const blacklistedRooms = {};
@@ -19,6 +21,7 @@ let quickMatchRoom;
 
 io.on("connection", client => {
     
+    // Initialise server requests
     client.on("quickMatch", handleQuickMatch);
     client.on("newGame", handleNewGame);
     client.on("joinGame", handleJoinGame);
@@ -35,7 +38,7 @@ io.on("connection", client => {
     client.on("disconnect", handleDisconnect);
     
     function handleDisconnect() {
-        var roomName = clientRooms[client.id];
+        let roomName = clientRooms[client.id];
         
         if (roomName) {
             let room = io.sockets.adapter.rooms.get(roomName);
@@ -141,14 +144,16 @@ io.on("connection", client => {
     }
 
     function handleMoveMade(nextBoard) {
-        var roomName = clientRooms[client.id];
+        let roomName = clientRooms[client.id];
 
         if (roomName && nextBoard) {
-            var initBoard = state[roomName].game.board; 
-            var valid = false;
+            let initBoard = state[roomName].game.board; 
+            let valid = false;
+
+            
     
             if (initBoard.colourToMove == client.player.colour) { // Check client was meant to make the next move
-                var move = Game.getStartAndTarget(initBoard, nextBoard); // Checks there is a potential move to get from init board to next board and returns the move if so
+                let move = Game.getStartAndTarget(initBoard, nextBoard); // Checks there is a potential move to get from init board to next board and returns the move if so
     
                 if (!initBoard.isGameFinished && move) {
                     if (state[roomName].game.makeMove(move.start, move.target)) { 
@@ -195,7 +200,7 @@ io.on("connection", client => {
     }
 
     function handleResign() {
-        var roomName = clientRooms[client.id];
+        let roomName = clientRooms[client.id];
 
         if (roomName) {
             state[roomName][3 - client.player.number].score++;
@@ -209,7 +214,7 @@ io.on("connection", client => {
     }
 
     function handleTimeout() {
-        var roomName = clientRooms[client.id];
+        let roomName = clientRooms[client.id];
 
         if (roomName) {
 
@@ -233,7 +238,7 @@ io.on("connection", client => {
     }
 
     function handleRematchRequest() {
-        var roomName = clientRooms[client.id];
+        let roomName = clientRooms[client.id];
 
         if (roomName) {
             state[roomName][client.player.number].selectBooleanFlag("rematchRequestSent")
@@ -244,13 +249,13 @@ io.on("connection", client => {
     }
 
     function handleRematchAccept() {
-        var roomName = clientRooms[client.id];
+        let roomName = clientRooms[client.id];
 
         if (roomName && state[roomName][3 - client.player.number].rematchRequestSent) { // Check opponent actually requested this
-            var startingPlayer = (state[roomName].game.board.startingPlayer == 1) ? 2 : 1; // switch starting player
-            var prevGame = state[roomName].game;
+            let startingPlayer = (state[roomName].game.board.startingPlayer == 1) ? 2 : 1; // switch starting player
+            let prevGame = state[roomName].game;
 
-            var temp = state[roomName][1].colour;
+            let temp = state[roomName][1].colour;
             state[roomName][1].colour = state[roomName][2].colour;
             state[roomName][2].colour = temp;
 
@@ -274,7 +279,7 @@ io.on("connection", client => {
     }
 
     function handleDrawRequest() {
-        var roomName = clientRooms[client.id];
+        let roomName = clientRooms[client.id];
 
         if (roomName) {
             state[roomName][client.player.number].selectBooleanFlag("drawRequestSent");
@@ -285,7 +290,7 @@ io.on("connection", client => {
     }
 
     function handleDrawAccept() {
-        var roomName = clientRooms[client.id];
+        let roomName = clientRooms[client.id];
 
         if (roomName && state[roomName][3 - client.player.number].drawRequestSent) { // Check opponent actually requested this
             draw(roomName);
@@ -304,7 +309,7 @@ io.on("connection", client => {
     }
 
     function handleTakebackRequest() {
-        var roomName = clientRooms[client.id];
+        let roomName = clientRooms[client.id];
 
         if (roomName) {
             state[roomName][client.player.number].selectBooleanFlag("takebackRequestSent");
@@ -315,7 +320,7 @@ io.on("connection", client => {
     }
 
     function handleTakebackAccept() {
-        var roomName = clientRooms[client.id];
+        let roomName = clientRooms[client.id];
 
         if (roomName && state[roomName][3 - client.player.number].takebackRequestSent) { // Check opponent actually requested this
             state[roomName][1].selectBooleanFlag("none");
@@ -327,7 +332,7 @@ io.on("connection", client => {
     }
 
     function handleDecline() {
-        var roomName = clientRooms[client.id];
+        let roomName = clientRooms[client.id];
 
         if (roomName) {
             state[roomName][client.player.number].selectBooleanFlag("decline");

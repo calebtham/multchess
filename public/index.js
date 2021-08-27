@@ -158,7 +158,7 @@ function handleGameCodeKeyPress(e) {
  * @param {MouseEvent} e Mouse event
  */
 function handleColourButton(e) {
-    var button = e.target;
+    let button = e.target;
 
     // De-select all buttons
     whiteButton.className = "btn btn-secondary";
@@ -191,7 +191,7 @@ function handleColourButton(e) {
  * @param {MouseEvent} e 
  */
 function handleIncrementButton(e) {
-    var button = e.target;
+    let button = e.target;
 
     // De-select all buttons
     noneButton.className = "btn btn-secondary";
@@ -241,7 +241,7 @@ function handleIncrementButton(e) {
  * @param {MouseEvent} e 
  */
 function handleTimerButton(e) {
-    var button = e.target;
+    let button = e.target;
 
     // De-select all buttons
     oneMinButton.className = "btn btn-secondary";
@@ -442,11 +442,11 @@ function handleClick(e) {
     if (!game.board.isGameFinished) {
 
         // Multiplier and offset used to flip board if player is black
-        var multiplier = (me.colour == Game.Piece.white) ? 1 : -1;
-        var offset = (me.colour == Game.Piece.white) ? 0 : 7;
+        let multiplier = (me.colour == Game.Piece.white) ? 1 : -1;
+        let offset = (me.colour == Game.Piece.white) ? 0 : 7;
     
-        var mouse = getMouseSquare(e);
-        var boardIndex = Game.convert2dTo1d(offset + mouse.x * multiplier, offset + mouse.y * multiplier);
+        let mouse = getMouseSquare(e);
+        let boardIndex = Game.convert2dTo1d(offset + mouse.x * multiplier, offset + mouse.y * multiplier);
     
         game.board.invalid = -1;
     
@@ -455,9 +455,9 @@ function handleClick(e) {
             (!Game.isPieceColour(game.board.square[boardIndex], game.board.colourToMove)
                 || game.board.isLegalMove[boardIndex])) { 
     
-            var start = game.board.movedFrom
+            let start = game.board.movedFrom
 
-            var madeMove = game.makeMove(start, boardIndex, false);
+            let madeMove = game.makeMove(start, boardIndex, false);
 
             // If move was invalid, update graphics indicating so
             if (!madeMove) { 
@@ -525,10 +525,10 @@ function handleHover(e) {
     if (!isTouchDevice()) {
         
         // Multiplier and offset used to flip board if player is black
-        var multiplier = (me.colour == Game.Piece.white) ? 1 : -1;
-        var offset = (me.colour == Game.Piece.white) ? 0 : 7;
-        var mouse = getMouseSquare(e);
-        var boardIndex = Game.convert2dTo1d(offset + mouse.x * multiplier, offset + mouse.y * multiplier);
+        let multiplier = (me.colour == Game.Piece.white) ? 1 : -1;
+        let offset = (me.colour == Game.Piece.white) ? 0 : 7;
+        let mouse = getMouseSquare(e);
+        let boardIndex = Game.convert2dTo1d(offset + mouse.x * multiplier, offset + mouse.y * multiplier);
     
         drawBoard();
     
