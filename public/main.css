@@ -149,11 +149,10 @@ footer {
 }
 
 @media (max-width: 500px) {
-    body {
-        margin: 0px;
-        padding: 0px;
-    }
-    div.container {
+    body,
+    div.container,
+    div.col,
+    div.row {
         margin: 0px;
         padding: 0px;
     }
@@ -168,13 +167,11 @@ footer {
     }
 
     h1 {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin: 10px;
     }
 
     p {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin: 10px;
         font-size: 16pt;
     }
 
@@ -194,7 +191,7 @@ footer {
         all: initial;
         font-family: Arial, Helvetica, sans-serif;
         width: 100%;
-        margin-left: 16px;
+        margin-left: 15px;
     }
 
     div.gameButtons button {
