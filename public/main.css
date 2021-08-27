@@ -135,9 +135,16 @@ canvas#boardCanvas {
 }
 
 footer {
+    z-index: 999;
     position: fixed;
+    width: 100%;
     bottom: 0px;
     padding: 10px;
+    margin-left: -20px;
+    text-align: left;
+    color: #f5ecdf;
+    background-color: #b58863;
+    box-shadow: 0px 0px 4px rgba(0,0,0,0.4);
 }
 
 
@@ -154,6 +161,7 @@ footer {
     div.row {
         margin: 0px;
         padding: 0px;
+        padding-bottom: 10px;
     }
 
     div.col-2 {
@@ -203,10 +211,6 @@ footer {
 
     div.gameButtons button {
         width: auto;
-    }
-
-    button.request {
-        width: 35%;
     }
 
     canvas#topCanvas,
