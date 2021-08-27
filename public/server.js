@@ -10,8 +10,8 @@
  * @author Caleb Tham
  */
 
-const socket = io("https://guarded-citadel-75405.herokuapp.com/");
-//const socket = io("localhost:3000");
+//const socket = io("https://guarded-citadel-75405.herokuapp.com/");
+const socket = io("localhost:3000");
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
@@ -57,7 +57,7 @@ let frequency = 37; // frequency of interval in ms
  * Updates the timer on client side
  */
 function updateTimer() {
-    if (board.colourToMove == me.colour) {
+    if (game.board.colourToMove == me.colour) {
         updatePlayerTimer(me)
     } else {
         updatePlayerTimer(opponent)
@@ -104,7 +104,7 @@ function handleUnknownGame() {
     gameCodeDisplay.innerText = "Your game code is: " + gameCode;
 
     // Update game state
-    board = state.game.board;
+    game = new Game(state.game);
     me = state[number];
     opponent = state[3 - number]
 
@@ -128,11 +128,12 @@ function handleUnknownGame() {
  * @param {Object} state    The game state (i.e. a board object)
  */
 function handleGameState(state, number) {
-    board = state.game.board;
+
+    game = new Game(state.game);
     me = state[number];
     opponent = state[3 - number];
 
-    if (board.isGameFinished) { // If game end, stop timer
+    if (game.board.isGameFinished) { // If game end, stop timer
         clearInterval(timerInterval);
     }
 

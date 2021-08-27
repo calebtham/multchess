@@ -65,7 +65,7 @@ function drawBoard() {
 function updateButtons() {
 
     // If no game in progress
-    if (!me.opponentJoined || board.isGameFinished) {
+    if (!me.opponentJoined || game.board.isGameFinished) {
         drawButton.className = "btn btn-secondary";
         resignButton.className = "btn btn-secondary";
         
@@ -85,9 +85,9 @@ function updateButtons() {
     }
 
     // If player is able to takeback
-    if (((me.colour == Piece.white && board.history)
-        || (me.colour == Piece.black && board.history && board.history.history))
-        && !board.isGameFinished) {
+    if (((me.colour == Game.Piece.white && game.board.history)
+        || (me.colour == Game.Piece.black && game.board.history && game.board.history.history))
+        && !game.board.isGameFinished) {
 
         takebackButton.className = "btn btn-primary";
         takebackButton.disabled = false;
@@ -99,7 +99,7 @@ function updateButtons() {
     }
 
     // If game finished
-    if (board.isGameFinished && !me.rematchRequestRecieved && !me.opponentDisconnected) {
+    if (game.board.isGameFinished && !me.rematchRequestRecieved && !me.opponentDisconnected) {
         rematchButton.className = "btn btn-success";
         rematchButton.disabled = false;
 
@@ -201,10 +201,10 @@ function updateText() {
         topPlayerLabel.innerText = " Opponent: " + opponent.score;
 
         // Indicate which player turn it is with glow on text
-        if (board.isGameFinished) {
+        if (game.board.isGameFinished) {
             topPlayerLabel.classList.remove("glow");
             bottomPlayerLabel.classList.remove("glow");
-        } else if (board.colourToMove == me.colour) {
+        } else if (game.board.colourToMove == me.colour) {
             topPlayerLabel.classList.remove("glow");
             bottomPlayerLabel.classList.add("glow");
         } else {
@@ -217,7 +217,7 @@ function updateText() {
     }
 
     // Highlight the active timer
-    if (board.colourToMove == me.colour) {
+    if (game.board.colourToMove == me.colour) {
         topTimerLabel.style.color = "rgba(255,255,255,0.5)";
         bottomTimerLabel.style.color = "rgba(255,255,255,0.9)";
     } else {
@@ -259,23 +259,23 @@ function drawTakenPieces(ctx) {
     ctx.font = "16px sans-serif";
 
     // If drawing pieces white has taken
-    if (player.colour == Piece.white) {
-        board.blackPiecesTaken.forEach(piece => {
+    if (player.colour == Game.Piece.white) {
+        game.board.blackPiecesTaken.forEach(piece => {
             ctx.drawImage(IMG[piece], offset * i, 0, 20, 20);
             i++;
         });
-        if (board.whiteAdvantage > 0) { // If white has advantage
-            ctx.fillText(" + " + board.whiteAdvantage, offset * i, 17);
+        if (game.board.whiteAdvantage > 0) { // If white has advantage
+            ctx.fillText(" + " + game.board.whiteAdvantage, offset * i, 17);
         }
 
     // If drawing pieces black has taken
     } else {
-        board.whitePiecesTaken.forEach(piece => {
+        game.board.whitePiecesTaken.forEach(piece => {
             ctx.drawImage(IMG[piece], offset * i, 0, 20, 20);
             i++;
         });
-        if (board.whiteAdvantage < 0) { // If black has advantage
-            ctx.fillText(" + " + -1 * board.whiteAdvantage, offset * i, 17);
+        if (game.board.whiteAdvantage < 0) { // If black has advantage
+            ctx.fillText(" + " + -1 * game.board.whiteAdvantage, offset * i, 17);
         }
     }
     
@@ -287,8 +287,8 @@ function drawTakenPieces(ctx) {
 function drawBoardColour() {
 
     // Multiplier and offset used to flip board for black
-    var multiplier = (me.colour == Piece.white) ? 1 : -1;
-    var offset = (me.colour == Piece.white) ? 0 : 7;
+    var multiplier = (me.colour == Game.Piece.white) ? 1 : -1;
+    var offset = (me.colour == Game.Piece.white) ? 0 : 7;
 
     // Fill board dark brown
     boardCtx.fillStyle = BOARD_DARK;
@@ -303,17 +303,17 @@ function drawBoardColour() {
             }
 
             // Highlight legal moves green
-            if (board.isLegalMove[convert2dTo1d(i,j)]) { 
+            if (game.board.isLegalMove[Game.convert2dTo1d(i,j)]) { 
                 colourSquare(offset + multiplier * i, offset + multiplier * j,"rgb(0, 255,0,0.2)");
             }
 
             // Highlight squares that a piece has just moved to / from
-            if (board.movedFrom == convert2dTo1d(i,j) || board.movedTo == convert2dTo1d(i,j)) {
+            if (game.board.movedFrom == Game.convert2dTo1d(i,j) || game.board.movedTo == Game.convert2dTo1d(i,j)) {
                 colourSquare(offset + multiplier * i, offset + multiplier * j,"rgb(255,255,0,0.2)");
             }
 
             // Highlight square red if just made invalid move from there
-            if (board.invalid == convert2dTo1d(i,j)) {
+            if (game.board.invalid == Game.convert2dTo1d(i,j)) {
                 colourSquare(offset + multiplier * i, offset + multiplier * j,"rgb(255,0,0,0.5)");
             }
         }
@@ -327,8 +327,8 @@ function drawBoardColour() {
  */
 function drawBoardPieces() {
     for (let i = 0; i < 64; i++) {
-        if (i != board.hiddenSquare) {
-            drawPiece(convert1dTo2d(i).x, convert1dTo2d(i).y, board.square[i]);
+        if (i != game.board.hiddenSquare) {
+            drawPiece(Game.convert1dTo2d(i).x, Game.convert1dTo2d(i).y, game.board.square[i]);
         }
     }
 }
@@ -343,8 +343,8 @@ function drawPiece(x, y, piece) {
     if (piece == 0) return;
 
     // Multiplier and offset used to flip board for black
-    var multiplier = (me.colour == Piece.white) ? 1 : -1;
-    var offset = (me.colour == Piece.white) ? 0 : 7;
+    var multiplier = (me.colour == Game.Piece.white) ? 1 : -1;
+    var offset = (me.colour == Game.Piece.white) ? 0 : 7;
 
     x = offset + multiplier * x;
     y = offset + multiplier * y;

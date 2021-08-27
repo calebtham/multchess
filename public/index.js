@@ -116,9 +116,16 @@ blackButton.addEventListener("click", handleColourButton);
 /**
  * Game setup variables
  */
-var timer = 5; 
-var increment = 0;
-var colour;
+let timer = 5; 
+let increment = 0;
+let colour;
+
+/**
+ * Game variables
+ */
+let game;
+let me;
+let opponent;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -162,7 +169,7 @@ function handleColourButton(e) {
     switch (button) {
         case whiteButton:
         case document.getElementById("white"): // Add this case since this is the target if press image
-            colour = Piece.white;
+            colour = Game.Piece.white;
             button = whiteButton
             break;
         case randomButton:
@@ -170,7 +177,7 @@ function handleColourButton(e) {
             break;
         case blackButton:
         case document.getElementById("black"): // Add this case since this is the target if press image
-            colour = Piece.black;
+            colour = Game.Piece.black;
             button = blackButton
             break;
     }
@@ -334,6 +341,8 @@ function handleNewGameButton() {
  * Function to indicate to server join button was pressed
  */
 function handleJoinGameButton() {
+    initialScreen.style.display = "none";
+    gameScreen.style.display = "block";
     socket.emit("joinGame", gameCodeInput.value);
 }
 
@@ -430,75 +439,75 @@ function handleResize() {
  * @param {MouseEvent} e Mouse event
  */
 function handleClick(e) {
-    if (!board.isGameFinished) {
+    if (!game.board.isGameFinished) {
 
         // Multiplier and offset used to flip board if player is black
-        var multiplier = (me.colour == Piece.white) ? 1 : -1;
-        var offset = (me.colour == Piece.white) ? 0 : 7;
+        var multiplier = (me.colour == Game.Piece.white) ? 1 : -1;
+        var offset = (me.colour == Game.Piece.white) ? 0 : 7;
     
         var mouse = getMouseSquare(e);
-        var boardIndex = convert2dTo1d(offset + mouse.x * multiplier, offset + mouse.y * multiplier);
+        var boardIndex = Game.convert2dTo1d(offset + mouse.x * multiplier, offset + mouse.y * multiplier);
     
-        board.invalid = -1;
+        game.board.invalid = -1;
     
         // Dropping a piece
-        if (board.inHand ^ Piece.none && 
-            (!isPieceColour(board.square[boardIndex], board.colourToMove)
-                || board.isLegalMove[boardIndex])) { 
+        if (game.board.inHand ^ Game.Piece.none && 
+            (!Game.isPieceColour(game.board.square[boardIndex], game.board.colourToMove)
+                || game.board.isLegalMove[boardIndex])) { 
     
-            var start = board.movedFrom
+            var start = game.board.movedFrom
 
-            var madeMove = makeMove(start, boardIndex, false);
+            var madeMove = game.makeMove(start, boardIndex, false);
 
             // If move was invalid, update graphics indicating so
             if (!madeMove) { 
-                board.invalid = start;
-                board.isLegalMove = new Array(64).fill(false);
-                board.hiddenSquare = -1;
-                board.inHand = Piece.none;
-                board.movedTo = boardIndex;
+                game.board.invalid = start;
+                game.board.isLegalMove = new Array(64).fill(false);
+                game.board.hiddenSquare = -1;
+                game.board.inHand = Game.Piece.none;
+                game.board.movedTo = boardIndex;
                 drawBoard();
             
             // If move was valid, update graphics on client-side before checking move on server
             } else {
-                board.isLegalMove = new Array(64).fill(false);
-                board.hiddenSquare = -1;
-                board.inHand = Piece.none;
-                board.movedTo = boardIndex;
-                board.movedFrom = start;
+                game.board.isLegalMove = new Array(64).fill(false);
+                game.board.hiddenSquare = -1;
+                game.board.inHand = Game.Piece.none;
+                game.board.movedTo = boardIndex;
+                game.board.movedFrom = start;
                 updateGraphics();
-                socket.emit("moveMade", board); // Move will actually be made server-side. Still make move in client side for purpose of graphics and reducing load on server by prechecking (e.g. showing legal moves, clicking an invalid target square)
+                socket.emit("moveMade", game.board); // Move will actually be made server-side. Still make move in client side for purpose of graphics and reducing load on server by prechecking (e.g. showing legal moves, clicking an invalid target square)
             }
 
     
         // Picking up a piece of correct colour and is player's turn
-        } else if (isPieceColour(board.square[boardIndex],board.colourToMove)
-                && board.colourToMove == me.colour) {
+        } else if (Game.isPieceColour(game.board.square[boardIndex],game.board.colourToMove)
+                && game.board.colourToMove == me.colour) {
 
                     // If piece already in hand and click on the same piece, deselect piece
-                    if (board.inHand ^ Piece.none && board.movedFrom == boardIndex) {
-                        board.isLegalMove = new Array(64).fill(false);
-                        board.hiddenSquare = -1;
-                        board.inHand = Piece.none;
-                        board.movedFrom = -1;
+                    if (game.board.inHand ^ Game.Piece.none && game.board.movedFrom == boardIndex) {
+                        game.board.isLegalMove = new Array(64).fill(false);
+                        game.board.hiddenSquare = -1;
+                        game.board.inHand = Game.Piece.none;
+                        game.board.movedFrom = -1;
                         drawBoard();
 
                     // If picking up new piece, show legal moves
                     } else {
-                        board.isLegalMove = new Array(64).fill(false);
+                        game.board.isLegalMove = new Array(64).fill(false);
 
-                        generateLegalMoves(boardIndex, true).forEach(move => {
-                            board.isLegalMove[decode(move).target] = true;
+                        game.generateLegalMoves(boardIndex, true).forEach(move => {
+                            game.board.isLegalMove[Game.decode(move).target] = true;
                         });
                 
-                        board.inHand = board.square[boardIndex];
-                        board.movedTo = -1
-                        board.movedFrom = boardIndex
-                        board.hiddenSquare = -1;
+                        game.board.inHand = game.board.square[boardIndex];
+                        game.board.movedTo = -1
+                        game.board.movedFrom = boardIndex
+                        game.board.hiddenSquare = -1;
                 
                         drawBoard();
 
-                        board.hiddenSquare = boardIndex;
+                        game.board.hiddenSquare = boardIndex;
                     }
             
     
@@ -516,21 +525,21 @@ function handleHover(e) {
     if (!isTouchDevice()) {
         
         // Multiplier and offset used to flip board if player is black
-        var multiplier = (me.colour == Piece.white) ? 1 : -1;
-        var offset = (me.colour == Piece.white) ? 0 : 7;
+        var multiplier = (me.colour == Game.Piece.white) ? 1 : -1;
+        var offset = (me.colour == Game.Piece.white) ? 0 : 7;
         var mouse = getMouseSquare(e);
-        var boardIndex = convert2dTo1d(offset + mouse.x * multiplier, offset + mouse.y * multiplier);
+        var boardIndex = Game.convert2dTo1d(offset + mouse.x * multiplier, offset + mouse.y * multiplier);
     
         drawBoard();
     
         // If piece in hand, draw piece
-        if (board.inHand ^ Piece.none) {
-            if (isPieceColour(board.square[boardIndex], me.colour) && !board.isLegalMove[boardIndex]) {
-                let square = convert1dTo2d(board.hiddenSquare);
-                drawPiece(square.x, square.y, board.inHand);
+        if (game.board.inHand ^ Game.Piece.none) {
+            if (Game.isPieceColour(game.board.square[boardIndex], me.colour) && !game.board.isLegalMove[boardIndex]) {
+                let square = Game.convert1dTo2d(game.board.hiddenSquare);
+                drawPiece(square.x, square.y, game.board.inHand);
                 colourSquare(mouse.x, mouse.y, "rgba(255,255,255,0.3)");
             } else {
-                drawPiece(offset + mouse.x * multiplier, offset + mouse.y * multiplier, board.inHand);
+                drawPiece(offset + mouse.x * multiplier, offset + mouse.y * multiplier, game.board.inHand);
             }
             
         // Else, draw highlight
@@ -545,9 +554,9 @@ function handleHover(e) {
  * @param {MouseEvent} e Mouse event
  */
 function handleMouseLeave(e) {
-    board.isLegalMove = new Array(64).fill(false);
-    board.hiddenSquare = -1;
-    board.inHand = Piece.none;    
+    game.board.isLegalMove = new Array(64).fill(false);
+    game.board.hiddenSquare = -1;
+    game.board.inHand = Game.Piece.none;    
     drawBoard();
 }
 
