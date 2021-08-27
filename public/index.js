@@ -8,32 +8,6 @@
 /**
  * Initialise document variables and events
  */
-const BOARD_LIGHT = "#f0d9b5";
-const BOARD_DARK = "#b58863";
-
-// Store images of all pieces in an object. Image name corresponds to their respective piece number
-const IMG = { 
-    "9": document.getElementById("9"),
-    "10": document.getElementById("10"),
-    "11": document.getElementById("11"),
-    "12": document.getElementById("12"),
-    "13": document.getElementById("13"),
-    "14": document.getElementById("14"),
-    "17": document.getElementById("17"),
-    "18": document.getElementById("18"),
-    "19": document.getElementById("19"),
-    "20": document.getElementById("20"),
-    "21": document.getElementById("21"),
-    "22": document.getElementById("22")
-};
-
-let squareSize = getSquareSize();
-let boardCanvas;
-let boardCtx;
-let topCanvas;
-let topCtx;
-let bottomCanvas;
-let bottomCtx
 
 // Initial screen elements
 const initialScreen = document.getElementById("initialScreen");
@@ -113,16 +87,43 @@ whiteButton.addEventListener("click", handleColourButton);
 randomButton.addEventListener("click", handleColourButton);
 blackButton.addEventListener("click", handleColourButton);
 
-/**
- * Game setup variables
- */
+// Canvas Variables
+const BOARD_LIGHT = "#f0d9b5";
+const BOARD_DARK = "#b58863";
+let boardCanvas;
+let boardCtx;
+let topCanvas;
+let topCtx;
+let bottomCanvas;
+let bottomCtx
+let squareSize = getSquareSize();
+
+// Store images of all pieces in an object. Image name corresponds to their respective piece number
+const IMG = { 
+    "9": document.getElementById("9"),
+    "10": document.getElementById("10"),
+    "11": document.getElementById("11"),
+    "12": document.getElementById("12"),
+    "13": document.getElementById("13"),
+    "14": document.getElementById("14"),
+    "17": document.getElementById("17"),
+    "18": document.getElementById("18"),
+    "19": document.getElementById("19"),
+    "20": document.getElementById("20"),
+    "21": document.getElementById("21"),
+    "22": document.getElementById("22")
+};
+
+// Timer variables
+const FREQUENCY = 37; // frequency of interval in ms
+let timerInterval;
+
+// Game setup variables
 let timer = 5; 
 let increment = 0;
 let colour;
 
-/**
- * Game variables
- */
+// Game variables
 let game;
 let me;
 let opponent;
@@ -183,7 +184,6 @@ function handleColourButton(e) {
     }
 
     button.className = "btn btn-primary";
-
 }
 
 /**
@@ -233,7 +233,6 @@ function handleIncrementButton(e) {
             increment = 60;
             break;
     }
-
 }
 
 /**
@@ -351,7 +350,6 @@ function handleJoinGameButton() {
  * Indicate to server user accepted a request and which request was accepted
  */
 function handleAcceptButton() {
-
     if (me.rematchRequestRecieved) {
         socket.emit("rematchAccept");
 
@@ -503,11 +501,8 @@ function handleClick(e) {
 
                         game.board.hiddenSquare = boardIndex;
                     }
-            
-    
         } 
     }
-    
 }
 
 /**

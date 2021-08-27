@@ -1,4 +1,5 @@
 /**
+ * Handle client requests
  * @author Caleb Tham
  */
 
@@ -21,7 +22,7 @@ let quickMatchRoom;
 
 io.on("connection", client => {
     
-    // Initialise server requests
+    // Initialise client requests
     client.on("quickMatch", handleQuickMatch);
     client.on("newGame", handleNewGame);
     client.on("joinGame", handleJoinGame);
@@ -37,13 +38,17 @@ io.on("connection", client => {
     client.on("timeout", handleTimeout);
     client.on("disconnect", handleDisconnect);
     
+    /**
+     * Notify a player that their opponent has disconnected.
+     * Updates variables to stop another player from joining a disconnected room
+     */
     function handleDisconnect() {
         let roomName = clientRooms[client.id];
         
         if (roomName) {
             let room = io.sockets.adapter.rooms.get(roomName);
 
-            // if one player left, notify player
+            // If one player left, notify player
             if (room) {
                 blacklistedRooms[roomName] = true;
     
@@ -51,7 +56,7 @@ io.on("connection", client => {
                 state[roomName][3 - client.player.number].selectBooleanFlag("opponentDisconnected");
                 emitState(roomName);
     
-                // room destroyed automatically when all clients leave - just remove room from blacklist
+            // Room destroyed automatically when all clients leave, so just remove room from blacklist
             } else {
                 blacklistedRooms[roomName] = undefined;
                 if (quickMatchRoom == roomName) {
@@ -59,9 +64,11 @@ io.on("connection", client => {
                 }
             }
         }
-
     }
 
+    /**
+     * If there is a pending quick match, join this. Otherwise, create a pending quick match
+     */
     function handleQuickMatch() {
         if (quickMatchRoom) {
             handleJoinGame(quickMatchRoom);
@@ -72,6 +79,13 @@ io.on("connection", client => {
         }
     }
 
+    /**
+     * Creates a new game and initialises player 1
+     * @param {number} timer Game timer in minutes
+     * @param {number} increment Game timer increment in seconds
+     * @param {number} colour Colour player 1 is to start as
+     * @returns The client's room name
+     */
     function handleNewGame(timer = Infinity, increment = 0, colour = undefined) {
         let roomName;
         while (!roomName || io.sockets.adapter.rooms.get(roomName)) {
@@ -83,6 +97,13 @@ io.on("connection", client => {
         return roomName;
     }
 
+    /**
+     * Initialises state variables of the room
+     * @param {string} roomName The client's room name
+     * @param {number} timer Game timer in minutes
+     * @param {number} increment Game timer increment in seconds
+     * @param {number} colour Colour player 1 is to start as
+     */
     function initRoomState(roomName, timer, increment, colour) {
         state[roomName] = {}
         state[roomName].game = new Game(undefined, timer, increment, colour);
@@ -90,6 +111,11 @@ io.on("connection", client => {
         state[roomName][2] = new Player(2, timer);
     }
 
+    /**
+     * Initialises client variables of the room
+     * @param {string} roomName The client's room name
+     * @param {number} playerNumber The client's player number
+     */
     function initClient(roomName, playerNumber) {
         clientRooms[client.id] = roomName;
         client.join(roomName);
@@ -111,6 +137,11 @@ io.on("connection", client => {
         client.emit("init", roomName, state[roomName], playerNumber);
     }
 
+    /**
+     * Checks if the room exists or is full. If not, joins the client to the room and starts the
+     * game
+     * @param {string} roomName The client's room name
+     */
     function handleJoinGame(roomName) {
         if (blacklistedRooms[roomName]) {
             client.emit("tooManyPlayers");
@@ -143,14 +174,20 @@ io.on("connection", client => {
         emitState(roomName); 
     }
 
+    /**
+     * Verifies the move is valid and makes the move on the server (to ensure board variables are 
+     * updated as appropriate).
+     * Updates the player timers.
+     * Handles end game states.
+     * @param {Object} nextBoard The next board
+     * @returns True iff the move made is valid
+     */
     function handleMoveMade(nextBoard) {
         let roomName = clientRooms[client.id];
 
         if (roomName && nextBoard) {
             let initBoard = state[roomName].game.board; 
             let valid = false;
-
-            
     
             if (initBoard.colourToMove == client.player.colour) { // Check client was meant to make the next move
                 let move = Game.getStartAndTarget(initBoard, nextBoard); // Checks there is a potential move to get from init board to next board and returns the move if so
@@ -190,6 +227,10 @@ io.on("connection", client => {
         
     }
 
+    /**
+     * End game and notify players the client won
+     * @param {string} roomName The client's room name
+     */
     function checkmate(roomName) {
         state[roomName][client.player.number].score++;
         state[roomName][client.player.number].selectBooleanFlag("won");
@@ -199,6 +240,9 @@ io.on("connection", client => {
         emitState(roomName);
     }
 
+    /**
+     * End game and notify players the client resigned
+     */
     function handleResign() {
         let roomName = clientRooms[client.id];
 
@@ -213,6 +257,9 @@ io.on("connection", client => {
         
     }
 
+    /**
+     * Check if either player timed out. If so, notify the players and end game
+     */
     function handleTimeout() {
         let roomName = clientRooms[client.id];
 
@@ -230,6 +277,16 @@ io.on("connection", client => {
             
                     state[roomName].game.endGame();
                 }
+                
+                else if (state[roomName][3 - client.player.number].timeLeft <= 0) {
+                    state[roomName][3 - client.player.number].timeLeft = 0;
+
+                    state[roomName][client.player.number].score++;
+                    state[roomName][client.player.number].selectBooleanFlag("opponentTimedOut");
+                    state[roomName][3 - client.player.number].selectBooleanFlag("timedOut");
+            
+                    state[roomName].game.endGame();
+                }
     
                 emitState(roomName); 
             }
@@ -237,6 +294,9 @@ io.on("connection", client => {
         }
     }
 
+    /**
+     * Notify players that a rematch request has been sent
+     */
     function handleRematchRequest() {
         let roomName = clientRooms[client.id];
 
@@ -248,6 +308,9 @@ io.on("connection", client => {
         
     }
 
+    /**
+     * Start a new game with the starting player swapped if a rematch request had been sent
+     */
     function handleRematchAccept() {
         let roomName = clientRooms[client.id];
 
@@ -278,6 +341,9 @@ io.on("connection", client => {
         
     }
 
+    /**
+     * Notify players that a draw request has been sent
+     */
     function handleDrawRequest() {
         let roomName = clientRooms[client.id];
 
@@ -289,6 +355,9 @@ io.on("connection", client => {
         
     }
 
+    /**
+     * End game and notify players that it is a draw if a draw request had been sent
+     */
     function handleDrawAccept() {
         let roomName = clientRooms[client.id];
 
@@ -297,6 +366,10 @@ io.on("connection", client => {
         }
     }
 
+    /**
+     * End game and notify players that it is a draw
+     * @param {string} roomName The client's room name
+     */
     function draw(roomName) {
         state[roomName][client.player.number].score++;
         state[roomName][3 - client.player.number].score++;
@@ -308,6 +381,9 @@ io.on("connection", client => {
         emitState(roomName);
     }
 
+    /**
+     * Notify players a takeback request has been sent
+     */
     function handleTakebackRequest() {
         let roomName = clientRooms[client.id];
 
@@ -319,6 +395,9 @@ io.on("connection", client => {
         
     }
 
+    /**
+     * Service a takeback request if one had been sent
+     */
     function handleTakebackAccept() {
         let roomName = clientRooms[client.id];
 
@@ -331,6 +410,9 @@ io.on("connection", client => {
         }
     }
 
+    /**
+     * Notify players a request has been declined
+     */
     function handleDecline() {
         let roomName = clientRooms[client.id];
 
@@ -342,6 +424,11 @@ io.on("connection", client => {
         
     }
 
+    /**
+     * Updates the player's time left on the timer
+     * @param {string} roomName The client's room name
+     * @param {number} number The player's number
+     */
     function updatePlayerTimer(roomName, number) {
         if (state[roomName].game.timer != Infinity) {
             let timeLastMoved = (state[roomName][3 - number].timeLastMoved) ? state[roomName][3 - number].timeLastMoved : Date.now();
@@ -355,6 +442,11 @@ io.on("connection", client => {
         }   
     }
 
+    /**
+     * Applies a function to each client in a room
+     * @param {string} roomName The room name
+     * @param {*} func The function to apply to each client
+     */
     function forEachClientIn(roomName, func) {
         for (const clientId of io.sockets.adapter.rooms.get(roomName)) {
             const clientSocket = io.sockets.sockets.get(clientId);
@@ -363,6 +455,13 @@ io.on("connection", client => {
         }
     }
     
+    /**
+     * Emits an event to the client's opponent
+     * @param {string} roomName The client's room name
+     * @param {string} event Event to emit
+     * @param {any} data1 Argument 1
+     * @param {any} data2 Argument 2
+     */
     function emitOpponent(roomName, event, data1, data2) {
         forEachClientIn(roomName, function(c) {
             if (c.id != client.id) {
@@ -371,10 +470,20 @@ io.on("connection", client => {
         })
     }
     
+    /**
+     * Emits an event to all players in the room
+     * @param {string} roomName The client's room name
+     * @param {string} event Event to emit
+     * @param {any} data Argument 1
+     */
     function emitAll(roomName, event, data) {
         io.sockets.in(roomName).emit(event, data);
     }
     
+    /**
+     * Emits the relevant game state to all players in the room
+     * @param {string} roomName The client's room name
+     */
     function emitState(roomName) {
         if (!client.player.rematchRequestSent 
             && !(state[roomName].game.board.isGameFinished 
@@ -382,7 +491,8 @@ io.on("connection", client => {
                     || client.player.rematchRequestSent 
                     || client.player.requestDeclined 
                     || state[roomName][3-client.player.number].requestDeclined))) { // game end timer bug
-            updatePlayerTimer(roomName, (client.player.colour == state[roomName].game.board.colourToMove) ? client.player.number : 3 - client.player.number);
+            
+                        updatePlayerTimer(roomName, (client.player.colour == state[roomName].game.board.colourToMove) ? client.player.number : 3 - client.player.number);
         } 
 
         client.emit("gameState", state[roomName], client.player.number);

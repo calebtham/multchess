@@ -1,3 +1,7 @@
+/**
+ * Player class
+ * @author Caleb Tham
+ */
 class Player {
     number;
     colour;

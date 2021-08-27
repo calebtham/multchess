@@ -1,11 +1,12 @@
-module.exports = {
-    makeid,
-    arrayEqual,
-    arrayRemoveItemOnce,
-    max,
-    min
-}
+/**
+ * Useful functions
+ * @author Caleb Tham
+ */
 
+/**
+ * @param {number} length Length of the ID
+ * @returns A random string of alphanumeric of the given length
+ */
 function makeid(length) {
     let result = '';
     let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -63,4 +64,12 @@ function max(a, b) {
  */
 function min(a,b) {
     return (a < b) ? a : b;
+}
+
+module.exports = {
+    makeid,
+    arrayEqual,
+    arrayRemoveItemOnce,
+    max,
+    min
 }

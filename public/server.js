@@ -10,18 +10,14 @@
  * @author Caleb Tham
  */
 
-const socket = io("https://guarded-citadel-75405.herokuapp.com/");
-//const socket = io("localhost:3000");
+//const socket = io("https://guarded-citadel-75405.herokuapp.com/");
+const socket = io("localhost:3000");
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
 socket.on("opponentJoined", handleOpponentJoined);
 socket.on("unknownGame", handleUnknownGame);
 socket.on("tooManyPlayers", handleTooManyPlayers);
-/** */
-
-let timerInterval;
-let frequency = 37; // frequency of interval in ms
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,7 +31,7 @@ let frequency = 37; // frequency of interval in ms
  function handleOpponentJoined() {
 
     // Add event listeners so player can make move / make game requests
-    document.addEventListener("visibilitychange", handleVisibilityChange)
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     boardCanvas.addEventListener("click", handleClick);
     boardCanvas.addEventListener("mousemove", handleHover);
     boardCanvas.addEventListener("mouseleave", handleMouseLeave)
@@ -48,13 +44,13 @@ let frequency = 37; // frequency of interval in ms
     
     if (me.timeLeft != null) { // If there is a timer, start it on client-side
         clearInterval(timerInterval);
-        timerInterval = setInterval(updateTimer, frequency);
+        timerInterval = setInterval(updateTimer, FREQUENCY);
     }
     
 }
 
 /**
- * Updates the timer on client side
+ * Updates the timers on client side
  */
 function updateTimer() {
     if (game.board.colourToMove == me.colour) {
@@ -65,9 +61,13 @@ function updateTimer() {
     updateTimerText();
 }
 
+/**
+ * Update a player's timer
+ * @param {Object} player The player
+ */
 function updatePlayerTimer(player) {
-    player.timeLeft -= frequency / 1000;
-    if (player.timeLeft <= -frequency / 1000) { // Extend into negatives to give client error leeway. (actual timing done on server anyway)
+    player.timeLeft -= FREQUENCY / 1000;
+    if (player.timeLeft <= -FREQUENCY / 1000) { // Extend into negatives to give client error leeway. (actual timing done on server anyway)
         player.timeLeft = 0;
         clearInterval(timerInterval);
         socket.emit("timeout")

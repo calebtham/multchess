@@ -1,7 +1,10 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * Game Class
  * @author Caleb Tham
  */
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
  class Game {
 
     startTime;
@@ -269,11 +272,9 @@
                 start: start, 
                 target: target
             }
-    
         }
     
         return false;
-    
     }
     
     /**
@@ -349,7 +350,6 @@
                     }
                 });
             }
-    
         }
         return moves;
     }
@@ -510,7 +510,6 @@
                 key = Game.encode(start, target)
                 moves[key] = key;
             }
-    
         }
         return moves;
     }
@@ -574,13 +573,16 @@
      */
     makeMove(start, target, isGeneratingMoves = false) {
     
-        // If called for purpose of generating moves or checked it is a valid move
+        // If either called for purpose of generating moves, or checked it is a valid move (with no check checks)
         if (isGeneratingMoves || this.generateLegalMoves(start, false)[Game.encode(start,target)]) {
     
-            // UPDATE HISTORY
+            // Update history
             this.board.history = JSON.parse(JSON.stringify(this.board));
     
-            // MAKE MOVE
+            /**
+             * MOVE PIECE(S)
+             */
+
             let piece = this.board.square[start]
     
             // Castling
@@ -657,11 +659,10 @@
                         this.board.square[63] = Game.Piece.none;
                     }
 
-                    
-                
             // Not castling
             } else {
     
+                // Standard move
                 this.board.square[target] = piece;
                 this.board.square[start] = Game.Piece.none;
     
@@ -686,15 +687,19 @@
                         }
                     }
                 }
-     
             }        
     
-            // UPDATE VARIABLES
+
+            /**
+             * UPDATE VARIABLES
+             */
     
             // Update ability to en passant
-            this.board.enPassantSquare = -1;
+            this.board.enPassantSquare = -1; // Reset so only can be taken en passant on next move
+
             if (Game.isPieceType(piece, Game.Piece.pawn) 
-                && Math.abs(start - target) == 16) {
+                && Math.abs(start - target) == 16) { // If pawn moved two forward, can be taken en passant
+                    
                     if (Game.isPieceColour(piece, Game.Piece.black) && Game.convert1dTo2d(start).y == 1) {
                         this.board.enPassantSquare = start + 8;
                     } else if (Game.isPieceColour(piece, Game.Piece.white) && Game.convert1dTo2d(start).y == 6) {
@@ -703,7 +708,7 @@
             }
     
             // Update ability to castle
-            if (Game.isPieceType(piece, Game.Piece.king)) {
+            if (Game.isPieceType(piece, Game.Piece.king)) { // Cannot castle if king taken
                 if (Game.isPieceColour(piece, Game.Piece.white)) {
                     this.board.canWhiteLeftCastle = false;
                     this.board.canWhiteRightCastle = false;
@@ -712,7 +717,7 @@
                     this.board.canBlackRightCastle = false;
                 }
             }
-            if (start == 0 || target == 0) { // move/take rook in corner (may activate again for non rook, so set to false)
+            if (start == 0 || target == 0) { // Cannot castle if rook moved/taken
                 this.board.canBlackLeftCastle = false;
             } else if (start == 7 || target == 7) {
                 this.board.canBlackRightCastle = false;
@@ -721,14 +726,12 @@
             } else if (start == 63 || target == 63) {
                 this.board.canWhiteRightCastle = false;
             }
-    
-            // DEALING WITH CHECK
-    
-            // Initialise check boolean
-            this.board.whiteInCheck = false;
-            this.board.blackInCheck = false;
+
+            /**
+             * UNDO MOVE IF NECESSARY
+             */
             
-            // Check moving into check
+            // Undo move if moving into check
             if (this.isInCheck()) {
                 this.undoMove()
                 return false;
@@ -739,8 +742,12 @@
                 this.undoMove();
                 return true;
             
-            // CHECK END OF GAME STATES
-            } else {
+            
+            } else { // If not generating moves / Move has actually been made
+
+            /**
+             * CHECK END OF GAME STATES
+             */
     
                 let validMoves = this.hasValidMoves();
     
@@ -754,7 +761,7 @@
                     this.board.blackInCheck = true;
                 }
     
-                // Next player has no valid moves
+                // Checkmate or Stalemate: next player has no valid moves
                 if (!validMoves) {
                     if (check) { // Checkmate
                         this.board.checkmate = true;
@@ -795,7 +802,6 @@
                             if (whiteTotal > 5) { 
                                 break;
                             }
-    
                         } else if (Game.isPieceColour(this.board.square[i], Game.Piece.black)) {
                             blackTotal += this.board.square[i] & 7;
                             if (blackTotal > 5) { 
@@ -816,9 +822,7 @@
 
                 return this.madeMove(start, target);
             }
-            
         }
-        
         return false;
     }
 
@@ -834,7 +838,7 @@
 
         if (this.board.history 
             && (!Game.isSameColour(this.board.history.square[start], this.board.history.square[target])
-                || this.board.history.enPassantSquare == target)) { // check not same colour to rule out castling, and check for en passant capture
+                || this.board.history.enPassantSquare == target)) { // Check not same colour to rule out castling, and check for en passant capture
                 
                 let piece;
 
@@ -842,7 +846,6 @@
                 piece = (this.board.history.enPassantSquare == target) ? (Game.Piece.pawn | (this.board.colourToMove)) : this.board.history.square[target];
                 if (!Game.isPieceType(piece, Game.Piece.none)) {
                     this.captured(piece);
-
                 }
 
                 // Promotion
@@ -953,6 +956,7 @@
         if (this.board.history) {
             this.board = this.board.history;
 
+            // For graphics
             this.board.hiddenSquare = -1;
             this.board.inHand = Game.Piece.none;
             this.board.isLegalMove = new Array(64).fill(false);
@@ -963,6 +967,7 @@
     
     /**
      * Carries out operations to service a request takeback for the colour given
+     * @param playerColour Colour of player who requested takeback
      */
     serviceTakeback(playerColour) {
         this.undoMove();
