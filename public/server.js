@@ -82,7 +82,7 @@ function updatePlayerTimer(player) {
  */
 function handleTooManyPlayers() {
     gameCodeInput.className = "error";
-    errorLabel.innerText = "Game already in progress"
+    errorLabel.innerText = "Game already in progress";
 }
 
 /**
@@ -90,7 +90,7 @@ function handleTooManyPlayers() {
  */
 function handleUnknownGame() {
     gameCodeInput.className = "error";
-    errorLabel.innerText = "Game not found"
+    errorLabel.innerText = "Game not found";
 }
 
 /**
@@ -100,7 +100,10 @@ function handleUnknownGame() {
  * @param {Object} state The game state (i.e. a board object)
  */
  function handleInit(gameCode, state, number) {
-    // Display game code
+    // Display
+    initialScreen.style.display = "none";
+    createScreen.style.display = "none";
+    gameScreen.style.display = "block";
     gameCodeDisplay.innerText = "Your game code is: " + gameCode;
 
     // Update game state

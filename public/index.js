@@ -312,11 +312,9 @@ function handleBackButton() {
 }
 
 /**
- * Hide initial screen and go to game screen. Indicate to server to find quick match
+ * Indicate loading. Indicate to server to find quick match
  */
 function handleQuickMatchButton() {
-    initialScreen.style.display = "none";
-    gameScreen.style.display = "block";
     socket.emit("quickMatch");
 }
 
@@ -329,20 +327,16 @@ function handleNewGameButton() {
 }
 
 /**
- * Hide create screen and go to game screen. Indicate to server to start new game with options set 
+ * Indicate loading. Indicate to server to start new game with options set 
  */
  function handleStartButton() {
-    createScreen.style.display = "none";
-    gameScreen.style.display = "block";
     socket.emit("newGame", timer, increment, colour);
 }
 
 /**
- * Function to indicate to server join button was pressed
+ * Indicate loading. Indicate to server join button was pressed
  */
 function handleJoinGameButton() {
-    initialScreen.style.display = "none";
-    gameScreen.style.display = "block";
     socket.emit("joinGame", gameCodeInput.value);
 }
 

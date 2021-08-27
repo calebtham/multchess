@@ -42,6 +42,11 @@ h2.timer {
     color: rgba(255,255,255,0.8);
 }
 
+div.center {
+    text-align: center;
+    align-items: center;
+}
+
 .discrete {
     font-size: 10pt;
     color: rgba(255,255,255,0.85);
