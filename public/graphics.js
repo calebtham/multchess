@@ -10,14 +10,14 @@
  * @returns Length of each square
  */
  function getSquareSize() {
-    if (window.innerWidth > 500) {
+    if (document.body.clientWidth > 500) {
         return min(
-            min(37 + Math.floor(((window.innerWidth - 500) / 350) * 28), 65), // min of 37, linearly scales up with window width, max of 65
-            Math.floor(window.innerHeight / 8) // 8th of window width
+            min(37 + Math.floor(((document.body.clientWidth - 500) / 350) * 28), 65), // min of 37, linearly scales up with window width, max of 65
+            Math.floor(document.body.clientHeight / 8) // 8th of window width
         );
 
     } else {
-        return Math.floor(window.innerWidth / 8);
+        return document.body.clientWidth / 8;
     }
 }
 

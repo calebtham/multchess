@@ -149,10 +149,14 @@ footer {
 }
 
 @media (max-width: 500px) {
-    body,
+    body {
+        margin: 0px;
+        margin-left: 15px;
+        padding: 0px;
+    }
     div.container {
         margin: 0px;
-        padding: 5px;
+        padding: 0px;
     }
 
     #initialScreen {
@@ -203,7 +207,7 @@ footer {
     }
 
     canvas#boardCanvas {
-        margin-left: -5px;
+        margin-left: -15px;
     }
 
     canvas#topCanvas,
