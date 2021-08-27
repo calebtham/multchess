@@ -99,7 +99,6 @@ button.request {
 }
 
 button#backButton {
-    margin-left: 8px;
     float: left;
     width: auto;
 }
@@ -157,8 +156,16 @@ footer {
         padding: 0px;
     }
 
+    div.col-2 {
+        display: none;
+    }
+
     #initialScreen {
+        padding: 20px;
         padding-top: 5vh;
+    }
+    #createScreen {
+        padding: 10px;
     }
 
     img.logo {
