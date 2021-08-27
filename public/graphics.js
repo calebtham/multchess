@@ -17,7 +17,7 @@
         );
 
     } else {
-        return document.body.clientWidth / 8;
+        return Math.floor(document.body.clientWidth) / 8;
     }
 }
 

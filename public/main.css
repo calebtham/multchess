@@ -151,7 +151,6 @@ footer {
 @media (max-width: 500px) {
     body {
         margin: 0px;
-        margin-left: 15px;
         padding: 0px;
     }
     div.container {
@@ -204,10 +203,6 @@ footer {
 
     button.request {
         width: 35%;
-    }
-
-    canvas#boardCanvas {
-        margin-left: -15px;
     }
 
     canvas#topCanvas,
