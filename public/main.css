@@ -152,7 +152,7 @@ footer {
     body,
     div.container {
         margin: 0px;
-        padding: 10px;
+        padding: 5px;
     }
 
     #initialScreen {
@@ -190,8 +190,12 @@ footer {
     div.gameButtons {
         all: initial;
         font-family: Arial, Helvetica, sans-serif;
-        width: 95%;
+        width: 100%;
         margin-left: 16px;
+    }
+
+    div.gameButtons button {
+        width: auto;
     }
 
     button.request {
@@ -199,7 +203,7 @@ footer {
     }
 
     canvas#boardCanvas {
-        margin-left: -20px;
+        margin-left: -5px;
     }
 
     canvas#topCanvas,
