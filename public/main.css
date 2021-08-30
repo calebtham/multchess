@@ -20,7 +20,7 @@ body {
     display: none;
 }
 #gameScreen > div.container {
-    max-width: 800px;
+    max-width: 900px;
 }
 
 p {
@@ -128,7 +128,59 @@ div.btn-group button.btn-primary:hover {
     box-shadow: 0px 2px 4px rgba(0,0,0,0.58);
 }
 
+div.chatWindow {
+    background-color: white;
+    border: solid 1px #00000015;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
+    padding: 5px 7px;
+    padding-right: 0px;
+    margin-top: 6px;
+    max-width: 442px;
+}
+div.chat {
+    padding-right: 15px;
+    overflow-y: scroll;
+    max-height: 330px;
+}
+div.chat p {
+    width: fit-content;
+    max-width: 75%;
+    border-radius: 5px;
+    padding: 5px 7px;
+    padding-bottom: 7px;
+    margin-bottom: 4px;
+    font-size: 11pt;
+    line-height: 120%;
+}
+div.chat p.me {
+    margin-left: auto;
+    background-color: rgb(240, 240, 240);
+}
+
+div.chat p.opponent {
+    margin-right: auto;
+    background-color: rgb(0, 140, 255);
+    color: white;
+}
+div.send {
+    align-items: right;
+    align-content: right;
+    padding: 0px;
+    margin: auto;
+}
+div.send input {
+    width: 70%;
+    border: solid 1px #00000015;
+}
+div.send button {
+    width: 25%;
+    margin-right: auto;
+    border: solid 1px #00000015;
+}
+
 canvas {
+    width: 100%;
     margin: 0px;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
@@ -153,10 +205,21 @@ footer {
 }
 
 
-@media (max-width: 610px) {
+@media (max-width: 720px) {
     button.request {
         width: 100%;
     }
+    div.gameButtons {
+        all: initial;
+        font-family: Arial, Helvetica, sans-serif;
+        width: 100%;
+        margin-left: 15px;
+    }
+
+    div.gameButtons button {
+        width: auto;
+    }
+
 }
 
 @media (max-width: 500px) {
@@ -195,6 +258,10 @@ footer {
         font-size: 16pt;
     }
 
+    div.chat p {
+        font-size: 16pt;
+    }
+
     button[type="button"],
     input[type="text"] {
         font-size: 16pt;
@@ -205,17 +272,6 @@ footer {
         font-size: 14pt;
         padding-left: 2px;
         padding-right: 2px;
-    }
-
-    div.gameButtons {
-        all: initial;
-        font-family: Arial, Helvetica, sans-serif;
-        width: 100%;
-        margin-left: 15px;
-    }
-
-    div.gameButtons button {
-        width: auto;
     }
 
     canvas#topCanvas,

@@ -41,6 +41,8 @@ socket.on("tooManyPlayers", handleTooManyPlayers);
     resignButton.addEventListener("click", handleResignButton);
     acceptButton.addEventListener("click", handleAcceptButton);
     declineButton.addEventListener("click", handleDeclineButton);
+    chatButton.addEventListener("click", handleChatButton);
+    chatInput.addEventListener("keydown", handleChatKeyDown);
     
     if (me.timeLeft != null) { // If there is a timer, start it on client-side
         clearInterval(timerInterval);

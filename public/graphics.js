@@ -10,15 +10,12 @@
  * @returns Length of each square
  */
  function getSquareSize() {
-    if (document.body.clientWidth > 500) {
-        return min(
-            min(37 + Math.floor(((document.body.clientWidth - 500) / 350) * 28), 65), // min of 37, linearly scales up with window width, max of 65
-            Math.floor(document.body.clientHeight / 8) // 8th of window width
-        );
-
+    if (boardCanvas) {
+        return boardCanvas.offsetWidth / 8
     } else {
-        return Math.floor(document.body.clientWidth) / 8;
+        return 65;
     }
+    
 }
 
 /**
@@ -43,11 +40,22 @@ function updateGraphics() {
     updateTimerText();
     updateText();
     updateButtons();
+    updateChat();
 
     if (!me.opponentJoined) {
         boardCtx.fillStyle = "rgba(255,255,255,0.5)";
         boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
     }
+}
+
+/**
+ * Updates html to show chat
+ */
+function updateChat() {
+    chatDisplay.innerHTML = game.chat.map(message => `
+        <p class="${message.playerNumber == me.number ? "me" : "opponent"}">${message.content}</p>
+    `).join('');
+    chatDisplay.scrollTop = chatDisplay.scrollHeight;
 }
 
 /**
@@ -348,6 +356,14 @@ function drawPiece(x, y, piece) {
 
     x = offset + multiplier * x;
     y = offset + multiplier * y;
+
+    if (Game.isPieceType(piece, Game.Piece.king)) {
+        if ((game.board.whiteInCheck && Game.isPieceColour(piece, Game.Piece.white))
+            || (game.board.blackInCheck && Game.isPieceColour(piece, Game.Piece.black))) {
+                
+                colourSquare(x, y, "rgb(255,0,0,0.5)")
+        }
+    }
 
     boardCtx.drawImage(IMG[piece], squareSize * x, squareSize * y, squareSize, squareSize);
 }

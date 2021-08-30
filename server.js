@@ -37,6 +37,7 @@ io.on("connection", client => {
     client.on("resign", handleResign);
     client.on("timeout", handleTimeout);
     client.on("disconnect", handleDisconnect);
+    client.on("chat", handleChat);
     
     /**
      * Notify a player that their opponent has disconnected.
@@ -420,6 +421,20 @@ io.on("connection", client => {
             state[roomName][client.player.number].selectBooleanFlag("decline");
             state[roomName][3 - client.player.number].selectBooleanFlag("requestDeclined");
             emitState(roomName) 
+        }   
+    }
+
+    function handleChat(message) {
+        let roomName = clientRooms[client.id];
+
+        if (roomName) {
+            let chatMessage = {
+                playerNumber: client.player.number,
+                content: message
+            }
+    
+            state[roomName].game.chat.push(chatMessage);
+            emitState(roomName);
         }
         
     }
@@ -463,7 +478,7 @@ io.on("connection", client => {
      * @param {any} data2 Argument 2
      */
     function emitOpponent(roomName, event, data1, data2) {
-        forEachClientIn(roomName, function(c) {
+        forEachClientIn(roomName, c => {
             if (c.id != client.id) {
                 c.emit(event, data1, data2);
             }

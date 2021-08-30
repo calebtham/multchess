@@ -13,6 +13,7 @@ class Game {
     increment;
     timer;
     board;
+    chat;
 
     // In binary, the 2 most significant digits indicate colour, and the 3 least significant digits
     // indicate type
@@ -50,6 +51,7 @@ class Game {
 
         this.increment = increment;
         this.timer = timer;
+        this.chat = [];
     }
 
     /**
@@ -768,6 +770,9 @@ class Game {
                     this.board.whiteInCheck = true;
                 } else if (check) {
                     this.board.blackInCheck = true;
+                } else {
+                    this.board.whiteInCheck = false;
+                    this.board.blackInCheck = false;
                 }
     
                 // Checkmate or Stalemate: next player has no valid moves
@@ -839,7 +844,7 @@ class Game {
      * Updates relevant variables for when a move is made. Updates variables for when a piece is captured
      * @param {number} start The index on the board that a sliding piece is to be moved from
      * @param {number} target The index on the board that a sliding piece is to be moved to
-     * @returns True
+     * @returns True (to indicate a valid move)
      */
     madeMove(start, target) {
         this.board.movedFrom = start;

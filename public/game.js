@@ -5,12 +5,13 @@
  */
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
- class Game {
+class Game {
 
     startTime;
     increment;
     timer;
     board;
+    chat;
 
     // In binary, the 2 most significant digits indicate colour, and the 3 least significant digits
     // indicate type
@@ -38,6 +39,7 @@
             this.timer = game.timer;
             this.increment = game.increment;
             this.startTime = game.startTime;
+            this.chat = game.chat;
         } else {
             this.board = Game.createInitBoard();
         }
@@ -47,7 +49,7 @@
      * @param {number} p The piece
      * @returns The piece with the colour flipped
      */
-     static flipPieceColour(p) {
+    static flipPieceColour(p) {
         return (p & 7) | (Game.isPieceColour(p, Game.Piece.white) ? Game.Piece.black : Game.Piece.white);
     }
 
@@ -759,6 +761,9 @@
                     this.board.whiteInCheck = true;
                 } else if (check) {
                     this.board.blackInCheck = true;
+                } else {
+                    this.board.whiteInCheck = false;
+                    this.board.blackInCheck = false;
                 }
     
                 // Checkmate or Stalemate: next player has no valid moves
@@ -830,7 +835,7 @@
      * Updates relevant variables for when a move is made. Updates variables for when a piece is captured
      * @param {number} start The index on the board that a sliding piece is to be moved from
      * @param {number} target The index on the board that a sliding piece is to be moved to
-     * @returns True
+     * @returns True (to indicate a valid move)
      */
     madeMove(start, target) {
         this.board.movedFrom = start;

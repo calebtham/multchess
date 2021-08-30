@@ -55,6 +55,9 @@ const bottomTimerLabel = document.getElementById("bottomTimerLabel");
 const topPlayerLabel = document.getElementById("topPlayerLabel");
 const topTimerLabel = document.getElementById("topTimerLabel");
 const opponentActivityLabel = document.getElementById("opponentActivity");
+const chatDisplay = document.getElementById("chat");
+const chatInput = document.getElementById("chatInput");
+const chatButton = document.getElementById("chatButton");
 
 // Add event listeners
 quickMatchButton.addEventListener("click", handleQuickMatchButton)
@@ -133,6 +136,24 @@ let opponent;
 /**
  * Document event handlers
  */
+
+/**
+ * If enter pressed, indicates to server to update chat and clears input
+ * @param {KeyboardEvent} e Keyboard event
+ */
+function handleChatKeyDown(e) {
+    if (e.key == "Enter") {
+        handleChatButton();
+    }
+}
+
+/**
+ * Indicates to server to update chat and clears input
+ */
+function handleChatButton() {
+    socket.emit("chat", chatInput.value);
+    chatInput.value = "";
+}
 
 /**
  * Indicates to server that timer should be updated
@@ -405,17 +426,6 @@ function handleResize() {
     bottomCanvas.width = squareSize * 8 * ratio;
     bottomCanvas.height = 20 * ratio;
 
-    // Set CSS height and width
-    const width = boardCanvas.width / ratio;
-    const height = boardCanvas.height / ratio;
-
-    boardCanvas.style.width = width + "px";
-    boardCanvas.style.height = height + "px";
-    topCanvas.style.width = width + "px";
-    topCanvas.style.height = "20px";
-    bottomCanvas.style.width = width + "px";
-    bottomCanvas.style.height = "20px";
-
     // Scale by device pixel ratio, so graphics are not blurry
     boardCtx.scale(ratio, ratio);
     topCtx.scale(ratio, ratio);
@@ -443,12 +453,11 @@ function handleClick(e) {
         game.board.invalid = -1;
     
         // Dropping a piece
-        if (game.board.inHand ^ Game.Piece.none && 
+        if (game.board.inHand ^ Game.Piece.none && // Check there is a piece in hand with bitwise XOR
             (!Game.isPieceColour(game.board.square[boardIndex], game.board.colourToMove)
                 || game.board.isLegalMove[boardIndex])) { 
     
             let start = game.board.movedFrom
-
             let madeMove = game.makeMove(start, boardIndex, false);
 
             // If move was invalid, update graphics indicating so
@@ -477,7 +486,7 @@ function handleClick(e) {
                 && game.board.colourToMove == me.colour) {
 
                     // If piece already in hand and click on the same piece, deselect piece
-                    if (game.board.inHand ^ Game.Piece.none && game.board.movedFrom == boardIndex) {
+                    if (game.board.inHand ^ Game.Piece.none && game.board.movedFrom == boardIndex) { // Check there is a piece in hand with bitwise XOR
                         game.board.isLegalMove = new Array(64).fill(false);
                         game.board.hiddenSquare = -1;
                         game.board.inHand = Game.Piece.none;
@@ -522,7 +531,7 @@ function handleHover(e) {
         drawBoard();
     
         // If piece in hand, draw piece
-        if (game.board.inHand ^ Game.Piece.none) {
+        if (game.board.inHand ^ Game.Piece.none) { // Check there is a piece in hand with bitwise XOR
             if (Game.isPieceColour(game.board.square[boardIndex], me.colour) && !game.board.isLegalMove[boardIndex]) {
                 let square = Game.convert1dTo2d(game.board.hiddenSquare);
                 drawPiece(square.x, square.y, game.board.inHand);

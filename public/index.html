@@ -5,7 +5,7 @@
         
         <meta charset="UTF-8">
         <meta content="width=device-width" name="viewport">
-        <title>Chess</title>
+        <title>Multchess</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" href="main.css">
         <link rel="icon" href="img/17.svg">
@@ -132,7 +132,7 @@
             <div class="container">
 
                 <p><a href="./">LEAVE</a></p>
-                <h1 class="bold">CHESS</h1>
+                <h1 class="bold">MULTCHESS</h1>
                 <p id="gameCodeDisplay"></p>
 
                 <div class="row">
@@ -167,6 +167,22 @@
                         <button type="button" class="btn btn-secondary" id="drawButton">Offer Draw</button>
                         <button type="button" class="btn btn-secondary" id="resignButton">Resign</button>
                         <button type="button" class="btn btn-secondary" id="rematchButton">Rematch</button>
+
+                        <div class="chatWindow">
+                            <div class="chat" id="chat">
+                                <p class="me">me giving some long text chat</p>
+                                <p class="opponent">opponent also giving long text chat</p>
+                                <p class="me">me giving some long text chat</p>
+                                <p class="opponent">opponent also giving long text chat</p>
+                                <p class="me">me giving some long text chat</p>
+                                <p class="opponent">opponent also giving long text chat</p>
+                                <p class="opponent">opponent also giving long text chat</p>
+                            </div>
+                            <div class="send">
+                                <input type="text" id="chatInput">
+                                <button type="button" id="chatButton">Send</button>
+                            </div>
+                        </div>
                         
                     </div>
                     
