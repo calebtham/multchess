@@ -71,13 +71,19 @@ io.on("connection", client => {
      * If there is a pending quick match, join this. Otherwise, create a pending quick match
      */
     function handleQuickMatch() {
-        if (quickMatchRoom) {
-            handleJoinGame(quickMatchRoom);
-            quickMatchRoom = undefined;
+        let roomName = clientRooms[client.id];
 
-        } else {
-            quickMatchRoom = handleNewGame(5);
+        if (!roomName) {
+            if (quickMatchRoom) {
+                let temp = quickMatchRoom;
+                quickMatchRoom = undefined;
+                handleJoinGame(temp);
+    
+            } else {
+                quickMatchRoom = handleNewGame(5);
+            }
         }
+        
     }
 
     /**
@@ -136,7 +142,7 @@ io.on("connection", client => {
         }
 
         client.emit("init", roomName);
-        emitState(roomName);
+        client.emit("gameState", state[roomName], client.player.number);
     }
 
     /**
@@ -514,7 +520,4 @@ io.on("connection", client => {
         client.emit("gameState", state[roomName], client.player.number);
         emitOpponent(roomName, "gameState", state[roomName], 3 - client.player.number);
     }
-
-    
-
 });
