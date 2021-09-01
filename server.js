@@ -135,7 +135,8 @@ io.on("connection", client => {
             state[roomName][3 - playerNumber].colour = Game.Piece.white;
         }
 
-        client.emit("init", roomName, state[roomName], playerNumber);
+        client.emit("init", roomName);
+        emitState(roomName);
     }
 
     /**

@@ -100,6 +100,15 @@ let topCtx;
 let bottomCanvas;
 let bottomCtx
 let squareSize = getSquareSize();
+// Initialise canvas
+boardCanvas = document.getElementById("boardCanvas");
+boardCtx = boardCanvas.getContext("2d");
+
+topCanvas = document.getElementById("topCanvas");
+topCtx = topCanvas.getContext("2d");
+
+bottomCanvas = document.getElementById("bottomCanvas");
+bottomCtx = bottomCanvas.getContext("2d");
 
 // Store images of all pieces in an object. Image name corresponds to their respective piece number
 const IMG = { 
@@ -151,8 +160,10 @@ function handleChatKeyDown(e) {
  * Indicates to server to update chat and clears input
  */
 function handleChatButton() {
-    socket.emit("chat", chatInput.value);
-    chatInput.value = "";
+    if (chatInput.value != "") {
+        socket.emit("chat", chatInput.value);
+        chatInput.value = "";
+    }
 }
 
 /**
@@ -323,12 +334,13 @@ function handleTimerButton(e) {
     sixtySecButton.disabled = false;
 }
 
+
+
 /**
  * Hide create screen and show initial screen
  */
-function handleBackButton() {
-    createScreen.style.display = "none";
-    initialScreen.style.display = "block";
+async function handleBackButton() {
+    await animateBack(createScreen, initialScreen);
 }
 
 /**
@@ -341,9 +353,8 @@ function handleQuickMatchButton() {
 /**
  * Hide initial screen and go to create screen
  */
-function handleNewGameButton() {
-    initialScreen.style.display = "none";
-    createScreen.style.display = "block";
+async function handleNewGameButton() {
+    await animateChangeScreen(initialScreen, createScreen)
 }
 
 /**

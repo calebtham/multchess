@@ -10,8 +10,8 @@
  * @author Caleb Tham
  */
 
-const socket = io("https://guarded-citadel-75405.herokuapp.com/");
-//const socket = io("localhost:3000");
+//const socket = io("https://guarded-citadel-75405.herokuapp.com/");
+const socket = io("localhost:3000");
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
@@ -101,27 +101,10 @@ function handleUnknownGame() {
  * Initialises the event listeners, boardCanvas, and variables for the game
  * @param {Object} state The game state (i.e. a board object)
  */
- function handleInit(gameCode, state, number) {
+async function handleInit(gameCode) {
     // Display
-    initialScreen.style.display = "none";
-    createScreen.style.display = "none";
-    gameScreen.style.display = "block";
     gameCodeDisplay.innerText = "Your game code is: " + gameCode;
-
-    // Update game state
-    game = new Game(state.game);
-    me = state[number];
-    opponent = state[3 - number]
-
-    // Initialise canvas
-    boardCanvas = document.getElementById("boardCanvas");
-    boardCtx = boardCanvas.getContext("2d");
-
-    topCanvas = document.getElementById("topCanvas");
-    topCtx = topCanvas.getContext("2d");
-    
-    bottomCanvas = document.getElementById("bottomCanvas");
-    bottomCtx = bottomCanvas.getContext("2d");
+    await animateChangeScreen(createScreen.style.display == "block" ? createScreen : initialScreen, gameScreen);
 
     // Add abiltiy to resize canvas
     window.addEventListener("resize", handleResize);

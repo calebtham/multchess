@@ -5,6 +5,30 @@
  */
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+async function animateChangeScreen(init, next) {
+    init.style.opacity = "0";
+    await delay(100);
+    init.style.display = "none";
+    next.style.opacity = "0";
+    next.style.display = "block";
+    await delay(100);
+    next.style.transform = "translateY(-20px)";
+    next.style.opacity = "1";
+}
+
+async function animateBack(init, next) {
+    init.style.opacity = "0";
+    init.style.transform = "translateY(20px)";
+    await delay(100);
+    init.style.display = "none";
+    next.style.opacity = "0";
+    next.style.display = "block";
+    await delay(100);
+    next.style.opacity = "1";
+}
+
 /**
  * Calculates the length each square should be depending on the window dimensions
  * @returns Length of each square
@@ -52,11 +76,33 @@ function updateGraphics() {
  * Updates html to show chat
  */
 function updateChat() {
+
+    if (!me.opponentJoined) {
+        chatInput.disabled = true;
+        chatButton.disabled = true;
+    } else {
+        chatInput.disabled = false;
+        chatButton.disabled = false;
+    }
+
     chatDisplay.innerHTML = game.chat.map(message => `
-        <p class="${message.playerNumber == me.number ? "me" : "opponent"}">${message.content}</p>
+        <p class="${message.playerNumber == me.number ? "me" : "opponent"}">${htmlEntities(message.content)}</p>
     `).join('');
     chatDisplay.scrollTop = chatDisplay.scrollHeight;
 }
+
+/**
+ * Escapes a string to be outputted to html
+ * @param {string} str The string
+ * @returns The escaped string
+ */
+function htmlEntities(str) {
+    var encodedStr = str.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
+        return '&#'+i.charCodeAt(0)+';';
+    });
+    return encodedStr;
+}
+
 
 /**
  * Draws the board
