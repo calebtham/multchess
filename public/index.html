@@ -14,7 +14,7 @@
 
     <body>
 
-        <div id="initialScreen">
+        <div id="initial-screen">
             <div class="container">
 
                 <div class="row">
@@ -27,16 +27,16 @@
                         <h1 class="bold">MULTCHESS</h1>
 
                         <div class="join">
-                            <button type="button" class="btn btn-success fat" id="quickMatchButton">
+                            <button type="button" class="btn btn-success fat" id="quick-match-button">
                                 Quick Match
                                 <br>
                                 <span class="discrete">Random opponent, 5 minute timer, no increment</span>
                             </button>
-                            <button type="button" class="btn btn-success fat" id="newGameButton">Create New Game</button>
+                            <button type="button" class="btn btn-success fat" id="new-game-button">Create New Game</button>
                             <p>OR</p>
-                            <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
+                            <input type="text" placeholder="Enter Game Code" id="game-code-input"/>
                             <div id="error"></div>
-                            <button type="button" class="btn btn-success fat" id="joinGameButton">Join Existing Game</button>
+                            <button type="button" class="btn btn-success fat" id="join-game-button">Join Existing Game</button>
                         </div>
     
                     </div>
@@ -53,14 +53,14 @@
 
         </div>
 
-        <div id="createScreen">
+        <div id="create-screen">
             <div class="container">
                 <div class="row">
 
                     <div class="col">
                         <div class="row">
                             <div class="col">
-                                <button type="button" class="btn btn-danger" id="backButton">Back</button>
+                                <button type="button" class="btn btn-danger" id="back-button">Back</button>
                             </div>
                         </div>
 
@@ -68,44 +68,44 @@
                         <div class="spacer"></div>
 
                         <h2 class="bold">TIMER</h2>
-                        <div class="btn-group timer" role="group" aria-label="timerOptions" onclick="void(0)">
-                            <button type="button" class="btn btn-secondary" id="oneMinButton">1 min</button>
-                            <button type="button" class="btn btn-secondary" id="threeMinButton">3 min</button>
-                            <button type="button" class="btn btn-primary" id="fiveMinButton">5 min</button>
-                            <button type="button" class="btn btn-secondary" id="tenMinButton">10 min</button>
-                            <button type="button" class="btn btn-secondary" id="fifteenMinButton">15 min</button>
-                            <button type="button" class="btn btn-secondary" id="thirtyMinButton">30 min</button>
-                            <button type="button" class="btn btn-secondary" id="sixtyMinButton">60 min</button>
-                            <button type="button" class="btn btn-secondary" id="infiniteButton">&infin;</button>
+                        <div class="btn-group timer" role="group" aria-label="timer-options" onclick="void(0)">
+                            <button type="button" class="btn btn-secondary" id="one-min-button">1 min</button>
+                            <button type="button" class="btn btn-secondary" id="three-min-button">3 min</button>
+                            <button type="button" class="btn btn-primary" id="five-min-button">5 min</button>
+                            <button type="button" class="btn btn-secondary" id="ten-min-button">10 min</button>
+                            <button type="button" class="btn btn-secondary" id="fifteen-min-button">15 min</button>
+                            <button type="button" class="btn btn-secondary" id="thirty-min-button">30 min</button>
+                            <button type="button" class="btn btn-secondary" id="sixty-min-button">60 min</button>
+                            <button type="button" class="btn btn-secondary" id="infinite-button">&infin;</button>
                         </div>
                         
                         <div class="spacer"></div>
                         <div class="spacer"></div>
 
                         <h2 class="bold">INCREMENT</h2>
-                        <div class="btn-group timer" role="group" aria-label="incrementOptions" onclick="void(0)">
-                            <button type="button" class="btn btn-primary" id="noneButton">None</button>
-                            <button type="button" class="btn btn-secondary" id="oneSecButton">1 sec</button>
-                            <button type="button" class="btn btn-secondary" id="threeSecButton">3 sec</button>
-                            <button type="button" class="btn btn-secondary" id="fiveSecButton">5 sec</button>
-                            <button type="button" class="btn btn-secondary" id="tenSecButton">10 sec</button>
-                            <button type="button" class="btn btn-secondary" id="fifteenSecButton">15 sec</button>
-                            <button type="button" class="btn btn-secondary" id="thirtySecButton">30 sec</button>
-                            <button type="button" class="btn btn-secondary" id="sixtySecButton">60 sec</button>
+                        <div class="btn-group timer" role="group" aria-label="increment-options" onclick="void(0)">
+                            <button type="button" class="btn btn-primary" id="none-button">None</button>
+                            <button type="button" class="btn btn-secondary" id="one-sec-button">1 sec</button>
+                            <button type="button" class="btn btn-secondary" id="three-sec-button">3 sec</button>
+                            <button type="button" class="btn btn-secondary" id="five-sec-button">5 sec</button>
+                            <button type="button" class="btn btn-secondary" id="ten-sec-button">10 sec</button>
+                            <button type="button" class="btn btn-secondary" id="fifteen-sec-button">15 sec</button>
+                            <button type="button" class="btn btn-secondary" id="thirty-sec-button">30 sec</button>
+                            <button type="button" class="btn btn-secondary" id="sixty-sec-button">60 sec</button>
                         </div>
 
                         <div class="spacer"></div>
                         <div class="spacer"></div>
 
                         <h2 class="bold">START AS</h2>
-                        <div class="btn-group" role="group" aria-label="colourOptions">
-                            <button type="button" class="btn btn-secondary" id="whiteButton">
+                        <div class="btn-group" role="group" aria-label="colour-options">
+                            <button type="button" class="btn btn-secondary" id="white-button">
                                 <img src="img/9.svg" width="80" height="80" alt="9.svg" id="white">
                             </button>
-                            <button type="button" class="btn btn-primary" id="randomButton">
+                            <button type="button" class="btn btn-primary" id="random-button">
                                 Random
                             </button>
-                            <button type="button" class="btn btn-secondary" id="blackButton">
+                            <button type="button" class="btn btn-secondary" id="black-button">
                                 <img src="img/17.svg" width="80" height="80" alt="17.svg" id="black">
                             </button>
                         </div>
@@ -116,7 +116,7 @@
                         <div class="row">
                             <div class="col-3"></div>
                             <div class="col">
-                                <button type="button" class="btn btn-success fat" id="startButton">Start</button>
+                                <button type="button" class="btn btn-success fat" id="start-button">Start</button>
                             </div>
                             <div class="col-3"></div>
                         </div>
@@ -128,47 +128,47 @@
         </div>
 
 
-        <div id="gameScreen">
+        <div id="game-screen">
             <div class="container">
 
                 <p><a href="./">LEAVE</a></p>
                 <h1 class="bold">MULTCHESS</h1>
-                <p id="gameCodeDisplay"></p>
+                <p id="game-code-display"></p>
 
                 <div class="row">
                     
                     <div class="col">
 
-                        <canvas id="topCanvas"></canvas>
+                        <canvas id="top-canvas"></canvas>
 
                         <div class="row">
-                            <h2 class="timer" id="topTimerLabel"></h2>
-                            <h2 class="bold" id="topPlayerLabel">Opponent</h2>
+                            <h2 class="timer" id="top-timer-label"></h2>
+                            <h2 class="bold" id="top-player-label">Opponent</h2>
                         </div>
 
-                        <canvas id="boardCanvas"></canvas>
+                        <canvas id="board-canvas"></canvas>
 
                         <div class="row">
-                            <h2 class="timer" id="bottomTimerLabel"></h2>
-                            <h2 class="bold" id="bottomPlayerLabel">You</h2>
+                            <h2 class="timer" id="bottom-timer-label"></h2>
+                            <h2 class="bold" id="bottom-player-label">You</h2>
                         </div>
 
-                        <canvas id="bottomCanvas"></canvas>
+                        <canvas id="bottom-canvas"></canvas>
 
                     </div>
 
-                    <div class="col-4 gameButtons">
+                    <div class="col-4 game-buttons">
                         
-                        <p id="opponentActivity"></p>
-                        <button type="button" class="btn btn-success request" id="acceptButton" hidden>Accept</button>
-                        <button type="button" class="btn btn-danger request" id="declineButton" hidden>Decline</button>
+                        <p id="opponent-activity"></p>
+                        <button type="button" class="btn btn-success request" id="accept-button" hidden>Accept</button>
+                        <button type="button" class="btn btn-danger request" id="decline-button" hidden>Decline</button>
 
-                        <button type="button" class="btn btn-secondary" id="takebackButton">Request Takeback</button>
-                        <button type="button" class="btn btn-secondary" id="drawButton">Offer Draw</button>
-                        <button type="button" class="btn btn-secondary" id="resignButton">Resign</button>
-                        <button type="button" class="btn btn-secondary" id="rematchButton">Rematch</button>
+                        <button type="button" class="btn btn-secondary" id="takeback-button">Request Takeback</button>
+                        <button type="button" class="btn btn-secondary" id="draw-button">Offer Draw</button>
+                        <button type="button" class="btn btn-secondary" id="resign-button">Resign</button>
+                        <button type="button" class="btn btn-secondary" id="rematch-button">Rematch</button>
 
-                        <div class="chatWindow">
+                        <div class="chat-window">
                             <p>Chat</p>
                             <div class="chat" id="chat">
                                 <p class="me">me giving some long text chat</p>
@@ -180,8 +180,8 @@
                                 <p class="opponent">opponent also giving long text chat</p>
                             </div>
                             <div class="send">
-                                <input type="text" id="chatInput">
-                                <button type="button" id="chatButton">Send</button>
+                                <input type="text" id="chat-input">
+                                <button type="button" id="chat-button">Send</button>
                             </div>
                         </div>
                         

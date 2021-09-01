@@ -5,8 +5,18 @@
  */
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Make the program wait for specified number of milliseconds
+ * @param {number} ms Number of milliseconds to wait
+ * @returns Promise
+ */
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
+/**
+ * Animates going from one screen to another
+ * @param {HTMLElement} init Screen to move from
+ * @param {HTMLElement} next Screen to move to
+ */
 async function animateChangeScreen(init, next) {
     init.style.opacity = "0";
     await delay(100);
@@ -18,6 +28,11 @@ async function animateChangeScreen(init, next) {
     next.style.opacity = "1";
 }
 
+/**
+ * Animates going from one screen to another (backwards animation)
+ * @param {HTMLElement} init Screen to move from
+ * @param {HTMLElement} next Screen to move to
+ */
 async function animateBack(init, next) {
     init.style.opacity = "0";
     init.style.transform = "translateY(20px)";

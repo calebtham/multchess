@@ -10,54 +10,54 @@
  */
 
 // Initial screen elements
-const initialScreen = document.getElementById("initialScreen");
-const gameCodeInput = document.getElementById("gameCodeInput");
-const newGameButton = document.getElementById("newGameButton");
-const joinGameButton = document.getElementById("joinGameButton");
-const quickMatchButton = document.getElementById("quickMatchButton");
+const initialScreen = document.getElementById("initial-screen");
+const gameCodeInput = document.getElementById("game-code-input");
+const newGameButton = document.getElementById("new-game-button");
+const joinGameButton = document.getElementById("join-game-button");
+const quickMatchButton = document.getElementById("quick-match-button");
 const errorLabel = document.getElementById("error");
 
 // Create screen elements
-const createScreen = document.getElementById("createScreen");
-const startButton = document.getElementById("startButton");
-const backButton = document.getElementById("backButton");
-const oneMinButton = document.getElementById("oneMinButton");
-const threeMinButton = document.getElementById("threeMinButton");
-const fiveMinButton = document.getElementById("fiveMinButton");
-const tenMinButton = document.getElementById("tenMinButton");
-const fifteenMinButton = document.getElementById("fifteenMinButton");
-const thirtyMinButton = document.getElementById("thirtyMinButton");
-const sixtyMinButton = document.getElementById("sixtyMinButton");
-const infiniteButton = document.getElementById("infiniteButton");
-const noneButton = document.getElementById("noneButton");
-const oneSecButton = document.getElementById("oneSecButton");
-const threeSecButton = document.getElementById("threeSecButton");
-const fiveSecButton = document.getElementById("fiveSecButton");
-const tenSecButton = document.getElementById("tenSecButton");
-const fifteenSecButton = document.getElementById("fifteenSecButton");
-const thirtySecButton = document.getElementById("thirtySecButton");
-const sixtySecButton = document.getElementById("sixtySecButton");
-const whiteButton = document.getElementById("whiteButton");
-const randomButton = document.getElementById("randomButton");
-const blackButton = document.getElementById("blackButton");
+const createScreen = document.getElementById("create-screen");
+const startButton = document.getElementById("start-button");
+const backButton = document.getElementById("back-button");
+const oneMinButton = document.getElementById("one-min-button");
+const threeMinButton = document.getElementById("three-min-button");
+const fiveMinButton = document.getElementById("five-min-button");
+const tenMinButton = document.getElementById("ten-min-button");
+const fifteenMinButton = document.getElementById("fifteen-min-button");
+const thirtyMinButton = document.getElementById("thirty-min-button");
+const sixtyMinButton = document.getElementById("sixty-min-button");
+const infiniteButton = document.getElementById("infinite-button");
+const noneButton = document.getElementById("none-button");
+const oneSecButton = document.getElementById("one-sec-button");
+const threeSecButton = document.getElementById("three-sec-button");
+const fiveSecButton = document.getElementById("five-sec-button");
+const tenSecButton = document.getElementById("ten-sec-button");
+const fifteenSecButton = document.getElementById("fifteen-sec-button");
+const thirtySecButton = document.getElementById("thirty-sec-button");
+const sixtySecButton = document.getElementById("sixty-sec-button");
+const whiteButton = document.getElementById("white-button");
+const randomButton = document.getElementById("random-button");
+const blackButton = document.getElementById("black-button");
  
 // Game screen elements
-const gameScreen = document.getElementById("gameScreen");
-const gameCodeDisplay = document.getElementById("gameCodeDisplay");
-const takebackButton = document.getElementById("takebackButton");
-const drawButton = document.getElementById("drawButton");
-const resignButton = document.getElementById("resignButton");
-const rematchButton = document.getElementById("rematchButton");
-const acceptButton = document.getElementById("acceptButton");
-const declineButton = document.getElementById("declineButton");
-const bottomPlayerLabel = document.getElementById("bottomPlayerLabel");
-const bottomTimerLabel = document.getElementById("bottomTimerLabel");
-const topPlayerLabel = document.getElementById("topPlayerLabel");
-const topTimerLabel = document.getElementById("topTimerLabel");
-const opponentActivityLabel = document.getElementById("opponentActivity");
+const gameScreen = document.getElementById("game-screen");
+const gameCodeDisplay = document.getElementById("game-code-display");
+const takebackButton = document.getElementById("takeback-button");
+const drawButton = document.getElementById("draw-button");
+const resignButton = document.getElementById("resign-button");
+const rematchButton = document.getElementById("rematch-button");
+const acceptButton = document.getElementById("accept-button");
+const declineButton = document.getElementById("decline-button");
+const bottomPlayerLabel = document.getElementById("bottom-player-label");
+const bottomTimerLabel = document.getElementById("bottom-timer-label");
+const topPlayerLabel = document.getElementById("top-player-label");
+const topTimerLabel = document.getElementById("top-timer-label");
+const opponentActivityLabel = document.getElementById("opponent-activity");
 const chatDisplay = document.getElementById("chat");
-const chatInput = document.getElementById("chatInput");
-const chatButton = document.getElementById("chatButton");
+const chatInput = document.getElementById("chat-input");
+const chatButton = document.getElementById("chat-button");
 
 // Add event listeners
 quickMatchButton.addEventListener("click", handleQuickMatchButton)
@@ -93,22 +93,13 @@ blackButton.addEventListener("click", handleColourButton);
 // Canvas Variables
 const BOARD_LIGHT = "#f0d9b5";
 const BOARD_DARK = "#b58863";
-let boardCanvas;
-let boardCtx;
-let topCanvas;
-let topCtx;
-let bottomCanvas;
-let bottomCtx
+const boardCanvas = document.getElementById("board-canvas");
+const boardCtx = boardCanvas.getContext("2d");;
+const topCanvas = document.getElementById("top-canvas");
+const topCtx = topCanvas.getContext("2d");
+const bottomCanvas = document.getElementById("bottom-canvas");
+const bottomCtx = bottomCanvas.getContext("2d");
 let squareSize = getSquareSize();
-// Initialise canvas
-boardCanvas = document.getElementById("boardCanvas");
-boardCtx = boardCanvas.getContext("2d");
-
-topCanvas = document.getElementById("topCanvas");
-topCtx = topCanvas.getContext("2d");
-
-bottomCanvas = document.getElementById("bottomCanvas");
-bottomCtx = bottomCanvas.getContext("2d");
 
 // Store images of all pieces in an object. Image name corresponds to their respective piece number
 const IMG = { 
@@ -333,8 +324,6 @@ function handleTimerButton(e) {
     thirtySecButton.disabled = false;
     sixtySecButton.disabled = false;
 }
-
-
 
 /**
  * Hide create screen and show initial screen

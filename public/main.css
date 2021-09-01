@@ -2,29 +2,28 @@ body {
     background-color: #f5ecdf;
     font-family: Arial, Helvetica, sans-serif;
     padding: 20px;
-    /* overflow-y: scroll; */
 }
 
-#initialScreen {
+#initial-screen {
     display: block;
     text-align: center;
     padding-top: 10vh;
     transition: all 0.2s;
 }
 
-#createScreen {
+#create-screen {
     display: none;
     text-align: center;
     padding-top: 2vh;
     transition: all 0.2s;
 }
 
-#gameScreen {
-    padding-top: 20px;
+#game-screen {
     display: none;
+    padding-top: 20px;
     transition: all 0.2s;
 }
-#gameScreen > div.container {
+#game-screen > div.container {
     max-width: 900px;
 }
 
@@ -47,11 +46,6 @@ h2.timer {
     color: rgba(255,255,255,0.8);
 }
 
-div.center {
-    text-align: center;
-    align-items: center;
-}
-
 .discrete {
     font-size: 10pt;
     color: rgba(255,255,255,0.85);
@@ -65,6 +59,11 @@ div.center {
     text-shadow: 0px 0px 5px rgba(104, 237, 255, 0.8);
 }
 
+div.center {
+    text-align: center;
+    align-items: center;
+}
+
 div.join {
     max-width: 430px;
     margin: auto;
@@ -74,7 +73,7 @@ div.spacer {
     height: 10px;
 }
 
-div.gameButtons {
+div.game-buttons {
     padding-top: 67px;
 }
 
@@ -84,7 +83,7 @@ button {
     margin-top: 4px;
     margin-bottom: 4px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
     width: 100%;
     transition: all 0.2s;
@@ -108,7 +107,7 @@ button.request {
     width: 46%;
 }
 
-button#backButton {
+button#back-button {
     float: left;
     width: auto;
 }
@@ -133,7 +132,7 @@ div.btn-group button.btn-primary:hover {
     box-shadow: 0px 2px 4px rgba(0,0,0,0.58);
 }
 
-div.chatWindow {
+div.chat-window {
     background-color: white;
     border: solid 1px #00000015;
     border-radius: 5px;
@@ -162,17 +161,10 @@ div.chat p.me {
     margin-left: auto;
     background-color: rgb(240, 240, 240);
 }
-
 div.chat p.opponent {
     margin-right: auto;
     background-color: rgb(0, 140, 255);
     color: white;
-}
-div.send {
-    align-items: right;
-    align-content: right;
-    padding: 0px;
-    margin: auto;
 }
 div.send input {
     width: 70%;
@@ -191,7 +183,8 @@ canvas {
     image-rendering: -webkit-crisp-edges;
     image-rendering: crisp-edges;
 }
-canvas#boardCanvas {
+
+canvas#board-canvas {
     border-radius: 5px;
     box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
 }
@@ -209,21 +202,21 @@ footer {
     box-shadow: 0px 0px 4px rgba(0,0,0,0.4);
 }
 
-
+/* Moves buttons and chat on game screen to bottom */
 @media (max-width: 720px) {
-    div.gameButtons {
+    div.game-buttons {
         all: initial;
         font-family: Arial, Helvetica, sans-serif;
         width: 100%;
         margin-left: 15px;
     }
 
-    div.gameButtons button {
+    div.game-buttons button {
         width: auto;
     }
-
 }
 
+/* Mobile layout: text, buttons, canvas bigger/fill more space */
 @media (max-width: 500px) {
     body,
     div.container,
@@ -231,19 +224,20 @@ footer {
     div.row {
         margin: 0px;
         padding: 0px;
-        padding-bottom: 10px;
     }
 
     div.col-2 {
         display: none;
     }
 
-    #initialScreen {
+    #initial-screen {
         padding: 20px;
         padding-top: 5vh;
     }
-    #createScreen {
+
+    #create-screen {
         padding: 10px;
+        padding-top: 25px;
     }
 
     img.logo {
@@ -277,9 +271,9 @@ footer {
         padding-right: 2px;
     }
 
-    canvas#topCanvas,
-    canvas#bottomCanvas {
-        margin-left: 10px;
+    canvas#top-canvas,
+    canvas#bottom-canvas {
+        margin-left: 15px;
     }
 
 }
