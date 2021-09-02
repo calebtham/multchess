@@ -11,8 +11,8 @@
  * ================================================
  */
 
-//const socket = io("https://guarded-citadel-75405.herokuapp.com/");
-const socket = io("localhost:3000");
+const socket = io("https://guarded-citadel-75405.herokuapp.com/");
+//const socket = io("localhost:3000");
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
