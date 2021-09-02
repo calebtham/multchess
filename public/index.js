@@ -120,13 +120,13 @@ const IMG = {
 };
 
 // Store all sounds in an object
-// const SOUND = {
-//     badNotify: document.getElementById("bad-notify-sound"),
-//     capture: document.getElementById("capture-sound"),
-//     goodNotify: document.getElementById("good-notify-sound"),
-//     move: document.getElementById("move-sound"),
-//     socialNotify: document.getElementById("social-notify-sound")
-// }
+const SOUND = {
+    badNotify: document.getElementById("bad-notify-sound"),
+    capture: document.getElementById("capture-sound"),
+    goodNotify: document.getElementById("good-notify-sound"),
+    move: document.getElementById("move-sound"),
+    socialNotify: document.getElementById("social-notify-sound")
+}
 const sound = new Audio();
 sound.play();
 
@@ -497,15 +497,15 @@ function handleClick(e) {
                 
                 if (check) { // If checking other player
                     //SOUND.badNotify.play();
-                    sound.src = "badnotify.mp3";
+                    sound.src = "sound/badnotify.mp3";
                     sound.play();
                 } else if (captured) { // If captured a piece
                     //SOUND.capture.play();
-                    sound.src = "capture.mp3";
+                    sound.src = "sound/capture.mp3";
                     sound.play();
                 } else { // If standard move
                     //SOUND.move.play();
-                    sound.src = "move.mp3";
+                    sound.src = "sound/move.mp3";
                     sound.play();
                 }
                 
