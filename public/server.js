@@ -52,7 +52,7 @@ socket.on("gameEnd", handleGameEnd);
         timerInterval = setInterval(updateTimer, FREQUENCY);
     }
 
-    playSound("goodnotify")
+    SOUND.goodNotify.play();
     
 }
 
@@ -128,11 +128,11 @@ function handleGameState(state, number) {
         let move = Game.getStartAndTarget(game.board, state.game.board);
         if (move) {
             if (state.game.board.whiteInCheck && me.colour == Game.Piece.white || state.game.board.blackInCheck && me.colour == Game.Piece.black) { // Me in check
-                playSound("badnotify")
+                SOUND.badNotify.play();
             } else if (game.board.square[move.target] != 0 || (game.board.enPassantSquare == move.target && Game.isPieceType(game.board.square[move.start], Game.Piece.pawn))) { // Captured piece
-                playSound("capture")
+                SOUND.capture.play();
             } else { // Normal move
-                playSound("move")
+                SOUND.move.play();
             }
         }
     }
@@ -153,12 +153,13 @@ function handleGameState(state, number) {
  * Plays end of game sound
  */
 function handleGameEnd() {
-    playSound("endnotify")
+    SOUND.goodNotify.play();
+    SOUND.badNotify.play();
 }
 
 /**
  * Plays message recieved sound
  */
 function handleMessageReceived() {
-    playSound("socialnotify")
+    SOUND.socialNotify.play();
 }

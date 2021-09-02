@@ -119,9 +119,14 @@ const IMG = {
     "22": document.getElementById("22")
 };
 
-// Sound
-const sound = new Audio();
-sound.play();
+// Store all sounds in an object
+const SOUND = {
+    badNotify: document.getElementById("bad-notify-sound"),
+    capture: document.getElementById("capture-sound"),
+    goodNotify: document.getElementById("good-notify-sound"),
+    move: document.getElementById("move-sound"),
+    socialNotify: document.getElementById("social-notify-sound")
+}
 
 // Timer variables
 const FREQUENCY = 37; // frequency of interval in ms
@@ -489,11 +494,11 @@ function handleClick(e) {
                 updateGraphics();
                 
                 if (check) { // If checking other player
-                    playSound("badnotify")
+                    SOUND.badNotify.play();
                 } else if (captured) { // If captured a piece
-                    playSound("capture")
-                } else { // If standard move
-                    playSound("move")
+                    SOUND.capture.play();
+                } else { // If standard
+                    SOUND.move.play();
                 }
                 
                 socket.emit("moveMade", game.board); // Move will actually be made server-side. Still make move in client side for purpose of graphics and reducing load on server by prechecking (e.g. showing legal moves, clicking an invalid target square)
