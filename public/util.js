@@ -93,5 +93,16 @@ function isTouchDevice() {
     return (('ontouchstart' in window) ||
        (navigator.maxTouchPoints > 0) ||
        (navigator.msMaxTouchPoints > 0));
-  }
+}
+
+/**
+ * Plays sound of given path. (Implemented sound this way so works on ios)
+ * @param {string} name Name of sound (omit "sound/")
+ */
+function playSound(name) {
+    if (sound) {
+        sound.src = "sound/" + name;
+        sound.play();
+    }
+}
   
