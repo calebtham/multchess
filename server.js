@@ -1,6 +1,8 @@
 /**
+ * ================================================
  * Handle client requests
  * @author Caleb Tham
+ * ================================================
  */
 
 const io = require("socket.io")(process.env.PORT || 3000, {
@@ -12,7 +14,6 @@ const io = require("socket.io")(process.env.PORT || 3000, {
 const { Game } = require("./game.js");
 const { Player } = require("./player.js");
 const { makeid } = require("./util.js");
-
 
 // Initialise server variables
 const state = {};
@@ -55,6 +56,7 @@ io.on("connection", client => {
     
                 state[roomName].game.endGame();
                 state[roomName][3 - client.player.number].selectBooleanFlag("opponentDisconnected");
+                emitAll(roomName, "gameEnd");
                 emitState(roomName);
     
             // Room destroyed automatically when all clients leave, so just remove room from blacklist
@@ -245,6 +247,7 @@ io.on("connection", client => {
         state[roomName][3 - client.player.number].selectBooleanFlag("lost");
 
         state[roomName].game.endGame();
+        emitAll(roomName, "gameEnd");
         emitState(roomName);
     }
 
@@ -260,6 +263,7 @@ io.on("connection", client => {
             state[roomName][client.player.number].selectBooleanFlag("lost");
     
             state[roomName].game.endGame();
+            emitAll(roomName, "gameEnd");
             emitState(roomName); 
         }
         
@@ -284,6 +288,7 @@ io.on("connection", client => {
                     state[roomName][client.player.number].selectBooleanFlag("timedOut");
             
                     state[roomName].game.endGame();
+                    emitAll(roomName, "gameEnd");
                 }
                 
                 else if (state[roomName][3 - client.player.number].timeLeft <= 0) {
@@ -294,6 +299,7 @@ io.on("connection", client => {
                     state[roomName][3 - client.player.number].selectBooleanFlag("timedOut");
             
                     state[roomName].game.endGame();
+                    emitAll(roomName, "gameEnd");
                 }
     
                 emitState(roomName); 
@@ -311,6 +317,7 @@ io.on("connection", client => {
         if (roomName) {
             state[roomName][client.player.number].selectBooleanFlag("rematchRequestSent")
             state[roomName][3 - client.player.number].selectBooleanFlag("rematchRequestRecieved");
+            emitOpponent(roomName, "messageRecieved");
             emitState(roomName);
         }
         
@@ -358,6 +365,7 @@ io.on("connection", client => {
         if (roomName) {
             state[roomName][client.player.number].selectBooleanFlag("drawRequestSent");
             state[roomName][3 - client.player.number].selectBooleanFlag("drawRequestRecieved");
+            emitOpponent(roomName, "messageRecieved");
             emitState(roomName);
         }
         
@@ -386,6 +394,7 @@ io.on("connection", client => {
         state[roomName][3 - client.player.number].selectBooleanFlag("stalemate");
 
         state[roomName].game.endGame();
+        emitAll(roomName, "gameEnd");
         emitState(roomName);
     }
 
@@ -398,6 +407,7 @@ io.on("connection", client => {
         if (roomName) {
             state[roomName][client.player.number].selectBooleanFlag("takebackRequestSent");
             state[roomName][3 - client.player.number].selectBooleanFlag("takebackRequestRecieved");
+            emitOpponent(roomName, "messageRecieved");
             emitState(roomName);
         }
         
@@ -427,6 +437,7 @@ io.on("connection", client => {
         if (roomName) {
             state[roomName][client.player.number].selectBooleanFlag("decline");
             state[roomName][3 - client.player.number].selectBooleanFlag("requestDeclined");
+            emitOpponent(roomName, "messageRecieved");
             emitState(roomName) 
         }   
     }
@@ -441,6 +452,7 @@ io.on("connection", client => {
             }
     
             state[roomName].game.chat.push(chatMessage);
+            emitOpponent(roomName, "messageRecieved");
             emitState(roomName);
         }
         
@@ -484,7 +496,7 @@ io.on("connection", client => {
      * @param {any} data1 Argument 1
      * @param {any} data2 Argument 2
      */
-    function emitOpponent(roomName, event, data1, data2) {
+    function emitOpponent(roomName, event, data1=undefined, data2=undefined) {
         forEachClientIn(roomName, c => {
             if (c.id != client.id) {
                 c.emit(event, data1, data2);
@@ -498,7 +510,7 @@ io.on("connection", client => {
      * @param {string} event Event to emit
      * @param {any} data Argument 1
      */
-    function emitAll(roomName, event, data) {
+    function emitAll(roomName, event, data=undefined) {
         io.sockets.in(roomName).emit(event, data);
     }
     

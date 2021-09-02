@@ -1,7 +1,10 @@
 /**
+ * ================================================
  * Player class
  * @author Caleb Tham
+ * ================================================
  */
+
 class Player {
     number;
     colour;
@@ -24,6 +27,10 @@ class Player {
     timeLeft;
     timeLastMoved;
 
+    /**
+     * @param {number} number Player number (1 or 2)
+     * @param {timer} timer Player timer in minutes
+     */
     constructor(number, timer) {
         this.number = number;
         this.timeLeft = (timer ? timer : Infinity) * 60;
@@ -47,6 +54,11 @@ class Player {
         this.timedOut = false;
     }
 
+    /**
+     * Sets one boolean flag to true and all other boolean flags to false. Not including opponent
+     * joined.
+     * @param {string} flag Boolean flag to set to true
+     */
     selectBooleanFlag(flag) {
         this.rematchRequestRecieved = false;
         this.takebackRequestRecieved = false;

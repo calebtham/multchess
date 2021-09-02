@@ -1,7 +1,10 @@
 /**
+ * ================================================
  * Game class
  * @author Caleb Tham
+ * ================================================
  */
+
 const {
     arrayEqual,
     arrayRemoveItemOnce

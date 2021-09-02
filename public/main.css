@@ -1,3 +1,6 @@
+/*  =============
+    Layout
+    =============  */
 body {
     background-color: #f5ecdf;
     font-family: Arial, Helvetica, sans-serif;
@@ -27,6 +30,22 @@ body {
     max-width: 900px;
 }
 
+footer {
+    z-index: 999;
+    position: fixed;
+    width: 100%;
+    bottom: 0px;
+    padding: 10px;
+    margin-left: -20px;
+    text-align: left;
+    color: #f5ecdf;
+    background-color: #b58863;
+    box-shadow: 0px 0px 4px rgba(0,0,0,0.4);
+}
+
+/*  =============
+    Typography
+    =============  */
 p {
     margin-top: 2px;    
     margin-bottom: 2px;    
@@ -59,6 +78,23 @@ h2.timer {
     text-shadow: 0px 0px 5px rgba(104, 237, 255, 0.8);
 }
 
+/*  =============
+    Components
+    =============  */
+
+canvas {
+    width: 100%;
+    margin: 0px;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+canvas#board-canvas {
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+}
+    
 div.center {
     text-align: center;
     align-items: center;
@@ -112,6 +148,7 @@ button#back-button {
     width: auto;
 }
 
+/* Game button group styling */
 div.btn-group button.btn-secondary {
     background-color: rgb(180, 180, 255);
     border-color: rgb(180, 180, 255);
@@ -132,6 +169,7 @@ div.btn-group button.btn-primary:hover {
     box-shadow: 0px 2px 4px rgba(0,0,0,0.58);
 }
 
+ /* Game chat styling */
 div.chat-window {
     background-color: white;
     border: solid 1px #00000015;
@@ -176,33 +214,10 @@ div.send button {
     border: solid 1px #00000015;
 }
 
-canvas {
-    width: 100%;
-    margin: 0px;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: -webkit-crisp-edges;
-    image-rendering: crisp-edges;
-}
-
-canvas#board-canvas {
-    border-radius: 5px;
-    box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
-}
-
-footer {
-    z-index: 999;
-    position: fixed;
-    width: 100%;
-    bottom: 0px;
-    padding: 10px;
-    margin-left: -20px;
-    text-align: left;
-    color: #f5ecdf;
-    background-color: #b58863;
-    box-shadow: 0px 0px 4px rgba(0,0,0,0.4);
-}
-
-/* Moves buttons and chat on game screen to bottom */
+/*  ==============
+    Compact Layout
+    ==============
+    Moves buttons and chat on game screen to bottom  */
 @media (max-width: 720px) {
     div.game-buttons {
         all: initial;
@@ -216,7 +231,10 @@ footer {
     }
 }
 
-/* Mobile layout: text, buttons, canvas bigger/fill more space */
+/*  ==============
+    Mobile Layout
+    ==============
+    Text, buttons, canvas bigger/fill more space */
 @media (max-width: 500px) {
     body,
     div.container,

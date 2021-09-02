@@ -1,13 +1,14 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
+ * ================================================
  * Handle server socket variables and events
  * @author Caleb Tham
+ * ================================================
  */
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * ================================================
  * Initialise socket variables and events
- * @author Caleb Tham
+ * ================================================
  */
 
 const socket = io("https://guarded-citadel-75405.herokuapp.com/");
@@ -18,11 +19,13 @@ socket.on("gameState", handleGameState);
 socket.on("opponentJoined", handleOpponentJoined);
 socket.on("unknownGame", handleUnknownGame);
 socket.on("tooManyPlayers", handleTooManyPlayers);
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
+socket.on("messageRecieved", handleMessageReceived);
+socket.on("gameEnd", handleGameEnd);
 
 /**
+ * ================================================
  * Server event handlers
+ * ================================================
  */
 
 /**
@@ -48,6 +51,8 @@ socket.on("tooManyPlayers", handleTooManyPlayers);
         clearInterval(timerInterval);
         timerInterval = setInterval(updateTimer, FREQUENCY);
     }
+
+    SOUND.goodNotify.play();
     
 }
 
@@ -112,11 +117,27 @@ async function handleInit(gameCode) {
 }
 
 /**
- * Given a game state, updates the client game state
+ * Given a game state, updates the client game state.
+ * Plays moving piece sound
  * @param {Object} state    The game state (i.e. a board object)
  */
 function handleGameState(state, number) {
 
+    // Handle sounds
+    if (game && game.board.colourToMove != me.colour) { // If other player moved
+        let move = Game.getStartAndTarget(game.board, state.game.board);
+        if (move) {
+            if (state.game.board.whiteInCheck && me.colour == Game.Piece.white || state.game.board.blackInCheck && me.colour == Game.Piece.black) { // Me in check
+                SOUND.badNotify.play();
+            } else if (game.board.square[move.target] != 0 || (game.board.enPassantSquare == move.target && Game.isPieceType(game.board.square[move.start], Game.Piece.pawn))) { // Captured piece
+                SOUND.capture.play();
+            } else { // Normal move
+                SOUND.move.play();
+            }
+        }
+    }
+
+    // Handle game
     game = new Game(state.game);
     me = state[number];
     opponent = state[3 - number];
@@ -126,4 +147,19 @@ function handleGameState(state, number) {
     }
 
     updateGraphics();
+}
+
+/**
+ * Plays end of game sound
+ */
+function handleGameEnd() {
+    SOUND.goodNotify.play();
+    SOUND.badNotify.play();
+}
+
+/**
+ * Plays message recieved sound
+ */
+function handleMessageReceived() {
+    SOUND.socialNotify.play();
 }

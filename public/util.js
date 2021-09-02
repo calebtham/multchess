@@ -1,9 +1,9 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
+ * ================================================
  * Useful functions
  * @author Caleb Tham
+ * ================================================
  */
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Given two numeric arrays, returns whether the arrays contain the equal data at equal indices
@@ -34,7 +34,6 @@ function arrayRemoveItemOnce(arr, value) {
     return arr;
 }
     
-
 /**
  * Given two numbers, returns the largest number
  * @param {number} a A number

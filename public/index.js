@@ -1,12 +1,14 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
+ * ================================================
  * Handle index.html document variables and events
  * @author Caleb Tham
+ * ================================================
  */
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * ================================================
  * Initialise document variables and events
+ * ================================================
  */
 
 // Initial screen elements
@@ -117,6 +119,15 @@ const IMG = {
     "22": document.getElementById("22")
 };
 
+// Store all sounds in an object
+const SOUND = {
+    badNotify: document.getElementById("bad-notify-sound"),
+    capture: document.getElementById("capture-sound"),
+    goodNotify: document.getElementById("good-notify-sound"),
+    move: document.getElementById("move-sound"),
+    socialNotify: document.getElementById("social-notify-sound")
+}
+
 // Timer variables
 const FREQUENCY = 37; // frequency of interval in ms
 let timerInterval;
@@ -131,10 +142,10 @@ let game;
 let me;
 let opponent;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
 /**
+ * ================================================
  * Document event handlers
+ * ================================================
  */
 
 /**
@@ -436,7 +447,7 @@ function handleResize() {
 
 /**
  * Either attempts to pick up a piece or, if a piece already in hand, place a piece on the square 
- * corresponding to mouse position
+ * corresponding to mouse position.
  * If a piece is successfully placed, indicate to server to update game state
  * @param {MouseEvent} e Mouse event
  */
@@ -458,6 +469,7 @@ function handleClick(e) {
                 || game.board.isLegalMove[boardIndex])) { 
     
             let start = game.board.movedFrom
+            let captured = game.board.square[boardIndex] != 0 || (game.board.enPassantSquare == boardIndex && Game.isPieceType(game.board.square[start], Game.Piece.pawn));
             let madeMove = game.makeMove(start, boardIndex, false);
 
             // If move was invalid, update graphics indicating so
@@ -471,12 +483,24 @@ function handleClick(e) {
             
             // If move was valid, update graphics on client-side before checking move on server
             } else {
+                let check = game.board.whiteInCheck && opponent.colour == Game.Piece.white || game.board.blackInCheck && opponent.colour == Game.Piece.black;
+
                 game.board.isLegalMove = new Array(64).fill(false);
                 game.board.hiddenSquare = -1;
                 game.board.inHand = Game.Piece.none;
                 game.board.movedTo = boardIndex;
                 game.board.movedFrom = start;
+                
                 updateGraphics();
+                
+                if (check) { // If checking other player
+                    SOUND.badNotify.play();
+                } else if (captured) { // If captured a piece
+                    SOUND.capture.play();
+                } else { // If standard move
+                    SOUND.move.play();
+                }
+                
                 socket.emit("moveMade", game.board); // Move will actually be made server-side. Still make move in client side for purpose of graphics and reducing load on server by prechecking (e.g. showing legal moves, clicking an invalid target square)
             }
 
@@ -557,6 +581,3 @@ function handleMouseLeave(e) {
     game.board.inHand = Game.Piece.none;    
     drawBoard();
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
