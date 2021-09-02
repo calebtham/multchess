@@ -11,8 +11,8 @@
  * ================================================
  */
 
-const socket = io("https://guarded-citadel-75405.herokuapp.com/");
-//const socket = io("localhost:3000");
+//const socket = io("https://guarded-citadel-75405.herokuapp.com/");
+const socket = io("localhost:3000");
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
@@ -52,7 +52,7 @@ socket.on("gameEnd", handleGameEnd);
         timerInterval = setInterval(updateTimer, FREQUENCY);
     }
 
-    playSound("goodnotify.mp3")
+    playSound("goodnotify")
     
 }
 
@@ -128,11 +128,11 @@ function handleGameState(state, number) {
         let move = Game.getStartAndTarget(game.board, state.game.board);
         if (move) {
             if (state.game.board.whiteInCheck && me.colour == Game.Piece.white || state.game.board.blackInCheck && me.colour == Game.Piece.black) { // Me in check
-                playSound("badnotify.mp3")
+                playSound("badnotify")
             } else if (game.board.square[move.target] != 0 || (game.board.enPassantSquare == move.target && Game.isPieceType(game.board.square[move.start], Game.Piece.pawn))) { // Captured piece
-                playSound("capture.mp3")
+                playSound("capture")
             } else { // Normal move
-                playSound("move.mp3")
+                playSound("move")
             }
         }
     }
@@ -153,13 +153,12 @@ function handleGameState(state, number) {
  * Plays end of game sound
  */
 function handleGameEnd() {
-    playSound("goodnotify.mp3")
-    playSound("badnotify.mp3")
+    playSound("endnotify")
 }
 
 /**
  * Plays message recieved sound
  */
 function handleMessageReceived() {
-    playSound("socialnotify.mp3")
+    playSound("socialnotify")
 }

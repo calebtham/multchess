@@ -97,12 +97,19 @@ function isTouchDevice() {
 
 /**
  * Plays sound of given path. (Implemented sound this way so works on ios)
- * @param {string} name Name of sound (omit "sound/")
+ * @param {string} name Name of sound (omit "sound/ and .mp3")
  */
 function playSound(name) {
     if (sound) {
-        sound.src = "sound/" + name;
-        sound.play();
+        if (name == "endnotify.mp3") {
+            let s1 = new Audio("sound/goodnotify.mp3");
+            let s2 = new Audio("sound/badnotify.mp3");
+            s1.play();
+            s2.play();
+        } else {
+            sound.src = "sound/" + name + ".mp3";
+            sound.play();
+        }
     }
 }
   

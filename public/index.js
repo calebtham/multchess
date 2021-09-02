@@ -121,7 +121,7 @@ const IMG = {
 
 // Sound
 const sound = new Audio();
-sound.play(); // Play so works with ios
+sound.play();
 
 // Timer variables
 const FREQUENCY = 37; // frequency of interval in ms
@@ -489,11 +489,11 @@ function handleClick(e) {
                 updateGraphics();
                 
                 if (check) { // If checking other player
-                    playSound("badnotify.mp3")
+                    playSound("badnotify")
                 } else if (captured) { // If captured a piece
-                    playSound("capture.mp3")
+                    playSound("capture")
                 } else { // If standard move
-                    playSound("move.mp3")
+                    playSound("move")
                 }
                 
                 socket.emit("moveMade", game.board); // Move will actually be made server-side. Still make move in client side for purpose of graphics and reducing load on server by prechecking (e.g. showing legal moves, clicking an invalid target square)
