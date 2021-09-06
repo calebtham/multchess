@@ -127,9 +127,10 @@ function handleGameState(state, number) {
     if (game && game.board.colourToMove != me.colour) { // If other player moved
         let move = Game.getStartAndTarget(game.board, state.game.board);
         if (move) {
-            if (state.game.board.whiteInCheck && me.colour == Game.Piece.white || state.game.board.blackInCheck && me.colour == Game.Piece.black) { // Me in check
+            if (state.game.board.whiteInCheck && me.colour == Game.Piece.white || state.game.board.blackInCheck && me.colour == Game.Piece.black) { // Put in check
                 SOUND.badNotify.play();
-            } else if (game.board.square[move.target] != 0 || (game.board.enPassantSquare == move.target && Game.isPieceType(game.board.square[move.start], Game.Piece.pawn))) { // Captured piece
+            } else if ((game.board.square[move.target] != 0 && !Game.isSameColour(game.board.square[move.target], game.board.square[move.start]))
+                || (game.board.enPassantSquare == move.target && Game.isPieceType(game.board.square[move.start], Game.Piece.pawn))) { // Captured piece
                 SOUND.capture.play();
             } else { // Normal move
                 SOUND.move.play();

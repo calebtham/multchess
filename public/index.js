@@ -469,7 +469,7 @@ function handleClick(e) {
                 || game.board.isLegalMove[boardIndex])) { 
     
             let start = game.board.movedFrom
-            let captured = game.board.square[boardIndex] != 0 || (game.board.enPassantSquare == boardIndex && Game.isPieceType(game.board.square[start], Game.Piece.pawn));
+            let captured = (game.board.square[boardIndex] != 0 && !Game.isSameColour(game.board.square[boardIndex], game.board.square[start])) || (game.board.enPassantSquare == boardIndex && Game.isPieceType(game.board.square[start], Game.Piece.pawn));
             let madeMove = game.makeMove(start, boardIndex, false);
 
             // If move was invalid, update graphics indicating so
