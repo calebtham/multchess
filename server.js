@@ -278,7 +278,7 @@ io.on("connection", client => {
         if (roomName) {
 
             if (state[roomName].game.timer != Infinity) {
-                updatePlayerTimer(roomName, client.player.number)
+                updatePlayerTimer(roomName, state[roomName].game.board.colourToMove)
 
                 if (client.player.timeLeft <= 0) {
                     client.player.timeLeft = 0;
@@ -464,7 +464,7 @@ io.on("connection", client => {
      * @param {number} number The player's number
      */
     function updatePlayerTimer(roomName, number) {
-        if (state[roomName].game.timer != Infinity) {
+        if (state[roomName].game.timer != Infinity && state[roomName][3 - number]) {
             let timeLastMoved = (state[roomName][3 - number].timeLastMoved) ? state[roomName][3 - number].timeLastMoved : Date.now();
             state[roomName][number].timeLeft -= (Date.now() - timeLastMoved) / 1000;
     
@@ -525,7 +525,6 @@ io.on("connection", client => {
                     || client.player.rematchRequestSent 
                     || client.player.requestDeclined 
                     || state[roomName][3-client.player.number].requestDeclined))) { // game end timer bug
-            
                         updatePlayerTimer(roomName, (client.player.colour == state[roomName].game.board.colourToMove) ? client.player.number : 3 - client.player.number);
         } 
 
