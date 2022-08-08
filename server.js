@@ -97,10 +97,13 @@ io.on("connection", client => {
      */
     function handleNewGame(timer = Infinity, increment = 0, colour = undefined) {
         let roomName;
+
+        // Get ID of game waiting for opponent, or get an unused ID
         while (!roomName || io.sockets.adapter.rooms.get(roomName)) {
             roomName = makeid(5);
         }
 
+        // Initialise the game
         initRoomState(roomName, timer, increment, colour);
         initClient(roomName, 1);
         return roomName;
@@ -143,6 +146,7 @@ io.on("connection", client => {
             state[roomName][3 - playerNumber].colour = Game.Piece.white;
         }
 
+        // Get client to update state
         client.emit("init", roomName);
         client.emit("gameState", state[roomName], client.player.number);
     }
@@ -153,6 +157,9 @@ io.on("connection", client => {
      * @param {string} roomName The client's room name
      */
     function handleJoinGame(roomName) {
+
+        // Handle non-existent game / full game
+
         if (blacklistedRooms[roomName]) {
             client.emit("tooManyPlayers");
             return;
@@ -172,6 +179,8 @@ io.on("connection", client => {
             client.emit("unknownGame");
             return;
         }
+
+        // Join valid game
 
         initClient(roomName, 2);
 
@@ -207,22 +216,26 @@ io.on("connection", client => {
                         valid = true;
 
                         client.player.timeLastMoved = Date.now(); // Update so can check next move time difference
-
                         updatePlayerTimer(roomName, client.player.number);
 
+                        // handle timeout
                         if (client.player.timeLeft <= 0) {
                             state[roomName].game.undoMove();
                             handleTimeout();
                             return valid;
 
+                        // handle checkmate
                         } else if (state[roomName].game.board.checkmate) {
                             checkmate(roomName);
                             return valid;
+
+                        // handle stalemate
                         } else if (state[roomName].game.board.stalemate) {
                             draw(roomName);
                             return valid;
                         }
 
+                        // Add increment to timer
                         if (state[roomName].timer != Infinity) {
                             client.player.timeLeft += state[roomName].game.increment;
                         }
@@ -280,6 +293,7 @@ io.on("connection", client => {
             if (state[roomName].game.timer != Infinity) {
                 updatePlayerTimer(roomName, state[roomName].game.board.colourToMove) // Update timer of player to move
 
+                // Check if client timeout
                 if (client.player.timeLeft <= 0) {
                     client.player.timeLeft = 0;
     
@@ -291,6 +305,7 @@ io.on("connection", client => {
                     emitAll(roomName, "gameEnd");
                 }
                 
+                // Check if client opponent timeout
                 else if (state[roomName][3 - client.player.number].timeLeft <= 0) {
                     state[roomName][3 - client.player.number].timeLeft = 0;
 
@@ -330,6 +345,8 @@ io.on("connection", client => {
         let roomName = clientRooms[client.id];
 
         if (roomName && state[roomName][3 - client.player.number].rematchRequestSent) { // Check opponent actually requested this
+            
+            // Initialise variables for new game
             let startingPlayer = (state[roomName].game.board.startingPlayer == 1) ? 2 : 1; // switch starting player
             let prevGame = state[roomName].game;
 
@@ -442,6 +459,10 @@ io.on("connection", client => {
         }   
     }
 
+    /**
+     * Update the chat and update both player's state and notify receiver
+     * @param {*} message 
+     */
     function handleChat(message) {
         let roomName = clientRooms[client.id];
 
@@ -519,6 +540,8 @@ io.on("connection", client => {
      * @param {string} roomName The client's room name
      */
     function emitState(roomName) {
+
+        // Update timer of moving player if a game is being currently played
         if (!client.player.rematchRequestSent 
             && !(state[roomName].game.board.isGameFinished 
                 && (client.player.rematchRequestSent 
@@ -528,6 +551,7 @@ io.on("connection", client => {
                         updatePlayerTimer(roomName, (client.player.colour == state[roomName].game.board.colourToMove) ? client.player.number : 3 - client.player.number);
         } 
 
+        // Update state
         client.emit("gameState", state[roomName], client.player.number);
         emitOpponent(roomName, "gameState", state[roomName], 3 - client.player.number);
     }
