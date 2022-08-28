@@ -347,8 +347,8 @@ async function handleBackButton() {
  * Indicate loading. Indicate to server to find quick match
  */
 function handleQuickMatchButton() {
-    socket.emit("quickMatch");
     document.getElementsByTagName("html")[0].style.cursor = "wait"
+    socket.emit("quickMatch");
 }
 
 /**
@@ -362,16 +362,16 @@ async function handleNewGameButton() {
  * Indicate loading. Indicate to server to start new game with options set 
  */
  function handleStartButton() {
-    socket.emit("newGame", timer, increment, colour);
     document.getElementsByTagName("html")[0].style.cursor = "wait"
+    socket.emit("newGame", timer, increment, colour);
 }
 
 /**
  * Indicate loading. Indicate to server join button was pressed
  */
 function handleJoinGameButton() {
-    socket.emit("joinGame", gameCodeInput.value);
     document.getElementsByTagName("html")[0].style.cursor = "wait"
+    socket.emit("joinGame", gameCodeInput.value);
 }
 
 /**
