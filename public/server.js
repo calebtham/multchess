@@ -108,6 +108,7 @@ function handleUnknownGame() {
  */
 async function handleInit(gameCode) {
     // Display
+    document.getElementsByTagName("html")[0].style.cursor = ""
     gameCodeDisplay.innerText = "Your game code is: " + gameCode;
     await animateChangeScreen(createScreen.style.display == "block" ? createScreen : initialScreen, gameScreen);
 

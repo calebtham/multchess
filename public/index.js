@@ -348,6 +348,7 @@ async function handleBackButton() {
  */
 function handleQuickMatchButton() {
     socket.emit("quickMatch");
+    document.getElementsByTagName("html")[0].style.cursor = "wait"
 }
 
 /**
@@ -362,6 +363,7 @@ async function handleNewGameButton() {
  */
  function handleStartButton() {
     socket.emit("newGame", timer, increment, colour);
+    document.getElementsByTagName("html")[0].style.cursor = "wait"
 }
 
 /**
@@ -369,6 +371,7 @@ async function handleNewGameButton() {
  */
 function handleJoinGameButton() {
     socket.emit("joinGame", gameCodeInput.value);
+    document.getElementsByTagName("html")[0].style.cursor = "wait"
 }
 
 /**
