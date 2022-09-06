@@ -90,6 +90,8 @@ function updatePlayerTimer(player) {
 function handleTooManyPlayers() {
     gameCodeInput.className = "error";
     errorLabel.innerText = "Game already in progress";
+    document.getElementsByTagName("html")[0].style.cursor = ""
+    joinGameButton.style.cursor = ""
 }
 
 /**
@@ -98,6 +100,8 @@ function handleTooManyPlayers() {
 function handleUnknownGame() {
     gameCodeInput.className = "error";
     errorLabel.innerText = "Game not found";
+    document.getElementsByTagName("html")[0].style.cursor = ""
+    joinGameButton.style.cursor = ""
 }
 
 /**
@@ -109,6 +113,10 @@ function handleUnknownGame() {
 async function handleInit(gameCode) {
     // Display
     document.getElementsByTagName("html")[0].style.cursor = ""
+    quickMatchButton.style.cursor = ""
+    startButton.style.cursor = ""
+    joinGameButton.style.cursor = ""
+
     gameCodeDisplay.innerText = "Your game code is: " + gameCode;
     await animateChangeScreen(createScreen.style.display == "block" ? createScreen : initialScreen, gameScreen);
 
