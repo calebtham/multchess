@@ -11,13 +11,13 @@
  * @param {array} b Another array
  * @returns True iff the two arrays have the equal data at all indices
  */
- function arrayEqual(a, b) {
-    for (let i = 0; i < a.length; i++) {
-        if (a[i] != b[i]) {
-            return false;
-        }
+function arrayEqual(a, b) {
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] != b[i]) {
+      return false;
     }
-    return true;
+  }
+  return true;
 }
 
 /**
@@ -27,13 +27,13 @@
  * @returns The array with value removed
  */
 function arrayRemoveItemOnce(arr, value) {
-    let index = arr.indexOf(value);
-    if (index > -1) {
-        arr.splice(index, 1);
-    }
-    return arr;
+  let index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
 }
-    
+
 /**
  * Given two numbers, returns the largest number
  * @param {number} a A number
@@ -41,7 +41,7 @@ function arrayRemoveItemOnce(arr, value) {
  * @returns The largest number
  */
 function max(a, b) {
-    return (a > b) ? a : b;
+  return a > b ? a : b;
 }
 
 /**
@@ -50,8 +50,8 @@ function max(a, b) {
  * @param {number} b Another number
  * @returns The smallest number
  */
-function min(a,b) {
-    return (a < b) ? a : b;
+function min(a, b) {
+  return a < b ? a : b;
 }
 /**
  * Given two numbers, returns the largest number
@@ -60,7 +60,7 @@ function min(a,b) {
  * @returns The largest number
  */
 function max(a, b) {
-    return (a > b) ? a : b;
+  return a > b ? a : b;
 }
 
 /**
@@ -68,21 +68,30 @@ function max(a, b) {
  * @param {number} seconds
  * @returns Formatted time string
  */
- function formatTimeFromSeconds(seconds) {
-    let mm;
-    let ss;
-    let fraction = (seconds < 60) ? 2 : 0;
+function formatTimeFromSeconds(seconds) {
+  let mm;
+  let ss;
+  let fraction = seconds < 60 ? 2 : 0;
 
-    mm = Math.floor(seconds / 60);
-    ss = seconds - (mm * 60);
-    
-    mm = mm.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: 0, useGrouping:false});
-    ss = ss.toLocaleString('en-UK', {minimumIntegerDigits: 2, maximumFractionDigits: fraction, minimumFractionDigits: fraction, useGrouping:false});
-    if (ss == "60") {
-        ss = "59";
-    }
-    
-    return mm + ":" + ss;
+  mm = Math.floor(seconds / 60);
+  ss = seconds - mm * 60;
+
+  mm = mm.toLocaleString("en-UK", {
+    minimumIntegerDigits: 2,
+    maximumFractionDigits: 0,
+    useGrouping: false,
+  });
+  ss = ss.toLocaleString("en-UK", {
+    minimumIntegerDigits: 2,
+    maximumFractionDigits: fraction,
+    minimumFractionDigits: fraction,
+    useGrouping: false,
+  });
+  if (ss == "60") {
+    ss = "59";
+  }
+
+  return mm + ":" + ss;
 }
 
 /**
@@ -90,8 +99,9 @@ function max(a, b) {
  * @returns True iff the device is touchscreen
  */
 function isTouchDevice() {
-    return (('ontouchstart' in window) ||
-       (navigator.maxTouchPoints > 0) ||
-       (navigator.msMaxTouchPoints > 0));
+  return (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0
+  );
 }
-  

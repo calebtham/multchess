@@ -1,211 +1,360 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width" name="viewport" />
+    <title>Multchess</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="icon" href="img/17.svg" />
+  </head>
 
-    <head>
-        <meta charset="UTF-8">
-        <meta content="width=device-width" name="viewport">
-        <title>Multchess</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-        <link rel="stylesheet" href="main.css">
-        <link rel="icon" href="img/17.svg">
-    </head>
+  <body>
+    <!--INITIAL SCREEN-->
+    <div id="initial-screen">
+      <div class="container">
+        <div class="row">
+          <div class="col-2"></div>
 
-    <body>
+          <div class="col">
+            <img
+              class="logo"
+              src="img/17.svg"
+              width="80"
+              height="80"
+              alt="17.svg"
+            />
+            <h1 class="bold">MULTCHESS</h1>
 
-        <!--INITIAL SCREEN-->
-        <div id="initial-screen">
-            <div class="container">
-                <div class="row">
-                    <div class="col-2"></div>
-
-                    <div class="col">
-                        <img class="logo" src="img/17.svg" width="80" height="80" alt="17.svg">
-                        <h1 class="bold">MULTCHESS</h1>
-
-                        <div class="join">
-                            <button type="button" class="btn btn-success fat" id="quick-match-button">
-                                Quick Match
-                                <br>
-                                <span class="discrete">Random opponent, 5 minute timer, no increment</span>
-                            </button>
-                            <button type="button" class="btn btn-success fat" id="new-game-button">Create New Game</button>
-                            <p>OR</p>
-                            <input type="text" placeholder="Enter Game Code" id="game-code-input"/>
-                            <div id="error"></div>
-                            <button type="button" class="btn btn-success fat" id="join-game-button">Join Existing Game</button>
-                        </div>
-                    </div>
-    
-                    <div class="col-2"></div>
-                </div>
+            <div class="join">
+              <button
+                type="button"
+                class="btn btn-success fat"
+                id="quick-match-button"
+              >
+                Quick Match
+                <br />
+                <span class="discrete"
+                  >Random opponent, 5 minute timer, no increment</span
+                >
+              </button>
+              <button
+                type="button"
+                class="btn btn-success fat"
+                id="new-game-button"
+              >
+                Create New Game
+              </button>
+              <p>OR</p>
+              <input
+                type="text"
+                placeholder="Enter Game Code"
+                id="game-code-input"
+              />
+              <div id="error"></div>
+              <button
+                type="button"
+                class="btn btn-success fat"
+                id="join-game-button"
+              >
+                Join Existing Game
+              </button>
             </div>
+          </div>
+
+          <div class="col-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!--CREATE GAME SCREEN-->
+    <div id="create-screen">
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <button type="button" class="btn btn-danger" id="back-button">
+              Back
+            </button>
+          </div>
         </div>
 
-        <!--CREATE GAME SCREEN-->
-        <div id="create-screen">
-            <div class="container">
+        <div class="spacer"></div>
+        <div class="spacer"></div>
 
-                <div class="row">
-                    <div class="col">
-                        <button type="button" class="btn btn-danger" id="back-button">Back</button>
-                    </div>
-                </div>
+        <h2 class="bold">TIMER</h2>
 
-                <div class="spacer"></div>
-                <div class="spacer"></div>
-
-                <h2 class="bold">TIMER</h2>
-
-                <div class="btn-group timer" role="group" aria-label="timer-options">
-                    <button type="button" class="btn btn-secondary" id="one-min-button">1 min</button>
-                    <button type="button" class="btn btn-secondary" id="three-min-button">3 min</button>
-                    <button type="button" class="btn btn-primary" id="five-min-button">5 min</button>
-                    <button type="button" class="btn btn-secondary" id="ten-min-button">10 min</button>
-                    <button type="button" class="btn btn-secondary" id="fifteen-min-button">15 min</button>
-                    <button type="button" class="btn btn-secondary" id="thirty-min-button">30 min</button>
-                    <button type="button" class="btn btn-secondary" id="sixty-min-button">60 min</button>
-                    <button type="button" class="btn btn-secondary" id="infinite-button">&infin;</button>
-                </div>
-                
-                <div class="spacer"></div>
-                <div class="spacer"></div>
-
-                <h2 class="bold">INCREMENT</h2>
-
-                <div class="btn-group timer" role="group" aria-label="increment-options">
-                    <button type="button" class="btn btn-primary" id="none-button">None</button>
-                    <button type="button" class="btn btn-secondary" id="one-sec-button">1 sec</button>
-                    <button type="button" class="btn btn-secondary" id="three-sec-button">3 sec</button>
-                    <button type="button" class="btn btn-secondary" id="five-sec-button">5 sec</button>
-                    <button type="button" class="btn btn-secondary" id="ten-sec-button">10 sec</button>
-                    <button type="button" class="btn btn-secondary" id="fifteen-sec-button">15 sec</button>
-                    <button type="button" class="btn btn-secondary" id="thirty-sec-button">30 sec</button>
-                    <button type="button" class="btn btn-secondary" id="sixty-sec-button">60 sec</button>
-                </div>
-
-                <div class="spacer"></div>
-                <div class="spacer"></div>
-
-                <h2 class="bold">START AS</h2>
-
-                <div class="btn-group" role="group" aria-label="colour-options">
-                    <button type="button" class="btn btn-secondary" id="white-button">
-                        <img src="img/9.svg" width="80" height="80" alt="9.svg" id="white">
-                    </button>
-                    <button type="button" class="btn btn-primary" id="random-button">
-                        Random
-                    </button>
-                    <button type="button" class="btn btn-secondary" id="black-button">
-                        <img src="img/17.svg" width="80" height="80" alt="17.svg" id="black">
-                    </button>
-                </div>
-
-                <div class="spacer"></div>
-                <div class="spacer"></div>
-
-                <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col">
-                        <button type="button" class="btn btn-success fat" id="start-button">Start</button>
-                    </div>
-                    <div class="col-3"></div>
-                </div>
-
-            </div>
+        <div class="btn-group timer" role="group" aria-label="timer-options">
+          <button type="button" class="btn btn-secondary" id="one-min-button">
+            1 min
+          </button>
+          <button type="button" class="btn btn-secondary" id="three-min-button">
+            3 min
+          </button>
+          <button type="button" class="btn btn-primary" id="five-min-button">
+            5 min
+          </button>
+          <button type="button" class="btn btn-secondary" id="ten-min-button">
+            10 min
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            id="fifteen-min-button"
+          >
+            15 min
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            id="thirty-min-button"
+          >
+            30 min
+          </button>
+          <button type="button" class="btn btn-secondary" id="sixty-min-button">
+            60 min
+          </button>
+          <button type="button" class="btn btn-secondary" id="infinite-button">
+            &infin;
+          </button>
         </div>
 
-        <!--GAME SCREEN-->
-        <div id="game-screen">
-            <div class="container">
+        <div class="spacer"></div>
+        <div class="spacer"></div>
 
-                <p><a href="./">LEAVE</a></p>
-                <h1 class="bold">MULTCHESS</h1>
-                <p id="game-code-display"></p>
+        <h2 class="bold">INCREMENT</h2>
 
-                <div class="row">
-                    <div class="col">
-
-                        <canvas id="top-canvas"></canvas>
-
-                        <div class="row">
-                            <h2 class="timer" id="top-timer-label"></h2>
-                            <h2 class="bold" id="top-player-label">Opponent</h2>
-                        </div>
-
-                        <canvas id="board-canvas"></canvas>
-
-                        <div class="row">
-                            <h2 class="timer" id="bottom-timer-label"></h2>
-                            <h2 class="bold" id="bottom-player-label">You</h2>
-                        </div>
-
-                        <canvas id="bottom-canvas"></canvas>
-
-                    </div>
-
-                    <div class="col-4 game-buttons">
-                        
-                        <p id="opponent-activity"></p>
-                        <button type="button" class="btn btn-success request" id="accept-button" hidden>Accept</button>
-                        <button type="button" class="btn btn-danger request" id="decline-button" hidden>Decline</button>
-
-                        <button type="button" class="btn btn-secondary" id="takeback-button">Request Takeback</button>
-                        <button type="button" class="btn btn-secondary" id="draw-button">Offer Draw</button>
-                        <button type="button" class="btn btn-secondary" id="resign-button">Resign</button>
-                        <button type="button" class="btn btn-secondary" id="rematch-button">Rematch</button>
-
-                        <div class="chat-window">
-                            <p>Chat</p>
-                            <div class="chat" id="chat">
-                                <p class="me">me giving some long text chat</p>
-                                <p class="opponent">opponent also giving long text chat</p>
-                                <p class="me">me giving some long text chat</p>
-                                <p class="opponent">opponent also giving long text chat</p>
-                                <p class="me">me giving some long text chat</p>
-                                <p class="opponent">opponent also giving long text chat</p>
-                                <p class="opponent">opponent also giving long text chat</p>
-                            </div>
-                            <div class="send">
-                                <input type="text" id="chat-input">
-                                <button type="button" id="chat-button">Send</button>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
+        <div
+          class="btn-group timer"
+          role="group"
+          aria-label="increment-options"
+        >
+          <button type="button" class="btn btn-primary" id="none-button">
+            None
+          </button>
+          <button type="button" class="btn btn-secondary" id="one-sec-button">
+            1 sec
+          </button>
+          <button type="button" class="btn btn-secondary" id="three-sec-button">
+            3 sec
+          </button>
+          <button type="button" class="btn btn-secondary" id="five-sec-button">
+            5 sec
+          </button>
+          <button type="button" class="btn btn-secondary" id="ten-sec-button">
+            10 sec
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            id="fifteen-sec-button"
+          >
+            15 sec
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            id="thirty-sec-button"
+          >
+            30 sec
+          </button>
+          <button type="button" class="btn btn-secondary" id="sixty-sec-button">
+            60 sec
+          </button>
         </div>
-        
-        <!--Images and audio found: https://lichess.org/source -->
-        <!--IMAGES-->
-        <img src="img/9.svg" id="9" width="65" height="65" alt="9.svg" hidden>
-        <img src="img/10.svg" id="10" width="65" height="65" alt="10.svg" hidden>
-        <img src="img/11.svg" id="11" width="65" height="65" alt="11.svg" hidden>
-        <img src="img/12.svg" id="12" width="65" height="65" alt="12.svg" hidden>
-        <img src="img/13.svg" id="13" width="65" height="65" alt="13.svg" hidden>
-        <img src="img/14.svg" id="14" width="65" height="65" alt="14.svg" hidden>
-        <img src="img/17.svg" id="17" width="65" height="65" alt="17.svg" hidden>
-        <img src="img/18.svg" id="18" width="65" height="65" alt="18.svg" hidden>
-        <img src="img/19.svg" id="19" width="65" height="65" alt="19.svg" hidden> 
-        <img src="img/20.svg" id="20" width="65" height="65" alt="20.svg" hidden>
-        <img src="img/21.svg" id="21" width="65" height="65" alt="21.svg" hidden>
-        <img src="img/22.svg" id="22" width="65" height="65" alt="22.svg" hidden>
 
-        <!--AUDIO-->
-        <audio src="sound/badnotify.mp3" id="bad-notify-sound" preload="auto" controls="none" hidden></audio>
-        <audio src="sound/capture.mp3" id="capture-sound" preload="auto" controls="none" hidden></audio>
-        <audio src="sound/goodnotify.mp3" id="good-notify-sound" preload="auto" controls="none" hidden></audio>
-        <audio src="sound/move.mp3" id="move-sound" preload="auto" controls="none" hidden></audio>
-        <audio src="sound/socialnotify.mp3" id="social-notify-sound" preload="auto" controls="none" hidden></audio>
+        <div class="spacer"></div>
+        <div class="spacer"></div>
 
-        <!--SCRIPTS-->
-        <script type="text/javascript" src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
-        <script type="text/javascript" src="util.js"></script>
-        <script type="text/javascript" src="game.js"></script>
-        <script type="text/javascript" src="graphics.js"></script>
-        <script type="text/javascript" src="server.js"></script>
-        <script type="text/javascript" src="index.js"></script>
-        
-    </body>
+        <h2 class="bold">START AS</h2>
 
+        <div class="btn-group" role="group" aria-label="colour-options">
+          <button type="button" class="btn btn-secondary" id="white-button">
+            <img
+              src="img/9.svg"
+              width="80"
+              height="80"
+              alt="9.svg"
+              id="white"
+            />
+          </button>
+          <button type="button" class="btn btn-primary" id="random-button">
+            Random
+          </button>
+          <button type="button" class="btn btn-secondary" id="black-button">
+            <img
+              src="img/17.svg"
+              width="80"
+              height="80"
+              alt="17.svg"
+              id="black"
+            />
+          </button>
+        </div>
+
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+
+        <div class="row">
+          <div class="col-3"></div>
+          <div class="col">
+            <button type="button" class="btn btn-success fat" id="start-button">
+              Start
+            </button>
+          </div>
+          <div class="col-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!--GAME SCREEN-->
+    <div id="game-screen">
+      <div class="container">
+        <p><a href="./">LEAVE</a></p>
+        <h1 class="bold">MULTCHESS</h1>
+        <p id="game-code-display"></p>
+
+        <div class="row">
+          <div class="col">
+            <canvas id="top-canvas"></canvas>
+
+            <div class="row">
+              <h2 class="timer" id="top-timer-label"></h2>
+              <h2 class="bold" id="top-player-label">Opponent</h2>
+            </div>
+
+            <canvas id="board-canvas"></canvas>
+
+            <div class="row">
+              <h2 class="timer" id="bottom-timer-label"></h2>
+              <h2 class="bold" id="bottom-player-label">You</h2>
+            </div>
+
+            <canvas id="bottom-canvas"></canvas>
+          </div>
+
+          <div class="col-4 game-buttons">
+            <p id="opponent-activity"></p>
+            <button
+              type="button"
+              class="btn btn-success request"
+              id="accept-button"
+              hidden
+            >
+              Accept
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger request"
+              id="decline-button"
+              hidden
+            >
+              Decline
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="takeback-button"
+            >
+              Request Takeback
+            </button>
+            <button type="button" class="btn btn-secondary" id="draw-button">
+              Offer Draw
+            </button>
+            <button type="button" class="btn btn-secondary" id="resign-button">
+              Resign
+            </button>
+            <button type="button" class="btn btn-secondary" id="rematch-button">
+              Rematch
+            </button>
+
+            <div class="chat-window">
+              <p>Chat</p>
+              <div class="chat" id="chat">
+                <p class="me">me giving some long text chat</p>
+                <p class="opponent">opponent also giving long text chat</p>
+                <p class="me">me giving some long text chat</p>
+                <p class="opponent">opponent also giving long text chat</p>
+                <p class="me">me giving some long text chat</p>
+                <p class="opponent">opponent also giving long text chat</p>
+                <p class="opponent">opponent also giving long text chat</p>
+              </div>
+              <div class="send">
+                <input type="text" id="chat-input" />
+                <button type="button" id="chat-button">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Images and audio found: https://lichess.org/source -->
+    <!--IMAGES-->
+    <img src="img/9.svg" id="9" width="65" height="65" alt="9.svg" hidden />
+    <img src="img/10.svg" id="10" width="65" height="65" alt="10.svg" hidden />
+    <img src="img/11.svg" id="11" width="65" height="65" alt="11.svg" hidden />
+    <img src="img/12.svg" id="12" width="65" height="65" alt="12.svg" hidden />
+    <img src="img/13.svg" id="13" width="65" height="65" alt="13.svg" hidden />
+    <img src="img/14.svg" id="14" width="65" height="65" alt="14.svg" hidden />
+    <img src="img/17.svg" id="17" width="65" height="65" alt="17.svg" hidden />
+    <img src="img/18.svg" id="18" width="65" height="65" alt="18.svg" hidden />
+    <img src="img/19.svg" id="19" width="65" height="65" alt="19.svg" hidden />
+    <img src="img/20.svg" id="20" width="65" height="65" alt="20.svg" hidden />
+    <img src="img/21.svg" id="21" width="65" height="65" alt="21.svg" hidden />
+    <img src="img/22.svg" id="22" width="65" height="65" alt="22.svg" hidden />
+
+    <!--AUDIO-->
+    <audio
+      src="sound/badnotify.mp3"
+      id="bad-notify-sound"
+      preload="auto"
+      controls="none"
+      hidden
+    ></audio>
+    <audio
+      src="sound/capture.mp3"
+      id="capture-sound"
+      preload="auto"
+      controls="none"
+      hidden
+    ></audio>
+    <audio
+      src="sound/goodnotify.mp3"
+      id="good-notify-sound"
+      preload="auto"
+      controls="none"
+      hidden
+    ></audio>
+    <audio
+      src="sound/move.mp3"
+      id="move-sound"
+      preload="auto"
+      controls="none"
+      hidden
+    ></audio>
+    <audio
+      src="sound/socialnotify.mp3"
+      id="social-notify-sound"
+      preload="auto"
+      controls="none"
+      hidden
+    ></audio>
+
+    <!--SCRIPTS-->
+    <script
+      type="text/javascript"
+      src="https://cdn.socket.io/4.0.1/socket.io.min.js"
+    ></script>
+    <script type="text/javascript" src="util.js"></script>
+    <script type="text/javascript" src="game.js"></script>
+    <script type="text/javascript" src="graphics.js"></script>
+    <script type="text/javascript" src="server.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+  </body>
 </html>

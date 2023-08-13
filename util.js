@@ -10,12 +10,13 @@
  * @returns A random string of alphanumeric of the given length
  */
 function makeid(length) {
-    let result = '';
-    let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (let i=0; i<length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
+  let result = "";
+  let characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
 }
 
 /**
@@ -25,12 +26,12 @@ function makeid(length) {
  * @returns True iff the two arrays have the equal data at all indices
  */
 function arrayEqual(a, b) {
-    for (let i = 0; i < a.length; i++) {
-        if (a[i] != b[i]) {
-            return false;
-        }
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] != b[i]) {
+      return false;
     }
-    return true;
+  }
+  return true;
 }
 
 /**
@@ -40,13 +41,12 @@ function arrayEqual(a, b) {
  * @returns The array with value removed
  */
 function arrayRemoveItemOnce(arr, value) {
-    let index = arr.indexOf(value);
-    if (index > -1) {
-        arr.splice(index, 1);
-    }
-    return arr;
+  let index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
 }
-    
 
 /**
  * Given two numbers, returns the largest number
@@ -55,7 +55,7 @@ function arrayRemoveItemOnce(arr, value) {
  * @returns The largest number
  */
 function max(a, b) {
-    return (a > b) ? a : b;
+  return a > b ? a : b;
 }
 
 /**
@@ -64,14 +64,14 @@ function max(a, b) {
  * @param {number} b Another number
  * @returns The smallest number
  */
-function min(a,b) {
-    return (a < b) ? a : b;
+function min(a, b) {
+  return a < b ? a : b;
 }
 
 module.exports = {
-    makeid,
-    arrayEqual,
-    arrayRemoveItemOnce,
-    max,
-    min
-}
+  makeid,
+  arrayEqual,
+  arrayRemoveItemOnce,
+  max,
+  min,
+};
