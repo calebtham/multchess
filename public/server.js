@@ -11,7 +11,7 @@
  * ================================================
  */
 
-const socket = io("https://multchess.onrender.com/");
+const socket = io("https://multchess.adaptable.app");
 //const socket = io("localhost:3000");
 
 socket.on("init", handleInit);
@@ -31,41 +31,40 @@ socket.on("gameEnd", handleGameEnd);
 /**
  * Update variables and document elements and start timer for when 2nd opponent has joined
  */
- function handleOpponentJoined() {
+function handleOpponentJoined() {
+  // Add event listeners so player can make move / make game requests
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  boardCanvas.addEventListener("click", handleClick);
+  boardCanvas.addEventListener("mousemove", handleHover);
+  boardCanvas.addEventListener("mouseleave", handleMouseLeave);
+  rematchButton.addEventListener("click", handleRematchButton);
+  takebackButton.addEventListener("click", handleTakebackButton);
+  drawButton.addEventListener("click", handleDrawButton);
+  resignButton.addEventListener("click", handleResignButton);
+  acceptButton.addEventListener("click", handleAcceptButton);
+  declineButton.addEventListener("click", handleDeclineButton);
+  chatButton.addEventListener("click", handleChatButton);
+  chatInput.addEventListener("keydown", handleChatKeyDown);
 
-    // Add event listeners so player can make move / make game requests
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    boardCanvas.addEventListener("click", handleClick);
-    boardCanvas.addEventListener("mousemove", handleHover);
-    boardCanvas.addEventListener("mouseleave", handleMouseLeave)
-    rematchButton.addEventListener("click", handleRematchButton);
-    takebackButton.addEventListener("click", handleTakebackButton);
-    drawButton.addEventListener("click", handleDrawButton);
-    resignButton.addEventListener("click", handleResignButton);
-    acceptButton.addEventListener("click", handleAcceptButton);
-    declineButton.addEventListener("click", handleDeclineButton);
-    chatButton.addEventListener("click", handleChatButton);
-    chatInput.addEventListener("keydown", handleChatKeyDown);
-    
-    if (me.timeLeft != null) { // If there is a timer, start it on client-side
-        clearInterval(timerInterval);
-        timerInterval = setInterval(updateTimer, FREQUENCY);
-    }
+  if (me.timeLeft != null) {
+    // If there is a timer, start it on client-side
+    clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimer, FREQUENCY);
+  }
 
-    SOUND.goodNotify.play();
-    
+  SOUND.goodNotify.play();
 }
 
 /**
  * Updates the timers on client side
  */
 function updateTimer() {
-    if (game.board.colourToMove == me.colour) {
-        updatePlayerTimer(me)
-    } else {
-        updatePlayerTimer(opponent)
-    }
-    updateTimerText();
+  if (game.board.colourToMove == me.colour) {
+    updatePlayerTimer(me);
+  } else {
+    updatePlayerTimer(opponent);
+  }
+  updateTimerText();
 }
 
 /**
@@ -73,35 +72,36 @@ function updateTimer() {
  * @param {Object} player The player
  */
 function updatePlayerTimer(player) {
-    player.timeLeft -= FREQUENCY / 1000;
-    if (player.timeLeft <= -FREQUENCY / 1000) { // Extend into negatives to give client error leeway. (actual timing done on server anyway)
-        player.timeLeft = 0;
-        clearInterval(timerInterval);
-        socket.emit("timeout")
-
-    } else if (player.timeLeft < 0) { // For graphics
-        player.timeLeft = 0;
-    }
+  player.timeLeft -= FREQUENCY / 1000;
+  if (player.timeLeft <= -FREQUENCY / 1000) {
+    // Extend into negatives to give client error leeway. (actual timing done on server anyway)
+    player.timeLeft = 0;
+    clearInterval(timerInterval);
+    socket.emit("timeout");
+  } else if (player.timeLeft < 0) {
+    // For graphics
+    player.timeLeft = 0;
+  }
 }
 
 /**
  * Display to user that the game corresponding to gamecode is full
  */
 function handleTooManyPlayers() {
-    gameCodeInput.className = "error";
-    errorLabel.innerText = "Game already in progress";
-    document.getElementsByTagName("html")[0].style.cursor = ""
-    joinGameButton.style.cursor = ""
+  gameCodeInput.className = "error";
+  errorLabel.innerText = "Game already in progress";
+  document.getElementsByTagName("html")[0].style.cursor = "";
+  joinGameButton.style.cursor = "";
 }
 
 /**
  * Display to user that the game corresponding to gamecode does not exist
  */
 function handleUnknownGame() {
-    gameCodeInput.className = "error";
-    errorLabel.innerText = "Game not found";
-    document.getElementsByTagName("html")[0].style.cursor = ""
-    joinGameButton.style.cursor = ""
+  gameCodeInput.className = "error";
+  errorLabel.innerText = "Game not found";
+  document.getElementsByTagName("html")[0].style.cursor = "";
+  joinGameButton.style.cursor = "";
 }
 
 /**
@@ -111,18 +111,21 @@ function handleUnknownGame() {
  * @param {Object} state The game state (i.e. a board object)
  */
 async function handleInit(gameCode) {
-    // Display
-    document.getElementsByTagName("html")[0].style.cursor = ""
-    quickMatchButton.style.cursor = ""
-    startButton.style.cursor = ""
-    joinGameButton.style.cursor = ""
+  // Display
+  document.getElementsByTagName("html")[0].style.cursor = "";
+  quickMatchButton.style.cursor = "";
+  startButton.style.cursor = "";
+  joinGameButton.style.cursor = "";
 
-    gameCodeDisplay.innerText = "Your game code is: " + gameCode;
-    await animateChangeScreen(createScreen.style.display == "block" ? createScreen : initialScreen, gameScreen);
+  gameCodeDisplay.innerText = "Your game code is: " + gameCode;
+  await animateChangeScreen(
+    createScreen.style.display == "block" ? createScreen : initialScreen,
+    gameScreen
+  );
 
-    // Add abiltiy to resize canvas
-    window.addEventListener("resize", handleResize);
-    handleResize();
+  // Add abiltiy to resize canvas
+  window.addEventListener("resize", handleResize);
+  handleResize();
 }
 
 /**
@@ -131,45 +134,59 @@ async function handleInit(gameCode) {
  * @param {Object} state    The game state (i.e. a board object)
  */
 function handleGameState(state, number) {
-
-    // Handle sounds
-    if (game && game.board.colourToMove != me.colour) { // If other player moved
-        let move = Game.getStartAndTarget(game.board, state.game.board);
-        if (move) {
-            if (state.game.board.whiteInCheck && me.colour == Game.Piece.white || state.game.board.blackInCheck && me.colour == Game.Piece.black) { // Put in check
-                SOUND.badNotify.play();
-            } else if ((game.board.square[move.target] != 0 && !Game.isSameColour(game.board.square[move.target], game.board.square[move.start]))
-                || (game.board.enPassantSquare == move.target && Game.isPieceType(game.board.square[move.start], Game.Piece.pawn))) { // Captured piece
-                SOUND.capture.play();
-            } else { // Normal move
-                SOUND.move.play();
-            }
-        }
+  // Handle sounds
+  if (game && game.board.colourToMove != me.colour) {
+    // If other player moved
+    let move = Game.getStartAndTarget(game.board, state.game.board);
+    if (move) {
+      if (
+        (state.game.board.whiteInCheck && me.colour == Game.Piece.white) ||
+        (state.game.board.blackInCheck && me.colour == Game.Piece.black)
+      ) {
+        // Put in check
+        SOUND.badNotify.play();
+      } else if (
+        (game.board.square[move.target] != 0 &&
+          !Game.isSameColour(
+            game.board.square[move.target],
+            game.board.square[move.start]
+          )) ||
+        (game.board.enPassantSquare == move.target &&
+          Game.isPieceType(game.board.square[move.start], Game.Piece.pawn))
+      ) {
+        // Captured piece
+        SOUND.capture.play();
+      } else {
+        // Normal move
+        SOUND.move.play();
+      }
     }
+  }
 
-    // Handle game
-    game = new Game(state.game);
-    me = state[number];
-    opponent = state[3 - number];
+  // Handle game
+  game = new Game(state.game);
+  me = state[number];
+  opponent = state[3 - number];
 
-    if (game.board.isGameFinished) { // If game end, stop timer
-        clearInterval(timerInterval);
-    }
+  if (game.board.isGameFinished) {
+    // If game end, stop timer
+    clearInterval(timerInterval);
+  }
 
-    updateGraphics();
+  updateGraphics();
 }
 
 /**
  * Plays end of game sound
  */
 function handleGameEnd() {
-    SOUND.goodNotify.play();
-    SOUND.badNotify.play();
+  SOUND.goodNotify.play();
+  SOUND.badNotify.play();
 }
 
 /**
  * Plays message recieved sound
  */
 function handleMessageReceived() {
-    SOUND.socialNotify.play();
+  SOUND.socialNotify.play();
 }
