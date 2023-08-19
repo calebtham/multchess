@@ -9,17 +9,17 @@ const io = require("socket.io")(process.env.PORT || 3000, {
   cors: {
     origin: "*",
   },
-  pingTimeout: 30000
 });
 
 const { Game } = require("./game.js");
 const { Player } = require("./player.js");
-const { makeid } = require("./util.js");
+const { makeid, getOtherPlayer } = require("./util.js");
 
 // Initialise server variables
 const state = {};
 const clientRooms = {};
 const blacklistedRooms = {};
+const disconnected = {};
 let quickMatchRoom;
 
 io.on("connection", (client) => {
@@ -40,27 +40,36 @@ io.on("connection", (client) => {
   client.on("disconnect", handleDisconnect);
   client.on("chat", handleChat);
 
+  if (disconnected[clientRooms[client.id]]) {
+    clearTimeout(disconnected[clientRooms[client.id]]);
+    disconnected[clientRooms[client.id]] = undefined;
+  }
+
   /**
    * Notify a player that their opponent has disconnected.
    * Updates variables to stop another player from joining a disconnected room
    */
   function handleDisconnect() {
-    let roomName = clientRooms[client.id];
+    const roomName = clientRooms[client.id];
 
-    if (roomName) {
-      let room = io.sockets.adapter.rooms.get(roomName);
+    if (!roomName) {
+      return;
+    }
+
+    disconnected[roomName] = setTimeout(() => {
+      const room = io.sockets.adapter.rooms.get(roomName);
 
       // If one player left, notify player
       if (room) {
         blacklistedRooms[roomName] = true;
-
+  
         state[roomName].game.endGame();
-        state[roomName][3 - client.player.number].selectBooleanFlag(
+        state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
           "opponentDisconnected"
         );
         emitAll(roomName, "gameEnd");
         emitState(roomName);
-
+  
         // Room destroyed automatically when all clients leave, so just remove room from blacklist
       } else {
         blacklistedRooms[roomName] = undefined;
@@ -68,7 +77,7 @@ io.on("connection", (client) => {
           quickMatchRoom = undefined;
         }
       }
-    }
+    }, 30000);
   }
 
   /**
@@ -140,10 +149,10 @@ io.on("connection", (client) => {
 
     if (playerNumber == state[roomName].game.board.startingPlayer) {
       state[roomName][playerNumber].colour = Game.Piece.white;
-      state[roomName][3 - playerNumber].colour = Game.Piece.black;
+      state[roomName][getOtherPlayer(playerNumber)].colour = Game.Piece.black;
     } else {
       state[roomName][playerNumber].colour = Game.Piece.black;
-      state[roomName][3 - playerNumber].colour = Game.Piece.white;
+      state[roomName][getOtherPlayer(playerNumber)].colour = Game.Piece.white;
     }
 
     // Get client to update state
@@ -255,7 +264,9 @@ io.on("connection", (client) => {
   function checkmate(roomName) {
     state[roomName][client.player.number].score++;
     state[roomName][client.player.number].selectBooleanFlag("won");
-    state[roomName][3 - client.player.number].selectBooleanFlag("lost");
+    state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
+      "lost"
+    );
 
     state[roomName].game.endGame();
     emitAll(roomName, "gameEnd");
@@ -269,8 +280,8 @@ io.on("connection", (client) => {
     let roomName = clientRooms[client.id];
 
     if (roomName) {
-      state[roomName][3 - client.player.number].score++;
-      state[roomName][3 - client.player.number].selectBooleanFlag(
+      state[roomName][getOtherPlayer(client.player.number)].score++;
+      state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
         "opponentResigned"
       );
       state[roomName][client.player.number].selectBooleanFlag("lost");
@@ -295,10 +306,10 @@ io.on("connection", (client) => {
         if (client.player.timeLeft <= 0) {
           client.player.timeLeft = 0;
 
-          state[roomName][3 - client.player.number].score++;
-          state[roomName][3 - client.player.number].selectBooleanFlag(
-            "opponentTimedOut"
-          );
+          state[roomName][getOtherPlayer(client.player.number)].score++;
+          state[roomName][
+            getOtherPlayer(client.player.number)
+          ].selectBooleanFlag("opponentTimedOut");
           state[roomName][client.player.number].selectBooleanFlag("timedOut");
 
           state[roomName].game.endGame();
@@ -306,16 +317,18 @@ io.on("connection", (client) => {
         }
 
         // Check if client opponent timeout
-        else if (state[roomName][3 - client.player.number].timeLeft <= 0) {
-          state[roomName][3 - client.player.number].timeLeft = 0;
+        else if (
+          state[roomName][getOtherPlayer(client.player.number)].timeLeft <= 0
+        ) {
+          state[roomName][getOtherPlayer(client.player.number)].timeLeft = 0;
 
           state[roomName][client.player.number].score++;
           state[roomName][client.player.number].selectBooleanFlag(
             "opponentTimedOut"
           );
-          state[roomName][3 - client.player.number].selectBooleanFlag(
-            "timedOut"
-          );
+          state[roomName][
+            getOtherPlayer(client.player.number)
+          ].selectBooleanFlag("timedOut");
 
           state[roomName].game.endGame();
           emitAll(roomName, "gameEnd");
@@ -336,7 +349,7 @@ io.on("connection", (client) => {
       state[roomName][client.player.number].selectBooleanFlag(
         "rematchRequestSent"
       );
-      state[roomName][3 - client.player.number].selectBooleanFlag(
+      state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
         "rematchRequestRecieved"
       );
       emitOpponent(roomName, "messageRecieved");
@@ -352,7 +365,7 @@ io.on("connection", (client) => {
 
     if (
       roomName &&
-      state[roomName][3 - client.player.number].rematchRequestSent
+      state[roomName][getOtherPlayer(client.player.number)].rematchRequestSent
     ) {
       // Check opponent actually requested this
 
@@ -400,7 +413,7 @@ io.on("connection", (client) => {
       state[roomName][client.player.number].selectBooleanFlag(
         "drawRequestSent"
       );
-      state[roomName][3 - client.player.number].selectBooleanFlag(
+      state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
         "drawRequestRecieved"
       );
       emitOpponent(roomName, "messageRecieved");
@@ -414,7 +427,10 @@ io.on("connection", (client) => {
   function handleDrawAccept() {
     let roomName = clientRooms[client.id];
 
-    if (roomName && state[roomName][3 - client.player.number].drawRequestSent) {
+    if (
+      roomName &&
+      state[roomName][getOtherPlayer(client.player.number)].drawRequestSent
+    ) {
       // Check opponent actually requested this
       draw(roomName);
     }
@@ -426,10 +442,12 @@ io.on("connection", (client) => {
    */
   function draw(roomName) {
     state[roomName][client.player.number].score++;
-    state[roomName][3 - client.player.number].score++;
+    state[roomName][getOtherPlayer(client.player.number)].score++;
 
     state[roomName][client.player.number].selectBooleanFlag("stalemate");
-    state[roomName][3 - client.player.number].selectBooleanFlag("stalemate");
+    state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
+      "stalemate"
+    );
 
     state[roomName].game.endGame();
     emitAll(roomName, "gameEnd");
@@ -446,7 +464,7 @@ io.on("connection", (client) => {
       state[roomName][client.player.number].selectBooleanFlag(
         "takebackRequestSent"
       );
-      state[roomName][3 - client.player.number].selectBooleanFlag(
+      state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
         "takebackRequestRecieved"
       );
       emitOpponent(roomName, "messageRecieved");
@@ -462,7 +480,7 @@ io.on("connection", (client) => {
 
     if (
       roomName &&
-      state[roomName][3 - client.player.number].takebackRequestSent
+      state[roomName][getOtherPlayer(client.player.number)].takebackRequestSent
     ) {
       // Check opponent actually requested this
       state[roomName][1].selectBooleanFlag("none");
@@ -483,7 +501,7 @@ io.on("connection", (client) => {
 
     if (roomName) {
       state[roomName][client.player.number].selectBooleanFlag("decline");
-      state[roomName][3 - client.player.number].selectBooleanFlag(
+      state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
         "requestDeclined"
       );
       emitOpponent(roomName, "messageRecieved");
@@ -516,9 +534,12 @@ io.on("connection", (client) => {
    * @param {number} number The player's number
    */
   function updatePlayerTimer(roomName, number) {
-    if (state[roomName].game.timer != Infinity && state[roomName][3 - number]) {
-      let timeLastMoved = state[roomName][3 - number].timeLastMoved
-        ? state[roomName][3 - number].timeLastMoved
+    if (
+      state[roomName].game.timer != Infinity &&
+      state[roomName][getOtherPlayer(number)]
+    ) {
+      let timeLastMoved = state[roomName][getOtherPlayer(number)].timeLastMoved
+        ? state[roomName][getOtherPlayer(number)].timeLastMoved
         : Date.now();
       state[roomName][number].timeLeft -= (Date.now() - timeLastMoved) / 1000;
 
@@ -526,7 +547,7 @@ io.on("connection", (client) => {
         state[roomName][number].timeLeft = 0;
       }
 
-      state[roomName][3 - number].timeLastMoved = Date.now();
+      state[roomName][getOtherPlayer(number)].timeLastMoved = Date.now();
     }
   }
 
@@ -581,7 +602,7 @@ io.on("connection", (client) => {
         (client.player.rematchRequestSent ||
           client.player.rematchRequestSent ||
           client.player.requestDeclined ||
-          state[roomName][3 - client.player.number].requestDeclined)
+          state[roomName][getOtherPlayer(client.player.number)].requestDeclined)
       )
     ) {
       // game end timer bug
@@ -589,7 +610,7 @@ io.on("connection", (client) => {
         roomName,
         client.player.colour == state[roomName].game.board.colourToMove
           ? client.player.number
-          : 3 - client.player.number
+          : getOtherPlayer(client.player.number)
       );
     }
 
@@ -599,7 +620,7 @@ io.on("connection", (client) => {
       roomName,
       "gameState",
       state[roomName],
-      3 - client.player.number
+      getOtherPlayer(client.player.number)
     );
   }
 });

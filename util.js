@@ -20,6 +20,14 @@ function makeid(length) {
 }
 
 /**
+ * @param {int} player Given player
+ * @returns The other player
+ */
+function getOtherPlayer(player) {
+  return 3 - player;
+}
+
+/**
  * Given two numeric arrays, returns whether the arrays contain the equal data at equal indices
  * @param {array} a An array
  * @param {array} b Another array
@@ -70,6 +78,7 @@ function min(a, b) {
 
 module.exports = {
   makeid,
+  getOtherPlayer,
   arrayEqual,
   arrayRemoveItemOnce,
   max,
