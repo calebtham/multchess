@@ -9,6 +9,7 @@ const io = require("socket.io")(process.env.PORT || 3000, {
   cors: {
     origin: "*",
   },
+  pingTimeout: 30000
 });
 
 const { Game } = require("./game.js");
