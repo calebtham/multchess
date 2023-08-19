@@ -19,7 +19,6 @@ const { makeid, getOtherPlayer } = require("./util.js");
 const state = {};
 const clientRooms = {};
 const blacklistedRooms = {};
-const disconnected = {};
 let quickMatchRoom;
 
 io.on("connection", (client) => {
@@ -40,11 +39,6 @@ io.on("connection", (client) => {
   client.on("disconnect", handleDisconnect);
   client.on("chat", handleChat);
 
-  if (disconnected[clientRooms[client.id]]) {
-    clearTimeout(disconnected[clientRooms[client.id]]);
-    disconnected[clientRooms[client.id]] = undefined;
-  }
-
   /**
    * Notify a player that their opponent has disconnected.
    * Updates variables to stop another player from joining a disconnected room
@@ -56,30 +50,26 @@ io.on("connection", (client) => {
       return;
     }
 
-    emitOpponent(roomName, "opponentPendingDisconnect");
+    const room = io.sockets.adapter.rooms.get(roomName);
 
-    disconnected[roomName] = setTimeout(() => {
-      const room = io.sockets.adapter.rooms.get(roomName);
+    // If one player left, notify player
+    if (room) {
+      blacklistedRooms[roomName] = true;
 
-      // If one player left, notify player
-      if (room) {
-        blacklistedRooms[roomName] = true;
-  
-        state[roomName].game.endGame();
-        state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
-          "opponentDisconnected"
-        );
-        emitAll(roomName, "gameEnd");
-        emitState(roomName);
-  
-        // Room destroyed automatically when all clients leave, so just remove room from blacklist
-      } else {
-        blacklistedRooms[roomName] = undefined;
-        if (quickMatchRoom == roomName) {
-          quickMatchRoom = undefined;
-        }
+      state[roomName].game.endGame();
+      state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
+        "opponentDisconnected"
+      );
+      emitAll(roomName, "gameEnd");
+      emitState(roomName);
+
+      // Room destroyed automatically when all clients leave, so just remove room from blacklist
+    } else {
+      blacklistedRooms[roomName] = undefined;
+      if (quickMatchRoom == roomName) {
+        quickMatchRoom = undefined;
       }
-    }, 30000);
+    }
   }
 
   /**
