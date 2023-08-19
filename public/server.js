@@ -19,7 +19,8 @@ socket.on("gameState", handleGameState);
 socket.on("opponentJoined", handleOpponentJoined);
 socket.on("unknownGame", handleUnknownGame);
 socket.on("tooManyPlayers", handleTooManyPlayers);
-socket.on("messageRecieved", handleMessageReceived);
+socket.on("messageReceived", handleMessageReceived);
+socket.on("opponentPendingDisconnect", handleOpponentPendingDisconnect);
 socket.on("gameEnd", handleGameEnd);
 
 /**
@@ -189,4 +190,12 @@ function handleGameEnd() {
  */
 function handleMessageReceived() {
   SOUND.socialNotify.play();
+}
+
+/**
+ * Display to user that opponent has left the room
+ */
+function handleOpponentPendingDisconnect() {
+  opponentActivityLabel.innerHTML =
+    "Opponent has left the room. Game will end soon if they do not rejoin. Waiting...";
 }

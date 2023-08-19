@@ -56,6 +56,8 @@ io.on("connection", (client) => {
       return;
     }
 
+    emitOpponent(roomName, "opponentPendingDisconnect");
+
     disconnected[roomName] = setTimeout(() => {
       const room = io.sockets.adapter.rooms.get(roomName);
 
@@ -352,7 +354,7 @@ io.on("connection", (client) => {
       state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
         "rematchRequestRecieved"
       );
-      emitOpponent(roomName, "messageRecieved");
+      emitOpponent(roomName, "messageReceived");
       emitState(roomName);
     }
   }
@@ -416,7 +418,7 @@ io.on("connection", (client) => {
       state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
         "drawRequestRecieved"
       );
-      emitOpponent(roomName, "messageRecieved");
+      emitOpponent(roomName, "messageReceived");
       emitState(roomName);
     }
   }
@@ -467,7 +469,7 @@ io.on("connection", (client) => {
       state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
         "takebackRequestRecieved"
       );
-      emitOpponent(roomName, "messageRecieved");
+      emitOpponent(roomName, "messageReceived");
       emitState(roomName);
     }
   }
@@ -504,7 +506,7 @@ io.on("connection", (client) => {
       state[roomName][getOtherPlayer(client.player.number)].selectBooleanFlag(
         "requestDeclined"
       );
-      emitOpponent(roomName, "messageRecieved");
+      emitOpponent(roomName, "messageReceived");
       emitState(roomName);
     }
   }
@@ -523,7 +525,7 @@ io.on("connection", (client) => {
       };
 
       state[roomName].game.chat.push(chatMessage);
-      emitOpponent(roomName, "messageRecieved");
+      emitOpponent(roomName, "messageReceived");
       emitState(roomName);
     }
   }
